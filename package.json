@@ -1,0 +1,25 @@
+{
+    "name": "condition",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "v2": "ts-node ./start.ts mode=2.6.0",
+        "v3": "ts-node ./start.ts mode=3.2.40",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "xiaohaih",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "16.0.0",
+        "@vitejs/plugin-vue": "^3.1.0",
+        "@vue/composition-api": "1.7.1",
+        "ts-node": "10.9.1",
+        "unbuild": "0.8.11",
+        "vite-plugin-vue2": "2.0.2",
+        "vue": "2.6.0",
+        "vue-demi": "^0.13.11",
+        "vue-template-compiler": "2.6.0"
+    }
+}

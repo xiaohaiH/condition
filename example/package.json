@@ -1,0 +1,20 @@
+{
+    "name": "example",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "author": "xiaohaih",
+    "scripts": {
+        "dev": "vite --host",
+        "build": "vue-tsc --noEmit && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "core": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^4.6.4",
+        "vite": "^3.1.0",
+        "vue-tsc": "^0.40.4"
+    }
+}

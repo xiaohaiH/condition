@@ -1,0 +1,23 @@
+{
+    "name": "core",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.tsx",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "xiaohaih",
+    "license": "ISC",
+    "dependencies": {},
+    "peerDependencies": {
+        "@vue/composition-api": "^1.0.0-rc.1",
+        "vue": "^2.0.0 || >=3.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@vue/composition-api": {
+            "optional": true
+        }
+    },
+    "devDependencies": {}
+}
