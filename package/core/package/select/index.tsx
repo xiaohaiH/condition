@@ -1,50 +1,41 @@
-import { computed, defineComponent, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-
-const commonProps = {
-    /** 提交的字段 */
-    field: { type: String as PropType<string>, required: true },
-    /** 显示在 input 框前的文字 */
-    prefix: { type: String as PropType<string> },
-    /** 当前条件对象 - 实时变化 */
-    query: { type: Object as PropType<Record<string, any>> },
-    /** 回填值的对象 - 非实时变化 */
-    backfill: { type: Object as PropType<Record<string, any>> },
-    /** 禁用状态 */
-    disabled: { type: [Boolean, Function] as PropType<boolean | Function> },
-    /** 是否隐藏 -> 如果是函数, 需传递依赖项, 可根据依赖项动态隐藏 */
-    hide: { type: [Boolean, Function] as PropType<boolean | Function> },
-    /** 是否依赖其它字段 - 字典请求 */
-    depend: { type: Boolean as PropType<boolean> },
-    /** 依赖字段 - 字段发生改变时做请求 */
-    dependFields: { type: [String, Array] as PropType<string | string[]> },
-    /** 校验函数, 返回字符串不通过, 会触发提示 - 提交时触发 */
-    validator: { type: [Function] as PropType<Function | (() => Promise<any>)> },
-} as const;
+import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
+import { existsEvent } from '../../utils/assist';
+import { hasOwn } from '../../utils/index';
+import { selectProps } from '../../common/props';
+import { selectEmits } from '../../common/emits';
+import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
 
 export default defineComponent({
-    props: {
-        ...commonProps,
-        // 提交给后端的字段
-        valueKey: { type: String },
-        // 展示的字段
-        labelKey: { type: String },
-        // 下拉选项的数据源
-        option: { type: Array, default: () => [] },
-        // 是否多选
-        multiple: { type: Boolean },
-        // 获取数据
-        getDict: {
-            type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
-        },
-        // 是否允许清空 - 默认允许
-        clearable: { type: Boolean, default: true },
-        // 自定义筛选方法
-        filterMethod: { type: Function },
-    },
+    inheritAttrs: false,
+    props: selectProps,
+    emits: selectEmits,
     setup(props, ctx) {
+        const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string | string[]>(props.multiple ? [] : '');
+        /** 远程获取的数据源 */
         const remoteOption = ref<Record<string, any>[]>([]);
+        /** 优先使用远程数据源 */
         const originOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.option));
+        /** 是否使用筛选过后的数据 */
+        const backFilterOption = ref(false);
+        /** 筛选后的数据 */
+        const filterOption = ref<Record<string, any>[]>([]);
+        // 根据是否过滤返回不同的数据源
+        const finalOption = computed(() => {
+            return backFilterOption.value ? filterOption.value : originOption.value;
+        });
+        // 根据是否过滤返回不同的数据源
+        const customFilterMethod = computed(() => {
+            return props.filterMethod && finalFilterMethod;
+        });
+        const option: CommonMethod = {
+            reset,
+            get validator() {
+                return props.validator;
+            },
+            getQuery,
+        };
+        wrapper?.register(option);
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
@@ -96,8 +87,22 @@ export default defineComponent({
          * @description: 失焦事件
          */
         function blur() {
-            this.$listeners.blur && ctx.emit('blur', ...arguments);
-            this.filterMethod && this.finalFilterMethod();
+            existsEvent(ctx, 'blur') && ctx.emit('blur', ...arguments);
+            props.filterMethod && finalFilterMethod('');
+        }
+
+        /**
+         * @description: 过滤方法
+         */
+        function finalFilterMethod(value: string) {
+            const { filterMethod } = props;
+            if (value === '' || value === undefined) {
+                backFilterOption.value = false;
+                filterOption.value = [];
+            } else {
+                backFilterOption.value = true;
+                filterOption.value = originOption.value.filter((v) => filterMethod!(value, v));
+            }
         }
         /**
          * @description: select change 事件
@@ -113,7 +118,7 @@ export default defineComponent({
          * @return {Object}
          */
         function getQuery() {
-            return { [props.field]: checked.value };
+            return { [props.field]: checked.value || undefined };
         }
         /**
          * @description: 向上触发改变事件
@@ -127,12 +132,15 @@ export default defineComponent({
          * @return {Object}
          */
         function reset() {
-            const { field, multiple } = props;
+            const { multiple } = props;
             checked.value = multiple ? [] : '';
-            return { [field]: checked.value || undefined };
+            return option;
         }
 
         return {
+            checked,
+            finalOption,
+            customFilterMethod,
             blur,
             change,
             getQuery,
@@ -141,7 +149,31 @@ export default defineComponent({
         };
     },
     render() {
-        // console.log(args);
-        return <div>123</div>;
+        const {
+            checked: value,
+            finalOption: options,
+            blur,
+            customFilterMethod: filterMethod,
+            change,
+            getQuery,
+            triggerValue,
+            reset,
+        } = this;
+        // @ts-ignore
+        const defaultSlot = (hasOwn(this, '$scopedSlots') && this.$scopedSlots.default) || this.$slots.default;
+
+        // @ts-ignore
+        return defaultSlot?.({
+            ...this.$attrs,
+            ...this.$props,
+            value,
+            options,
+            blur,
+            filterMethod,
+            change,
+            getQuery,
+            triggerValue,
+            reset,
+        });
     },
 });

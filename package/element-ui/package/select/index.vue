@@ -1,0 +1,32 @@
+<template>
+    <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child -->
+    <CoreSelect v-bind="$attrs" v-on="$listeners">
+        <template #default="{ blur, change, labelKey, valueKey, options, ...surplusProps }">
+            <ElSelect v-bind="surplusProps" @blur="blur" @input="change">
+                <template v-for="item of options">
+                    <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                </template>
+            </ElSelect>
+        </template>
+    </CoreSelect>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue-demi';
+import { CoreSelect } from 'core';
+import { Select as ElSelect, Option as ElOption } from 'element-ui';
+
+/**
+ * @file 下拉框
+ */
+export default defineComponent({
+    name: 'HSelect',
+    components: {
+        CoreSelect,
+        ElSelect,
+        ElOption,
+    },
+});
+</script>
+
+<style lang="css" scoped></style>
