@@ -11,6 +11,7 @@
         "outDir": "lib",
         "noUnusedLocals": false,
         "noUnusedParameters": false,
+        "strict": true,
         "strictNullChecks": true,
         "sourceMap": true,
         "baseUrl": ".",
@@ -19,9 +20,7 @@
         "allowJs": true,
         "resolveJsonModule": true,
         "typeRoots": ["node_modules/@types", "types"],
-        "paths": {
-            "@/*": ["src/*"]
-        },
+        "paths": {},
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
     "include": ["package/**/*.ts", "package/**/*.tsx", "package/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
