@@ -10,11 +10,12 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "core": "workspace:*"
+        "h-element-ui": "workspace:element-ui@*"
     },
     "devDependencies": {
         "typescript": "^4.6.4",
         "vite": "^3.1.0",
+        "vite-plugin-require-transform": "1.0.4",
         "vue-tsc": "^0.40.4"
     }
 }

@@ -6,13 +6,17 @@ import { createVuePlugin } from 'vite-plugin-vue2';
  */
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [createVuePlugin()],
+    plugins: [
+        createVuePlugin({
+            jsx: true,
+        }),
+    ],
     optimizeDeps: {
         exclude: ['vue-demi'],
     },
-    esbuild: {
-        jsxFactory: 'h',
-        jsxFragment: 'Fragment',
-        jsxInject: "import { h } from 'vue-demi';",
-    },
+    // esbuild: {
+    //     jsxFactory: 'h',
+    //     jsxFragment: 'Fragment',
+    //     jsxInject: "import { h } from 'vue-demi';",
+    // },
 });

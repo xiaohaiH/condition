@@ -7,7 +7,11 @@ if (isVue2) {
         render: (h: any) => h(App),
     });
     app.mount('#app');
+    // @ts-ignore
+    window.app = app;
 } else {
     const app = createApp(App);
     app.mount('#app');
+    // @ts-ignore
+    window.app = app;
 }
