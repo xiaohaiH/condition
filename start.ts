@@ -20,7 +20,6 @@ async function main() {
         await execPromise(`pnpm i -wD vue@${vueVersion}`).promise;
     }
     chdir(resolve(cwd(), './example/'));
-    console.log('pnpm dev ' + args.toString());
 
     const { cp, promise } = execPromise('pnpm dev ' + args.toString());
 }
@@ -71,9 +70,10 @@ function execPromise(command: string, option?: ExecOptions) {
             resolve({ stdout, stderr });
         });
         // 对内部的打印实时输出
-        a.stdout?.on('data', console.log);
+        a.stdout?.on('data', console.log.bind(null, 'stdout - data'));
+        a.stderr?.on('data', console.error.bind(null, '\x1B[31m', 'stderr - data'));
         cp = a;
-    }).catch(() => {});
+    });
     return { promise, cp: cp! };
 }
 

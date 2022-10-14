@@ -12,17 +12,17 @@
 import { defineComponent, isVue2, markRaw, ref } from 'vue-demi';
 
 async function getComponentMap() {
-    if (isVue2) {
-        const result = await Promise.all([import('./components/element-ui.vue')]);
-        return {
-            element: markRaw(result[0].default),
-        };
-    } else {
-        const result = await Promise.all([import('./components/element-plus.vue')]);
-        return {
-            element: markRaw(result[0].default),
-        };
-    }
+    // if (isVue2) {
+    const result = await Promise.all([import('./components/element-ui.vue')]);
+    return {
+        element: markRaw(result[0].default),
+    };
+    // } else {
+    //     const result = await Promise.all([import('./components/element-plus.vue')]);
+    //     return {
+    //         element: markRaw(result[0].default),
+    //     };
+    // }
 }
 let componentMap: ComponentMap = {} as ComponentMap;
 type GetComponentMap = typeof getComponentMap;
