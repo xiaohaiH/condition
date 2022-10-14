@@ -1,4 +1,5 @@
-import { isVue2, SetupContext } from 'vue-demi';
+import { isVue2, SetupContext, VNode } from 'vue-demi';
+import { hasOwn } from './index';
 
 /**
  * 获取指定事件
@@ -21,4 +22,13 @@ export function getEvent<T extends (...args: any[]) => any>(ctx: SetupContext<an
  */
 export function existsEvent(ctx: SetupContext<any>, eventName: string) {
     return !!getEvent(ctx, eventName);
+}
+
+/**
+ * 获取指定插槽
+ * @param {string} slotName 插槽名称
+ */
+export function getSlot(slotName: string, vm: Record<string, any>): ((props: any) => VNode) | VNode | undefined {
+    // ): ((props: any) => VNode[] | undefined) | VNode[] | undefined {
+    return (hasOwn(vm, '$scopedSlots') && vm.$scopedSlots[slotName]) || vm.$slots[slotName];
 }

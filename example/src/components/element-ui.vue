@@ -1,16 +1,24 @@
 <template>
+    <!-- eslint-disable vue/no-v-for-template-key-on-child -->
     <ElCard>
         <ElCollapse v-model="collapseValue">
-            <ElCollapseItem title="基础用法" name="base">
-                <ElAlert type="success" :closable="false">
-                    <span>当前条件:　</span>
-                    <span>{{ baseQuery }}</span>
-                </ElAlert>
-                <div style="margin: 10px 0">
-                    <ElButton @click="setBaseQuery" type="primary" size="mini">手动设置</ElButton>
-                </div>
-                <HWrapper :backfill="baseQuery" :datum="baseCondition" @search="baseQuerySearch"></HWrapper>
-            </ElCollapseItem>
+            <template v-for="(item, index) of conditions">
+                <ElCollapseItem :key="item.name" :title="item.title" :name="item.name">
+                    <ElAlert type="success" :closable="false">
+                        <span>当前条件:　</span>
+                        <span>{{ item.query }}</span>
+                    </ElAlert>
+                    <div style="margin: 10px 0">
+                        <ElButton @click="item.setQuery(item)" type="primary" size="mini">手动设置</ElButton>
+                    </div>
+                    <HWrapper
+                        :backfill="item.query"
+                        :datum="item.condition"
+                        tag="main"
+                        @search="querySearch(index, $event)"
+                    ></HWrapper>
+                </ElCollapseItem>
+            </template>
         </ElCollapse>
     </ElCard>
 </template>
@@ -19,6 +27,7 @@
 import { Vue, defineComponent, ref, set } from 'vue-demi';
 import ElementUI from 'element-ui';
 import { HWrapper } from 'h-element-ui';
+import { conditionFactory } from './config';
 import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
@@ -31,40 +40,19 @@ export default defineComponent({
         HWrapper,
     },
     setup() {
-        const collapseValue = ref(['base']);
-        const baseCondition = ref({
-            a: {
-                t: 'input',
-                clearable: true,
-                placeholder: '角色名称',
-            },
-            b: {
-                t: 'select',
-                placeholder: '状态',
-                valueKey: 'dictValue',
-                labelKey: 'dictLabel',
-                size: 'mini',
-                option: [
-                    { dictValue: '0', dictLabel: '启用' },
-                    { dictValue: '1', dictLabel: '禁用' },
-                ],
-            },
-        });
-        const baseQuery = ref({});
-        function setBaseQuery() {
-            set(baseQuery.value, 'a', '手动设置');
-            set(baseQuery.value, 'b', '0');
-        }
-        function baseQuerySearch(query: Record<string, string>) {
-            set(baseQuery, 'value', query);
+        const conditions = ref(conditionFactory());
+        const collapseValue = ref(conditions.value.map((v) => v.name));
+        /**
+         * 搜索
+         */
+        function querySearch(index: number, query: Record<string, string>) {
+            set(conditions.value[index], 'query', query);
         }
 
         return {
+            conditions,
             collapseValue,
-            baseCondition,
-            baseQuery,
-            setBaseQuery,
-            baseQuerySearch,
+            querySearch,
         };
     },
 });

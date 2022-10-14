@@ -3,8 +3,27 @@ export const provideKey = 'condition-wrapper';
 
 /** 容器注入值的类型 */
 export interface ProvideValue {
-    /** 子组件渲染后需主动注册组件 */
-    register(config: CommonMethod): void;
+    /**
+     * 子组件需主动注册组件, 否则不会生效
+     * @param {CommonMethod} compOption 提供父组件校验, 重置等方法
+     *
+     * @returns {Function} 取消注册 - 默认会自动取消, 如果是异步任务内注册, 需自己手动取消
+     */
+    register(config: CommonMethod): () => void;
+    /**
+     * 子组件通知父级更新 query 中的值 - 静默修改, 不触发搜索事件
+     * @param {string} field 更新的字段
+     * @param {*} value 更新的值
+     */
+    updateQueryValue(field: string, value: any): void;
+    /**
+     * 子组件通知父级更新 query 中的值 - 由父级决定是否触发搜索事件(实时搜索时需要区分这两种方式)
+     */
+    updateQueryValueForSearch(field: string, value: any): void;
+    /**
+     * 提供给组件内部的直接触发到外部的搜索事件
+     */
+    search(): Promise<string | void>;
 }
 
 /**
@@ -15,6 +34,10 @@ export interface CommonMethod {
      * 重置
      */
     reset(): CommonMethod;
+    /**
+     * 更新父级中的 query
+     */
+    updateWrapperQuery(): CommonMethod;
     /**
      * 校验方法
      */
