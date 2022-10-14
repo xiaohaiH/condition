@@ -2,7 +2,7 @@
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api -->
     <CoreWrapper v-bind="$attrs" v-on="$listeners">
         <template #default="{ t, ...options }">
-            <component :is="getComp(t)" @search="options.compSearch" v-bind="options"></component>
+            <component :is="getComp(t)" v-bind="options"></component>
         </template>
         <template #btn="option">
             <slot name="btn" v-bind="option">
@@ -20,9 +20,15 @@ import { defineComponent, markRaw, PropType } from 'vue-demi';
 import { Button as ElButton } from 'element-ui';
 import { CoreWrapper } from 'core';
 import HSelect from '../select/index.vue';
+import HInput from '../input/index.vue';
+import HDatepicker from '../datepicker/index.vue';
+import HCascader from '../cascader/index.vue';
 
 const compMap = {
     select: markRaw(HSelect),
+    input: markRaw(HInput),
+    datepicker: markRaw(HDatepicker),
+    cascader: markRaw(HCascader),
 };
 
 /**

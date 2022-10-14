@@ -5,8 +5,12 @@ import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
 
+/**
+ * @file 下拉框
+ */
 export default defineComponent({
     inheritAttrs: false,
+    name: 'CoreSelect',
     props: selectProps,
     emits: selectEmits,
     setup(props, ctx) {
@@ -24,7 +28,7 @@ export default defineComponent({
         const finalOption = computed(() => {
             return backFilterOption.value ? filterOption.value : originOption.value;
         });
-        // 根据是否过滤返回不同的数据源
+        // 自定义的过滤事件
         const customFilterMethod = computed(() => {
             return props.filterMethod && finalFilterMethod;
         });
@@ -42,15 +46,8 @@ export default defineComponent({
 
         // 回填值发生变化时触发更新
         const { field, depend, dependFields } = props;
-        unwatchs.push(
-            watch(
-                () => props.backfill?.[field],
-                (val) => {
-                    checked.value = val;
-                },
-                { immediate: true, deep: true },
-            ),
-        );
+        // 需要通知父级更新 query
+        unwatchs.push(watch(() => props.backfill?.[field], change, { immediate: true, deep: true }));
 
         if (depend && dependFields && dependFields.length) {
             // 存在依赖项

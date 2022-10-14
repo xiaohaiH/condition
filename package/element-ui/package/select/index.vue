@@ -20,6 +20,7 @@ import { Select as ElSelect, Option as ElOption } from 'element-ui';
  * @file 下拉框
  */
 export default defineComponent({
+    inheritAttrs: false,
     name: 'HSelect',
     components: {
         CoreSelect,
