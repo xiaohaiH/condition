@@ -13,7 +13,7 @@ export interface ProvideValue {
      * 子组件需主动注册组件, 否则不会生效
      * @param {CommonMethod} compOption 提供父组件校验, 重置等方法
      *
-     * @returns {Function} 取消注册 - 默认会自动取消, 如果是异步任务内注册, 需自己手动取消
+     * @returns {() => void} 取消注册 - 默认会自动取消, 如果是异步任务内注册, 需自己手动取消
      */
     register(config: CommonMethod): () => void;
     /**
@@ -21,11 +21,11 @@ export interface ProvideValue {
      * @param {string} field 更新的字段
      * @param {*} value 更新的值
      */
-    updateQueryValue(field: string, value: any): void;
+    updateQueryValue(field: string, value: any): ProvideValue;
     /**
-     * 子组件通知父级更新 query 中的值 - 由父级决定是否触发搜索事件(实时搜索时需要区分这两种方式)
+     * 子组件内部值发生了变动, 由父级决定是否触发搜索事件(实时搜索时需要区分这两种方式)
      */
-    updateQueryValueForSearch(field: string, value: any): void;
+    insetSearch(): ProvideValue;
     /**
      * 提供给组件内部的直接触发到外部的搜索事件
      */

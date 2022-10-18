@@ -1,5 +1,5 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { existsEvent, getSlot } from '../../utils/assist';
+import { existsEvent, getEvent, getSlot } from '../../utils/assist';
 import { hasOwn, emptyToValue } from '../../utils/index';
 import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
@@ -8,6 +8,7 @@ import { useDisplay } from '../../use';
 
 /**
  * @file 下拉框
+ * TODO: 修复下拉框 blur 事件重复的问题
  */
 export default defineComponent({
     inheritAttrs: false,
@@ -81,7 +82,8 @@ export default defineComponent({
          * 失焦事件
          */
         function blur() {
-            existsEvent(ctx, 'blur') && ctx.emit('blur', ...arguments);
+            const blurHandler = getEvent(ctx, 'blur');
+            blurHandler?.(...arguments);
             props.filterMethod && finalFilterMethod('');
         }
         /**
@@ -116,6 +118,7 @@ export default defineComponent({
         function change(value: string | string[]) {
             checked.value = value;
             option.updateWrapperQuery();
+            wrapper?.insetSearch();
         }
         /**
          * 重置数据
@@ -149,20 +152,32 @@ export default defineComponent({
             customFilterMethod: filterMethod,
             change,
             reset,
+
+            valueKey,
+            labelKey,
+            multiple,
+            clearable,
         } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        const listeners = hasOwn(this, '$listeners') ? { ...this.$listeners } : null;
+        // listeners && delete listeners.blur;
 
         return typeof defaultSlot === 'function'
             ? defaultSlot({
                   ...this.$attrs,
-                  ...this.$props,
+                  listeners,
                   value,
                   options,
                   disabled: insetDisabled,
                   blur,
                   filterMethod,
                   change,
+
+                  valueKey,
+                  labelKey,
+                  multiple,
+                  clearable,
               })
             : defaultSlot!;
     },

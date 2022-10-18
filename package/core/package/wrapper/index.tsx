@@ -49,10 +49,13 @@ export default defineComponent({
                 childInstance && onBeforeUnmount(unregister, childInstance);
                 return unregister;
             },
-            updateQueryValue: (field, value) => set(query.value, field, value),
-            updateQueryValueForSearch: (field, value) => {
-                wrapperInstance.updateQueryValue(field, value);
+            updateQueryValue: (field, value) => {
+                set(query.value, field, value);
+                return wrapperInstance;
+            },
+            insetSearch: () => {
                 props.realtime && wrapperInstance.search();
+                return wrapperInstance;
             },
             search: querySearch,
         };

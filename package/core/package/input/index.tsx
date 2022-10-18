@@ -68,9 +68,9 @@ export default defineComponent({
             // 外部组件非实时的情况下, 延时触发会导致延迟时间内触发搜索按钮时
             // 值不是最新的, 因为容易存在搜索按钮时, 立即触发
             realtime || !wrapper?.realtime.value
-                ? wrapper?.updateQueryValueForSearch(field, value)
+                ? wrapper?.updateQueryValue(field, value).insetSearch()
                 : (timer = setTimeout(
-                      () => wrapper?.updateQueryValueForSearch(field, value),
+                      () => wrapper?.updateQueryValue(field, value).insetSearch(),
                       waitTimer,
                   ) as unknown as number);
         }
@@ -105,10 +105,12 @@ export default defineComponent({
         const { query, checked: value, getQuery, insetDisabled, insetHide, debounceChange, enterHandler, reset } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
         return typeof defaultSlot === 'function'
             ? defaultSlot({
                   ...this.$attrs,
+                  listeners,
                   value,
                   disabled: insetDisabled,
                   debounceChange,
