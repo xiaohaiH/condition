@@ -8,6 +8,7 @@ import {
     provide,
     ref,
     set,
+    toRef,
     watch,
     watchEffect,
 } from 'vue-demi';
@@ -36,6 +37,7 @@ export default defineComponent({
          * 提供给子条件组件的方法
          */
         const wrapperInstance: ProvideValue = {
+            realtime: toRef(props, 'realtime'),
             register: (compOption) => {
                 child.push(compOption);
                 const unregister = () => {
@@ -58,7 +60,7 @@ export default defineComponent({
 
         /** 内部条件最新的值, 再没触发搜索按钮前, 不会同步到外部 */
         const query = ref<Record<string, string>>({});
-        const getQuery = () => ({ ...JSON.parse(JSON.stringify(query.value)) });
+        const getQuery = () => ({ ...query.value });
         /** 条件源发生变化后, 更新 query 字段 */
         watch(() => props.datum, nextTick.bind(null, initQuery), { immediate: true });
         watch(

@@ -4,6 +4,10 @@ import { PropType } from 'vue-demi';
 export const commonProps = {
     /** 提交的字段 */
     field: { type: String as PropType<string>, required: true },
+    /** 空置时提交的值 - 默认置为 undefined */
+    emptyValue: { type: [String, null, undefined] as PropType<undefined | null | string>, default: undefined },
+    /** 重置时是否置为初始值 */
+    resetToInitialValue: { type: [Boolean] as PropType<boolean> },
     /** 显示在 input 框前的文字 */
     prefix: { type: String as PropType<string> },
     /** 当前条件对象 - 实时变化 */

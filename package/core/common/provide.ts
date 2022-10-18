@@ -1,8 +1,14 @@
+import { type Ref } from 'vue-demi';
+
 /** 容器注入的 key */
 export const provideKey = 'condition-wrapper';
 
 /** 容器注入值的类型 */
 export interface ProvideValue {
+    /**
+     * 是否实时触发
+     */
+    realtime: Ref<boolean | undefined>;
     /**
      * 子组件需主动注册组件, 否则不会生效
      * @param {CommonMethod} compOption 提供父组件校验, 重置等方法
@@ -35,7 +41,7 @@ export interface CommonMethod {
      */
     reset(): CommonMethod;
     /**
-     * 更新父级中的 query
+     * 更新父级中 query 的值
      */
     updateWrapperQuery(): CommonMethod;
     /**

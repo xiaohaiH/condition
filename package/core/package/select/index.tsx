@@ -1,9 +1,10 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { existsEvent } from '../../utils/assist';
-import { hasOwn } from '../../utils/index';
+import { existsEvent, getSlot } from '../../utils/assist';
+import { hasOwn, emptyToValue } from '../../utils/index';
 import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
+import { useDisplay } from '../../use';
 
 /**
  * @file 下拉框
@@ -14,8 +15,12 @@ export default defineComponent({
     props: selectProps,
     emits: selectEmits,
     setup(props, ctx) {
+        const { field, depend, dependFields } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string | string[]>(props.multiple ? [] : '');
+        const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
+        const initialValue = props.backfill?.[field] || checked.value;
+
         /** 远程获取的数据源 */
         const remoteOption = ref<Record<string, any>[]>([]);
         /** 优先使用远程数据源 */
@@ -34,21 +39,24 @@ export default defineComponent({
         });
         const option: CommonMethod = {
             reset,
+            updateWrapperQuery() {
+                wrapper?.updateQueryValue(field, emptyToValue(checked.value, props.emptyValue));
+                return option;
+            },
             get validator() {
                 return props.validator;
             },
             getQuery,
         };
         wrapper?.register(option);
+        const { insetDisabled, insetHide } = useDisplay(props, option);
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        const { field, depend, dependFields } = props;
-        // 需要通知父级更新 query
         unwatchs.push(watch(() => props.backfill?.[field], change, { immediate: true, deep: true }));
-
+        unwatchs.push(watch(() => props.getDict, getOption, { immediate: true }));
         if (depend && dependFields && dependFields.length) {
             // 存在依赖项
             unwatchs.push(
@@ -60,36 +68,36 @@ export default defineComponent({
                             .join(','),
                     (val, oldVal) => {
                         if (val === oldVal) return;
-                        change(props.multiple ? [] : '');
-                        const { getDict } = props;
-                        if (getDict) {
-                            getDict((data) => {
-                                const _checked = checked.value;
-                                // 重置 checked, 防止增加 option 后, select 值没更新的问题
-                                checked.value = undefined as any;
-                                remoteOption.value = data || [];
-                                checked.value = _checked;
-                            }, props.query || {});
-                        }
+                        checked.value = props.multiple ? [] : '';
+                        option.updateWrapperQuery();
+                        getOption();
                     },
                     { deep: true, immediate: true },
                 ),
             );
         }
 
-        // this.innerDisabled = disabledMethod(this);
-        // this.innerHide = hideMethod(this);
-
         /**
-         * @description: 失焦事件
+         * 失焦事件
          */
         function blur() {
             existsEvent(ctx, 'blur') && ctx.emit('blur', ...arguments);
             props.filterMethod && finalFilterMethod('');
         }
-
         /**
-         * @description: 过滤方法
+         * 获取数据源发生变化事件
+         */
+        function getOption() {
+            props.getDict?.((data) => {
+                const _checked = checked.value;
+                // 重置 checked, 防止增加 option 后, select 值没更新的问题
+                checked.value = undefined as any;
+                remoteOption.value = data || [];
+                checked.value = _checked;
+            }, props.query || {});
+        }
+        /**
+         * 过滤方法
          */
         function finalFilterMethod(value: string) {
             const { filterMethod } = props;
@@ -102,75 +110,60 @@ export default defineComponent({
             }
         }
         /**
-         * @description: select change 事件
+         * select change 事件
          * @param {String} value: 输入值
          */
         function change(value: string | string[]) {
             checked.value = value;
-            triggerValue();
+            option.updateWrapperQuery();
         }
         /**
-         * @description: 获取返回到上层的值
-         *
-         * @return {Object}
-         */
-        function getQuery() {
-            return { [props.field]: checked.value || undefined };
-        }
-        /**
-         * @description: 向上触发改变事件
-         */
-        function triggerValue() {
-            ctx.emit('search', getQuery());
-        }
-        /**
-         * @description: 获取返回到上层的值
-         *
-         * @return {Object}
+         * 重置数据
          */
         function reset() {
             const { multiple } = props;
-            checked.value = multiple ? [] : '';
+            checked.value = props.resetToInitialValue ? initialValue : multiple ? [] : '';
             return option;
         }
 
         return {
             checked,
+            getQuery,
+            insetDisabled,
+            insetHide,
             finalOption,
             customFilterMethod,
             blur,
             change,
-            getQuery,
-            triggerValue,
             reset,
         };
     },
     render() {
         const {
             checked: value,
+            getQuery,
+            insetDisabled,
+            insetHide,
             finalOption: options,
             blur,
             customFilterMethod: filterMethod,
             change,
-            getQuery,
-            triggerValue,
             reset,
         } = this;
-        // @ts-ignore
-        const defaultSlot = (hasOwn(this, '$scopedSlots') && this.$scopedSlots.default) || this.$slots.default;
+        if (insetHide) return void 0 as any;
+        const defaultSlot = getSlot('default', this);
 
-        // @ts-ignore
-        return defaultSlot?.({
-            ...this.$attrs,
-            ...this.$props,
-            value,
-            options,
-            blur,
-            filterMethod,
-            change,
-            getQuery,
-            triggerValue,
-            reset,
-        });
+        return typeof defaultSlot === 'function'
+            ? defaultSlot({
+                  ...this.$attrs,
+                  ...this.$props,
+                  value,
+                  options,
+                  disabled: insetDisabled,
+                  blur,
+                  filterMethod,
+                  change,
+              })
+            : defaultSlot!;
     },
 });

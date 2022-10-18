@@ -1,7 +1,7 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child -->
-    <CoreSelect v-bind="$attrs" v-on="$listeners">
-        <template #default="{ blur, change, labelKey, valueKey, options, ...surplusProps }">
+    <CoreSelect :filterable="filterable" v-bind="$attrs" v-on="$listeners">
+        <template #default="{ labelKey, valueKey, options, blur, change, ...surplusProps }">
             <ElSelect v-bind="surplusProps" @blur="blur" @input="change">
                 <template v-for="item of options">
                     <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
@@ -22,6 +22,9 @@ import { Select as ElSelect, Option as ElOption } from 'element-ui';
 export default defineComponent({
     inheritAttrs: false,
     name: 'HSelect',
+    props: {
+        filterable: { type: Boolean, default: true },
+    },
     components: {
         CoreSelect,
         ElSelect,

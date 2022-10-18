@@ -1,13 +1,13 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { hasOwn } from '../../utils/index';
+import { hasOwn, emptyToValue } from '../../utils/index';
 import { existsEvent, getSlot } from '../../utils/assist';
 import { inputProps } from '../../common/props';
 // import { inputEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
+import { useDisplay } from '../../use';
 
 /**
  * @file 输入框
- * TODO: 开启防抖后, 在防抖结束前进行搜索, 会覆盖最新的值
  */
 export default defineComponent({
     inheritAttrs: false,
@@ -18,12 +18,13 @@ export default defineComponent({
         const { field } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string>('');
-        const getQuery = () => ({ [field]: checked.value });
+        const getQuery = () => ({ [field]: emptyToValue(checked.value, props.emptyValue) });
+        const initialValue = props.backfill?.[field] || checked.value;
 
         const option: CommonMethod = {
             reset,
             updateWrapperQuery() {
-                wrapper?.updateQueryValue(field, checked.value || '');
+                wrapper?.updateQueryValue(field, emptyToValue(checked.value, props.emptyValue));
                 return option;
             },
             get validator() {
@@ -32,6 +33,7 @@ export default defineComponent({
             getQuery,
         };
         wrapper?.register(option);
+        const { insetDisabled, insetHide } = useDisplay(props, option);
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
@@ -42,29 +44,20 @@ export default defineComponent({
                 () => props.backfill?.[field],
                 (val) => {
                     checked.value = val;
-                },
-                { immediate: true, deep: true },
-            ),
-        );
-        const insetDisabled = ref(typeof props.disabled === 'boolean' ? props.disabled : false);
-        const insetHide = ref(typeof props.hide === 'boolean' ? props.hide : false);
-        unwatchs.push(
-            watch(
-                () => props.query,
-                () => {
-                    if (typeof props.hide === 'function') {
-                        insetHide.value = props.hide(props.query);
-                        insetHide.value && option.reset().updateWrapperQuery();
-                    } else if (typeof props.disabled === 'function') {
-                        insetDisabled.value = props.disabled(props.query);
-                    }
+                    option.updateWrapperQuery();
                 },
                 { immediate: true, deep: true },
             ),
         );
 
+        // /**
+        //  * 实时(直接触发 change 事件), 非实时(延时触发 change 事件)
+        //  */
+        // function autoApplyChange(value: string) {
+
+        // }
         /**
-         * @description: debounce change 事件
+         * debounce change 事件
          * @param {String} value: 输入值
          */
         let timer = 0;
@@ -72,7 +65,9 @@ export default defineComponent({
             const { realtime, waitTimer } = props;
             checked.value = value;
             timer && clearTimeout(timer);
-            realtime
+            // 外部组件非实时的情况下, 延时触发会导致延迟时间内触发搜索按钮时
+            // 值不是最新的, 因为容易存在搜索按钮时, 立即触发
+            realtime || !wrapper?.realtime.value
                 ? wrapper?.updateQueryValueForSearch(field, value)
                 : (timer = setTimeout(
                       () => wrapper?.updateQueryValueForSearch(field, value),
@@ -80,7 +75,7 @@ export default defineComponent({
                   ) as unknown as number);
         }
         /**
-         * @description: input enter 事件
+         * input enter 事件
          * @param {KeyboardEvent} ev
          */
         function enterHandler(ev: KeyboardEvent | string) {
@@ -89,10 +84,10 @@ export default defineComponent({
             wrapper?.search();
         }
         /**
-         * @description: 获取返回到上层的值
+         * 重置数据
          */
         function reset() {
-            checked.value = '';
+            checked.value = props.resetToInitialValue ? initialValue : '';
             return option;
         }
 
@@ -108,8 +103,8 @@ export default defineComponent({
     },
     render() {
         const { query, checked: value, getQuery, insetDisabled, insetHide, debounceChange, enterHandler, reset } = this;
-        const defaultSlot = getSlot('default', this);
         if (insetHide) return void 0 as any;
+        const defaultSlot = getSlot('default', this);
 
         return typeof defaultSlot === 'function'
             ? defaultSlot({
