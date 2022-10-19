@@ -11,12 +11,19 @@ export function useDisplay<T extends ExtractPropTypes<Readonly<typeof commonProp
         watch(
             () => props.query,
             () => {
-                const a = typeof props.hide === 'function';
                 if (typeof props.hide === 'function') {
-                    insetHide.value = props.hide(props.query);
-                    insetHide.value && option.reset().updateWrapperQuery();
+                    const currentValue = insetHide.value;
+                    const newValue = props.hide(props.query);
+                    if (currentValue !== newValue) {
+                        insetHide.value = props.hide(props.query);
+                        insetHide.value && option.reset().updateWrapperQuery();
+                    }
                 } else if (typeof props.disabled === 'function') {
-                    insetDisabled.value = props.disabled(props.query);
+                    const currentValue = insetDisabled.value;
+                    const newValue = props.disabled(props.query);
+                    if (currentValue !== newValue) {
+                        insetDisabled.value = props.disabled(props.query);
+                    }
                 }
             },
             { immediate: true, deep: true },
