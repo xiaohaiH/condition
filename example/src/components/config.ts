@@ -18,8 +18,7 @@ export const conditionFactory = () => [
                 disabled: (query: Record<string, any>) => !!query.a,
                 valueKey: 'dictValue',
                 labelKey: 'dictLabel',
-                size: 'mini',
-                option: [
+                options: [
                     { dictValue: '1', dictLabel: '选项一' },
                     { dictValue: '2', dictLabel: '选项二' },
                     { dictValue: 'example', dictLabel: '选项三' },
@@ -28,26 +27,23 @@ export const conditionFactory = () => [
             c: {
                 t: 'datepicker',
                 placeholder: '日期选择',
-                size: 'mini',
             },
             d: {
                 t: 'datepicker',
                 placeholder: '日期区间选择',
-                size: 'mini',
+                size: 'medium',
                 beginField: 'startTime',
                 endField: 'endTime',
             },
             // e: {
             //     t: 'cascader',
             //     placeholder: '级联选择 - 单值',
-            //     size: 'mini',
             //     beginField: 'startTime',
             //     endField: 'endTime',
             // },
             // f: {
             //     t: 'cascader',
             //     placeholder: '级联选择 - 多值',
-            //     size: 'mini',
             //     beginField: 'startTime',
             //     endField: 'endTime',
             // },
@@ -94,8 +90,8 @@ export const conditionFactory = () => [
                 placeholder: '下拉框搜索',
                 valueKey: 'code',
                 labelKey: 'name',
-                option: [],
-                async getDict(cb: any) {
+                options: [],
+                async getOptions(cb: any) {
                     setTimeout(() => {
                         cb([
                             { code: '1', name: '选项一' },
@@ -112,7 +108,7 @@ export const conditionFactory = () => [
                 placeholder: '依赖第一个下拉框',
                 valueKey: 'code',
                 labelKey: 'name',
-                option: [
+                options: [
                     { code: '11', name: '选项一11111' },
                     { code: '22', name: '选项二22222' },
                     { code: '33', name: '选项三33333' },
@@ -125,7 +121,7 @@ export const conditionFactory = () => [
                 placeholder: '依赖第一个下拉框',
                 valueKey: 'code',
                 labelKey: 'name',
-                option: [
+                options: [
                     { code: '啊啊', name: '一' },
                     { code: '版本', name: '二' },
                     { code: '插槽', name: '三' },
@@ -133,7 +129,7 @@ export const conditionFactory = () => [
                 ],
                 depend: true,
                 dependFields: 'bb',
-                async getDict(cb: any, query: Record<string, any>) {
+                async getOptions(cb: any, query: Record<string, any>) {
                     setTimeout(() => {
                         cb(
                             [
@@ -214,7 +210,7 @@ export const conditionFactory = () => [
                 props: {
                     checkStrictly: true,
                 },
-                getDict(cb: any) {
+                getOptions(cb: any) {
                     setTimeout(cb, 2000, [
                         { label: 'A', value: '1', children: [{ label: 'A-11111', value: '1-1' }] },
                         {

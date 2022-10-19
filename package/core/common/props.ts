@@ -4,6 +4,8 @@ import { PropType } from 'vue-demi';
 export const commonProps = {
     /** 提交的字段 */
     field: { type: String as PropType<string>, required: true },
+    /** 提交的字段(优先使用该字段) - 当某个字段可能存在不同类型时使用 */
+    as: { type: String as PropType<string> },
     /** 空置时提交的值 - 默认置为 undefined */
     emptyValue: { type: [String, null, undefined] as PropType<undefined | null | string>, default: undefined },
     /** 重置时是否置为初始值 */
@@ -23,8 +25,10 @@ export const commonProps = {
 } as const;
 
 /** 条件容器 props */
-export const wrapperProp = {
+export const wrapperProps = {
     tag: { type: String as PropType<string>, default: 'div' },
+    /** 重置时是否置为初始值 */
+    resetToInitialValue: { type: Boolean as PropType<boolean> },
     /** 数据源 */
     datum: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
     /** 回填的数据 */
@@ -32,7 +36,7 @@ export const wrapperProp = {
     /** 是否需要实时触发搜索事件 */
     realtime: { type: Boolean as PropType<boolean> },
     /** 初始是否触发一次事件来返回当前的 query */
-    immediateTrigger: { type: Boolean as PropType<boolean> },
+    immediateSearch: { type: Boolean as PropType<boolean> },
     /** 校验不合格的提示 */
     toast: { type: Function as PropType<(msg: string) => void>, default: () => {} },
 } as const;
@@ -41,23 +45,21 @@ export const wrapperProp = {
 export const selectProps = {
     ...commonProps,
     /** 提交给后端的字段 */
-    valueKey: { type: String as PropType<string> },
+    valueKey: { type: String as PropType<string>, required: true },
     /** 展示的字段 */
-    labelKey: { type: String as PropType<string> },
+    labelKey: { type: String as PropType<string>, required: true },
     /** 下拉选项的数据源 */
-    option: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
+    options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
     /** 是否多选 */
     multiple: { type: Boolean as PropType<boolean> },
-    /** 是否依赖其它字段 - 字典请求 */
+    /** 是否依赖其它字段 - 更新数据源请求 */
     depend: { type: Boolean as PropType<boolean> },
-    /** 依赖字段 - 字段发生改变时做请求 */
+    /** 依赖字段 - 字段发生改变重新请求数据源 */
     dependFields: { type: [String, Array] as PropType<string | string[]> },
-    /** 获取数据 */
-    getDict: {
+    /** 获取数据源 */
+    getOptions: {
         type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
     },
-    /** 是否允许清空 - 默认允许 */
-    clearable: { type: Boolean as PropType<boolean>, default: true },
     /** 自定义筛选方法 */
     filterMethod: { type: Function as PropType<(val: string, data: Record<string, any>) => boolean> },
 } as const;
@@ -68,7 +70,7 @@ export const inputProps = {
     /** 实时触发时做抖动, 防止频繁触发 */
     realtime: { type: Boolean as PropType<boolean> },
     /** 实时触发时防抖动的时间 */
-    waitTimer: { type: Number as PropType<number>, default: 300 },
+    waitTime: { type: Number as PropType<number>, default: 300 },
 } as const;
 
 /** datepicker props */
@@ -89,24 +91,18 @@ export const cascadertProps = {
     fields: { type: [Array] as PropType<string[]> },
     /** 提交给后端的字段 */
     valueKey: { type: String as PropType<string>, required: true },
-    /** 提交给后端的字段 */
+    /** 子级键名 - 默认 children */
     childrenKey: { type: String as PropType<string> },
-    // /** 展示的字段 */
-    // labelKey: { type: String as PropType<string> },
-    /** 是否返回选中项中所有的值, 否只返回最后一下 */
+    /** 是否返回选中项中所有的值(数组形式), 否只返回最后一项(基础类型) */
     emitPath: { type: [Boolean] as PropType<boolean>, default: false },
     /** 下拉选项的数据源 */
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
-    /** 是否依赖其它字段 - 字典请求 */
+    /** 是否依赖其它字段 - 更新数据源请求 */
     depend: { type: Boolean as PropType<boolean> },
-    /** 依赖字段 - 字段发生改变时做请求 */
+    /** 依赖字段 - 字段发生改变重新请求数据源 */
     dependFields: { type: [String, Array] as PropType<string | string[]> },
-    /** 获取数据 */
-    getDict: {
+    /** 获取数据源 */
+    getOptions: {
         type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
     },
-    /** 是否可以被清空 */
-    clearable: { type: Boolean, default: true },
-    /** 自定义筛选方法 */
-    filterMethod: { type: Function as PropType<(val: string, data: Record<string, any>) => boolean> },
 } as const;

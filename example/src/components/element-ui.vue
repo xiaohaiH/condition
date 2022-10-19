@@ -14,6 +14,7 @@
                     <HWrapper
                         :backfill="item.query"
                         :datum="item.condition"
+                        size="mini"
                         tag="main"
                         @search="querySearch(index, $event)"
                     ></HWrapper>

@@ -13,18 +13,18 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'CoreSelect',
     props: selectProps,
-    emits: selectEmits,
+    // emits: selectEmits,
     setup(props, ctx) {
-        const { field, depend, dependFields } = props;
+        const { field: FIELD, depend: DEPEND, dependFields: DEPEND_FIELDS } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string | string[]>(props.multiple ? [] : '');
         const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
-        const initialValue = props.backfill?.[field] || checked.value;
+        const initialValue = props.backfill?.[FIELD] || checked.value;
 
         /** 远程获取的数据源 */
         const remoteOption = ref<Record<string, any>[]>([]);
         /** 优先使用远程数据源 */
-        const originOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.option));
+        const originOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
         /** 是否使用筛选过后的数据 */
         const backFilterOption = ref(false);
         /** 筛选后的数据 */
@@ -40,7 +40,7 @@ export default defineComponent({
         const option: CommonMethod = {
             reset,
             updateWrapperQuery() {
-                wrapper?.updateQueryValue(field, emptyToValue(checked.value, props.emptyValue));
+                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
                 return option;
             },
             get validator() {
@@ -55,15 +55,15 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        unwatchs.push(watch(() => props.backfill?.[field], updateCheckedValue, { immediate: true, deep: true }));
-        unwatchs.push(watch(() => props.getDict, getOption, { immediate: true }));
-        if (depend && dependFields && dependFields.length) {
+        unwatchs.push(watch(() => props.backfill?.[FIELD], updateCheckedValue, { immediate: true, deep: true }));
+        unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
+        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
             // 存在依赖项
             unwatchs.push(
                 watch(
                     () =>
                         ([] as string[])
-                            .concat(dependFields)
+                            .concat(DEPEND_FIELDS)
                             .map((k) => props.query?.[k])
                             .join(','),
                     (val, oldVal) => {
@@ -88,7 +88,7 @@ export default defineComponent({
          * 获取数据源发生变化事件
          */
         function getOption() {
-            props.getDict?.((data) => {
+            props.getOptions?.((data) => {
                 const _checked = checked.value;
                 // 重置 checked, 防止增加 option 后, select 值没更新的问题
                 checked.value = undefined as any;

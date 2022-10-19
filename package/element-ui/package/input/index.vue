@@ -3,6 +3,7 @@
     <CoreInput v-bind="$attrs" v-on="$listeners">
         <template #default="{ listeners, debounceChange, enterHandler, ...surplusProps }">
             <ElInput
+                :clearable="clearable"
                 v-bind="surplusProps"
                 v-on="listeners"
                 @input="debounceChange"
@@ -26,6 +27,9 @@ export default defineComponent({
     components: {
         CoreInput,
         ElInput,
+    },
+    props: {
+        clearable: { type: Boolean, default: true },
     },
 });
 </script>

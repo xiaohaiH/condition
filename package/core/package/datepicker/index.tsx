@@ -15,9 +15,9 @@ export default defineComponent({
     props: datepickerProps,
     // emits: datepickerEmits,
     setup(props, ctx) {
-        const { field, range, beginField, endField } = props;
+        const { field: FIELD, range: RANGE, beginField: BEGIN_FIELD, endField: END_FIELD } = props;
         const wrapper = inject<ProvideValue>(provideKey);
-        const checked = ref<string | string[]>(props.range && beginField && endField ? ['', ''] : '');
+        const checked = ref<string | string[]>(RANGE && BEGIN_FIELD && END_FIELD ? ['', ''] : '');
         const getQuery = () =>
             props.range && props.beginField && props.endField
                 ? {
@@ -25,14 +25,14 @@ export default defineComponent({
                       [props.endField]: emptyToValue(checked.value[1], props.emptyValue),
                   }
                 : {
-                      [field]: Array.isArray(checked.value)
+                      [props.field]: Array.isArray(checked.value)
                           ? [...checked.value]
                           : emptyToValue(checked.value, props.emptyValue),
                   };
         const initialValue =
-            (range && beginField && endField
-                ? [props.backfill?.[beginField] || '', props.backfill?.[endField] || '']
-                : props.backfill?.[field]) || '';
+            (RANGE && BEGIN_FIELD && END_FIELD
+                ? [props.backfill?.[BEGIN_FIELD] || '', props.backfill?.[END_FIELD] || '']
+                : props.backfill?.[FIELD]) || '';
 
         const option: CommonMethod = {
             reset,
@@ -58,10 +58,10 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        if (range && beginField && endField) {
+        if (FIELD && BEGIN_FIELD && END_FIELD) {
             unwatchs.push(
                 watch(
-                    () => props.backfill?.[beginField],
+                    () => props.backfill?.[BEGIN_FIELD],
                     (value) => {
                         typeof checked.value === 'string' && (checked.value = []);
                         checked.value.splice(0, 1);
@@ -73,7 +73,7 @@ export default defineComponent({
             );
             unwatchs.push(
                 watch(
-                    () => props.backfill?.[endField],
+                    () => props.backfill?.[END_FIELD],
                     (value) => {
                         typeof checked.value === 'string' && (checked.value = []);
                         checked.value.splice(1, 1);
@@ -86,7 +86,7 @@ export default defineComponent({
         } else {
             unwatchs.push(
                 watch(
-                    () => props.backfill?.[field],
+                    () => props.backfill?.[FIELD],
                     (value) => {
                         checked.value = emptyToValue(value, props.emptyValue);
                         option.updateWrapperQuery();

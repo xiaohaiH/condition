@@ -15,16 +15,16 @@ export default defineComponent({
     props: inputProps,
     // emits: inputEmits,
     setup(props, ctx) {
-        const { field } = props;
+        const { field: FIELD } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string>('');
-        const getQuery = () => ({ [field]: emptyToValue(checked.value, props.emptyValue) });
-        const initialValue = props.backfill?.[field] || checked.value;
+        const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
+        const initialValue = props.backfill?.[FIELD] || checked.value;
 
         const option: CommonMethod = {
             reset,
             updateWrapperQuery() {
-                wrapper?.updateQueryValue(field, emptyToValue(checked.value, props.emptyValue));
+                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
                 return option;
             },
             get validator() {
@@ -41,8 +41,9 @@ export default defineComponent({
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
-                () => props.backfill?.[field],
+                () => props.backfill?.[FIELD],
                 (val) => {
+                    if (val === checked.value) return;
                     checked.value = val;
                     option.updateWrapperQuery();
                 },
@@ -62,16 +63,16 @@ export default defineComponent({
          */
         let timer = 0;
         function debounceChange(value: string) {
-            const { realtime, waitTimer } = props;
+            const { realtime, waitTime } = props;
             checked.value = value;
             timer && clearTimeout(timer);
             // 外部组件非实时的情况下, 延时触发会导致延迟时间内触发搜索按钮时
             // 值不是最新的, 因为容易存在搜索按钮时, 立即触发
             realtime || !wrapper?.realtime.value
-                ? wrapper?.updateQueryValue(field, value).insetSearch()
+                ? (option.updateWrapperQuery(), wrapper?.insetSearch())
                 : (timer = setTimeout(
-                      () => wrapper?.updateQueryValue(field, value).insetSearch(),
-                      waitTimer,
+                      () => (option.updateWrapperQuery(), wrapper?.insetSearch()),
+                      waitTime,
                   ) as unknown as number);
         }
         /**

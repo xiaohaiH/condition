@@ -22,9 +22,9 @@ export default defineComponent({
     props: cascadertProps,
     // emits: cascaderEmits,
     setup(props, ctx) {
-        const { field: FIELD, fields: FIELDS, backfill: BACKFILL, getDict } = props;
+        const { field: FIELD, fields: FIELDS, backfill: BACKFILL, getOptions: GET_OPTIONS } = props;
         const DATA_ASYNC = {
-            initialize: isEmpty(BACKFILL?.[FIELD]) || typeof getDict !== 'function',
+            initialize: isEmpty(BACKFILL?.[FIELD]) || typeof GET_OPTIONS !== 'function',
             initialValue: BACKFILL?.[FIELD],
         };
         const wrapper = inject<ProvideValue>(provideKey);
@@ -81,7 +81,7 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        unwatchs.push(watch(() => props.getDict, getOption, { immediate: true }));
+        unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
         unwatchs.push(
             watch(
                 () =>
@@ -115,7 +115,7 @@ export default defineComponent({
          * 获取数据源发生变化事件
          */
         function getOption() {
-            props.getDict?.((data) => {
+            props.getOptions?.((data) => {
                 const _checked = checked.value;
                 // 重置 checked, 防止增加 option 后, cascader 值没更新的问题
                 checked.value = [];
@@ -172,17 +172,7 @@ export default defineComponent({
         };
     },
     render() {
-        const {
-            checked: value,
-            getQuery,
-            finalOption,
-            insetHide,
-            insetDisabled,
-            change,
-            reset,
-            clearable,
-            filterMethod,
-        } = this;
+        const { checked: value, getQuery, finalOption, insetHide, insetDisabled, change, reset, clearable } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
         const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;

@@ -1,14 +1,14 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api -->
-    <CoreWrapper v-bind="$attrs" v-on="$listeners">
+    <CoreWrapper v-bind="$attrs" :size="size" v-on="$listeners">
         <template #default="{ t, ...options }">
             <component :is="getComp(t)" v-bind="options"></component>
         </template>
         <template #btn="option">
             <slot name="btn" v-bind="option">
                 <template v-if="renderBtn">
-                    <ElButton @click="option.search">搜索</ElButton>
-                    <ElButton @click="option.reset">重置</ElButton>
+                    <ElButton :size="size" @click="option.search">搜索</ElButton>
+                    <ElButton :size="size" @click="option.reset">重置</ElButton>
                 </template>
             </slot>
         </template>
@@ -23,6 +23,9 @@ import HSelect from '../select/index.vue';
 import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
+import { HCondition } from '../../interface';
+import { wrapperProps } from 'core/common/props';
+import type { ElementUIComponentSize } from 'element-ui/types/component';
 
 const compMap = {
     select: markRaw(HSelect),
@@ -30,6 +33,7 @@ const compMap = {
     datepicker: markRaw(HDatepicker),
     cascader: markRaw(HCascader),
 };
+const userCompMap: Record<string, any> = {};
 
 /**
  * 注册自定义组件
@@ -37,8 +41,7 @@ const compMap = {
  * @param {} comp 可渲染的组件
  */
 export function registerComponent(name: string, comp: any) {
-    // @ts-ignore
-    compMap[name] = comp;
+    userCompMap[name] = comp;
 }
 
 /**
@@ -46,18 +49,20 @@ export function registerComponent(name: string, comp: any) {
  * @param {string} name 定义的类型
  */
 export function unregisterComponent(name: string) {
-    // @ts-ignore
-    delete compMap[name];
+    delete userCompMap[name];
 }
 
 /**
  * @file 条件容器
  */
-export default defineComponent({
+export default defineComponent<HCondition.WrapperProps>({
+    // export default defineComponent<typeof wrapperProps>({
     inheritAttrs: false,
     props: {
         /** 是否渲染按钮 */
         renderBtn: { type: Boolean as PropType<boolean>, default: true },
+        /** 组件大小 */
+        size: { type: String as PropType<ElementUIComponentSize> },
     },
     components: {
         CoreWrapper,
@@ -67,8 +72,8 @@ export default defineComponent({
         /**
          * option
          */
-        function getComp(t: any) {
-            return compMap[t as keyof typeof compMap] || null;
+        function getComp(t: string) {
+            return userCompMap[t] || compMap[t as keyof typeof compMap] || null;
         }
         return {
             getComp,

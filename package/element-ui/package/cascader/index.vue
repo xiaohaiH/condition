@@ -2,7 +2,13 @@
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier -->
     <CoreCascader v-bind="$attrs" v-on="$listeners">
         <template #default="{ listeners, change, ...surplusProps }">
-            <ElCascader v-bind="surplusProps" v-on="listeners" @change="change"></ElCascader>
+            <ElCascader
+                :filterable="filterable"
+                :clearable="clearable"
+                v-bind="surplusProps"
+                v-on="listeners"
+                @change="change"
+            ></ElCascader>
         </template>
     </CoreCascader>
 </template>
@@ -18,6 +24,10 @@ import { Cascader as ElCascader } from 'element-ui';
 export default defineComponent({
     inheritAttrs: false,
     name: 'HCascader',
+    props: {
+        filterable: { type: Boolean, default: true },
+        clearable: { type: Boolean, default: true },
+    },
     components: {
         CoreCascader,
         ElCascader,

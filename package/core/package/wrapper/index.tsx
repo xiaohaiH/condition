@@ -14,7 +14,7 @@ import {
 } from 'vue-demi';
 import { hasOwn } from '../../utils/index';
 import { getSlot } from '../../utils/assist';
-import { wrapperProp } from '../../common/props';
+import { wrapperProps } from '../../common/props';
 import { wrapperEmits } from '../../common/emits';
 import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
 
@@ -27,7 +27,7 @@ import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
 export default defineComponent({
     inheritAttrs: false,
     name: 'CoreWrapper',
-    props: wrapperProp,
+    props: wrapperProps,
     emits: wrapperEmits,
     setup(props, ctx) {
         const child: CommonMethod[] = [];
@@ -87,7 +87,7 @@ export default defineComponent({
         // }
         onMounted(() => {
             initQuery();
-            props.immediateTrigger && ctx.emit('ready', getQuery());
+            props.immediateSearch && ctx.emit('ready', getQuery());
         });
 
         // /**
@@ -138,12 +138,23 @@ export default defineComponent({
         };
     },
     render() {
-        const { backfill, query, getQuery, initQuery, genCompQuery, querySearch, resetAndSearch, reset } = this;
+        const {
+            resetToInitialValue,
+            backfill,
+            query,
+            getQuery,
+            initQuery,
+            genCompQuery,
+            querySearch,
+            resetAndSearch,
+            reset,
+        } = this;
         const Tag = this.tag as string;
         const datum = this.datum as Record<string, any>;
         const defaultSlot = getSlot('default', this);
         const btnSlot = getSlot('btn', this);
-        const rootProps: Record<string, any> = { attrs: this.$attrs };
+        const { class: className, style, ...attrs } = this.$attrs;
+        const rootProps: Record<string, any> = { attrs: { class: className, style } };
         // @ts-ignore
         hasOwn(this, '$listeners') && (rootProps.on = this.$listeners);
 
@@ -152,8 +163,10 @@ export default defineComponent({
                 {Object.entries(datum).map(([key, options]) =>
                     typeof defaultSlot === 'function'
                         ? defaultSlot({
+                              ...attrs,
                               key,
                               field: options.as || key,
+                              resetToInitialValue,
                               backfill,
                               query,
                               ...options,
