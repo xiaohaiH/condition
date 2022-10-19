@@ -8,7 +8,6 @@ import { useDisplay } from '../../use';
 
 /**
  * @file 下拉框
- * TODO: 修复下拉框 blur 事件重复的问题
  */
 export default defineComponent({
     inheritAttrs: false,
@@ -56,7 +55,7 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        unwatchs.push(watch(() => props.backfill?.[field], change, { immediate: true, deep: true }));
+        unwatchs.push(watch(() => props.backfill?.[field], updateCheckedValue, { immediate: true, deep: true }));
         unwatchs.push(watch(() => props.getDict, getOption, { immediate: true }));
         if (depend && dependFields && dependFields.length) {
             // 存在依赖项
@@ -69,8 +68,7 @@ export default defineComponent({
                             .join(','),
                     (val, oldVal) => {
                         if (val === oldVal) return;
-                        checked.value = props.multiple ? [] : '';
-                        option.updateWrapperQuery();
+                        updateCheckedValue(props.multiple ? [] : '');
                         getOption();
                     },
                     { deep: true, immediate: true },
@@ -82,8 +80,8 @@ export default defineComponent({
          * 失焦事件
          */
         function blur() {
-            const blurHandler = getEvent(ctx, 'blur');
-            blurHandler?.(...arguments);
+            // const blurHandler = getEvent(ctx, 'blur');
+            // blurHandler?.(...arguments);
             props.filterMethod && finalFilterMethod('');
         }
         /**
@@ -112,12 +110,20 @@ export default defineComponent({
             }
         }
         /**
-         * select change 事件
-         * @param {String} value: 输入值
+         * 更新选中值(父级也同步更改)
+         * @param {string | string[]} value 待更改的值
          */
-        function change(value: string | string[]) {
+        function updateCheckedValue(value: string | string[]) {
+            if (value === checked.value) return;
             checked.value = value;
             option.updateWrapperQuery();
+        }
+        /**
+         * select change 事件
+         * @param {string | string[]} value 待更改的值
+         */
+        function change(value: string | string[]) {
+            updateCheckedValue(value);
             wrapper?.insetSearch();
         }
         /**
@@ -137,6 +143,7 @@ export default defineComponent({
             finalOption,
             customFilterMethod,
             blur,
+            updateCheckedValue,
             change,
             reset,
         };

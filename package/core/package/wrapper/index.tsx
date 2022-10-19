@@ -18,11 +18,10 @@ import { wrapperProp } from '../../common/props';
 import { wrapperEmits } from '../../common/emits';
 import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
 
-// 内部通过注入
-// 外部通过 t 自己检索动态渲染组件
-
 /**
- * TODO: 实时搜索需增加
+ * @file 条件包装组件(入口组件)
+ * 内部会注入关键信息
+ * 外部通过 t 来检索并动态渲染组件
  */
 
 export default defineComponent({
@@ -76,15 +75,16 @@ export default defineComponent({
          */
         function initQuery() {
             const { backfill } = props;
-            query.value = { ...backfill, ...genCompQuery() };
+            query.value = { ...backfill };
+            // query.value = { ...backfill, ...genCompQuery() };
         }
-        /**
-         * 获取组件的 query 信息
-         */
-        function genCompQuery() {
-            if (!child.length) return {};
-            return child.reduce((p, v) => Object.assign(p, v.getQuery()), {});
-        }
+        // /**
+        //  * 获取组件的 query 信息
+        //  */
+        // function genCompQuery() {
+        //     if (!child.length) return {};
+        //     return child.reduce((p, v) => Object.assign(p, v.getQuery()), {});
+        // }
         onMounted(() => {
             initQuery();
             props.immediateTrigger && ctx.emit('ready', getQuery());
@@ -120,8 +120,9 @@ export default defineComponent({
          * 重置所有条件的值
          */
         function reset() {
-            const params = child.reduce((p, v) => Object.assign(p, v.reset().getQuery()), {}) || {};
-            Object.assign(query.value, params);
+            child.forEach((v) => {
+                v.reset().updateWrapperQuery();
+            });
         }
         return {
             child,
@@ -129,7 +130,7 @@ export default defineComponent({
             query,
             getQuery,
             initQuery,
-            genCompQuery,
+            // genCompQuery,
             querySearch,
             resetAndSearch,
             reset,
