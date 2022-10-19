@@ -47,6 +47,7 @@ export default defineComponent({
          */
         function querySearch(index: number, query: Record<string, string>) {
             set(conditions.value[index], 'query', query);
+            console.log(`搜索事件(${index}): `, { ...query });
         }
 
         return {

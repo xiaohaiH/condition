@@ -1,9 +1,10 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { existsEvent } from '../../utils/assist';
-import { hasOwn } from '../../utils/index';
+import { existsEvent, getSlot } from '../../utils/assist';
+import { hasOwn, emptyToValue } from '../../utils/index';
 import { datepickerProps } from '../../common/props';
 import { datepickerEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
+import { useDisplay } from '../../use';
 
 /**
  * @file 日期
@@ -12,23 +13,50 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'CoreDatepicker',
     props: datepickerProps,
-    emits: datepickerEmits,
+    // emits: datepickerEmits,
     setup(props, ctx) {
+        const { field, range, beginField, endField } = props;
         const wrapper = inject<ProvideValue>(provideKey);
-        const checked = ref<string | string[]>(props.range ? ['', ''] : '');
+        const checked = ref<string | string[]>(props.range && beginField && endField ? ['', ''] : '');
+        const getQuery = () =>
+            props.range && props.beginField && props.endField
+                ? {
+                      [props.beginField]: emptyToValue(checked.value[0], props.emptyValue),
+                      [props.endField]: emptyToValue(checked.value[1], props.emptyValue),
+                  }
+                : {
+                      [field]: Array.isArray(checked.value)
+                          ? [...checked.value]
+                          : emptyToValue(checked.value, props.emptyValue),
+                  };
+        const initialValue =
+            (range && beginField && endField
+                ? [props.backfill?.[beginField] || '', props.backfill?.[endField] || '']
+                : props.backfill?.[field]) || '';
+
         const option: CommonMethod = {
             reset,
+            updateWrapperQuery() {
+                const { range, field, beginField, endField } = props;
+                if (range && beginField && endField) {
+                    wrapper?.updateQueryValue(beginField, emptyToValue(checked.value[0], props.emptyValue));
+                    wrapper?.updateQueryValue(endField, emptyToValue(checked.value[1], props.emptyValue));
+                } else {
+                    wrapper?.updateQueryValue(field, emptyToValue(checked.value, props.emptyValue));
+                }
+                return option;
+            },
             get validator() {
                 return props.validator;
             },
             getQuery,
         };
         wrapper?.register(option);
+        const { insetDisabled, insetHide } = useDisplay(props, option);
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
-        const { range, beginField, endField, field } = props;
         // 回填值发生变化时触发更新
         if (range && beginField && endField) {
             unwatchs.push(
@@ -36,9 +64,9 @@ export default defineComponent({
                     () => props.backfill?.[beginField],
                     (value) => {
                         typeof checked.value === 'string' && (checked.value = []);
-                        checked.value.splice(0, 1, value || '');
-                        // 需要通知父级更新 query
-                        triggerValue();
+                        checked.value.splice(0, 1);
+                        value && checked.value.splice(0, 0, value);
+                        option.updateWrapperQuery();
                     },
                     { immediate: true },
                 ),
@@ -48,7 +76,9 @@ export default defineComponent({
                     () => props.backfill?.[endField],
                     (value) => {
                         typeof checked.value === 'string' && (checked.value = []);
-                        checked.value.splice(1, 1, value || '');
+                        checked.value.splice(1, 1);
+                        value && checked.value.splice(1, 0, value);
+                        option.updateWrapperQuery();
                     },
                     { immediate: true },
                 ),
@@ -58,83 +88,64 @@ export default defineComponent({
                 watch(
                     () => props.backfill?.[field],
                     (value) => {
-                        checked.value = value || '';
-                        // 需要通知父级更新 query
-                        triggerValue();
+                        checked.value = emptyToValue(value, props.emptyValue);
+                        option.updateWrapperQuery();
                     },
                     { immediate: true, deep: true },
                 ),
             );
         }
 
-        // this.innerDisabled = disabledMethod(this);
-        // this.innerHide = hideMethod(this);
-
         /**
-         * @description: 日期更新事件
+         * 日期更新事件
          * @param {String|Array} value: 更新的日期
          */
-        function updateChecked(value: string | string[]) {
+        function updateCheckedValue(value: string | string[]) {
             const { range } = props;
             checked.value = value === null ? (range ? ['', ''] : '') : value;
+            option.updateWrapperQuery();
         }
         /**
-         * @description: change 事件
+         * change 事件
          */
-        function change() {
-            triggerValue();
+        function change(value: string | string[]) {
+            updateCheckedValue(value);
+            wrapper?.insetSearch();
         }
         /**
-         * @description: 向上触发改变事件
-         */
-        function triggerValue() {
-            ctx.emit('search', getQuery());
-        }
-        /**
-         * @description: 获取返回到上层的值
-         *
-         * @return {Object}
-         */
-        function getQuery() {
-            const { range, beginField, endField, field } = props;
-
-            return range && beginField && endField
-                ? { [beginField]: checked.value[0] || undefined, [endField]: checked.value[1] || undefined }
-                : { [field]: Array.isArray(checked.value) ? [...checked.value] : checked.value || undefined };
-        }
-        /**
-         * @description: 获取返回到上层的值
+         * 重置数据
          */
         function reset() {
             const { range } = props;
-            checked.value = range ? ['', ''] : '';
+            checked.value = props.resetToInitialValue ? initialValue : range ? ['', ''] : '';
             return option;
         }
 
         return {
             checked,
-            updateChecked,
-            change,
-            triggerValue,
             getQuery,
+            insetDisabled,
+            insetHide,
+            updateCheckedValue,
+            change,
             reset,
         };
     },
     render() {
-        const { checked: value, updateChecked, change, triggerValue, getQuery, reset } = this;
-        // @ts-ignore
-        const defaultSlot = (hasOwn(this, '$scopedSlots') && this.$scopedSlots.default) || this.$slots.default;
+        const { checked: value, getQuery, insetHide, insetDisabled, updateCheckedValue, change, reset } = this;
+        if (insetHide) return void 0 as any;
+        const defaultSlot = getSlot('default', this);
+        const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
-        // @ts-ignore
-        return defaultSlot?.({
-            ...this.$attrs,
-            ...this.$props,
-            value,
-            updateChecked,
-            change,
-            triggerValue,
-            getQuery,
-            reset,
-        });
+        return typeof defaultSlot === 'function'
+            ? defaultSlot({
+                  ...this.$attrs,
+                  listeners,
+                  value,
+                  disabled: insetDisabled,
+                  updateCheckedValue,
+                  change,
+              })
+            : defaultSlot!;
     },
 });

@@ -1,15 +1,15 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier -->
-    <CoreDatepicker v-bind="$attrs" v-on="$listeners">
-        <template #default="{ change, ...surplusProps }">
-            <ElCascader v-bind="surplusProps" @input="change"></ElCascader>
+    <CoreCascader v-bind="$attrs" v-on="$listeners">
+        <template #default="{ listeners, change, ...surplusProps }">
+            <ElCascader v-bind="surplusProps" v-on="listeners" @change="change"></ElCascader>
         </template>
-    </CoreDatepicker>
+    </CoreCascader>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreDatepicker } from 'core';
+import { CoreCascader } from 'core';
 import { Cascader as ElCascader } from 'element-ui';
 
 /**
@@ -19,7 +19,7 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HCascader',
     components: {
-        CoreDatepicker,
+        CoreCascader,
         ElCascader,
     },
 });

@@ -1,63 +1,63 @@
 import { set } from 'vue-demi';
 
 export const conditionFactory = () => [
-    // {
-    //     name: 'base',
-    //     title: '基础用法',
-    //     description: '',
-    //     condition: {
-    //         a: {
-    //             t: 'input',
-    //             clearable: true,
-    //             placeholder: '输入框搜索',
-    //         },
-    //         b: {
-    //             t: 'select',
-    //             placeholder: '下拉框搜索',
-    //             // disabled: false,
-    //             disabled: (query: Record<string, any>) => !!query.a,
-    //             valueKey: 'dictValue',
-    //             labelKey: 'dictLabel',
-    //             size: 'mini',
-    //             option: [
-    //                 { dictValue: '1', dictLabel: '选项一' },
-    //                 { dictValue: '2', dictLabel: '选项二' },
-    //                 { dictValue: 'example', dictLabel: '选项三' },
-    //             ],
-    //         },
-    //         c: {
-    //             t: 'datepicker',
-    //             placeholder: '日期选择',
-    //             size: 'mini',
-    //         },
-    //         d: {
-    //             t: 'datepicker',
-    //             placeholder: '日期区间选择',
-    //             size: 'mini',
-    //             beginField: 'startTime',
-    //             endField: 'endTime',
-    //         },
-    //         // e: {
-    //         //     t: 'cascader',
-    //         //     placeholder: '级联选择 - 单值',
-    //         //     size: 'mini',
-    //         //     beginField: 'startTime',
-    //         //     endField: 'endTime',
-    //         // },
-    //         // f: {
-    //         //     t: 'cascader',
-    //         //     placeholder: '级联选择 - 多值',
-    //         //     size: 'mini',
-    //         //     beginField: 'startTime',
-    //         //     endField: 'endTime',
-    //         // },
-    //     },
-    //     query: {} as Record<string, any>,
-    //     setQuery(item: any) {
-    //         set(item.query, 'a', '手动设置');
-    //         set(item.query, 'b', '0');
-    //     },
-    // },
+    {
+        name: 'base',
+        title: '基础用法',
+        description: '',
+        condition: {
+            a: {
+                t: 'input',
+                clearable: true,
+                placeholder: '输入框搜索',
+            },
+            b: {
+                t: 'select',
+                placeholder: '下拉框搜索',
+                // disabled: false,
+                disabled: (query: Record<string, any>) => !!query.a,
+                valueKey: 'dictValue',
+                labelKey: 'dictLabel',
+                size: 'mini',
+                option: [
+                    { dictValue: '1', dictLabel: '选项一' },
+                    { dictValue: '2', dictLabel: '选项二' },
+                    { dictValue: 'example', dictLabel: '选项三' },
+                ],
+            },
+            c: {
+                t: 'datepicker',
+                placeholder: '日期选择',
+                size: 'mini',
+            },
+            d: {
+                t: 'datepicker',
+                placeholder: '日期区间选择',
+                size: 'mini',
+                beginField: 'startTime',
+                endField: 'endTime',
+            },
+            // e: {
+            //     t: 'cascader',
+            //     placeholder: '级联选择 - 单值',
+            //     size: 'mini',
+            //     beginField: 'startTime',
+            //     endField: 'endTime',
+            // },
+            // f: {
+            //     t: 'cascader',
+            //     placeholder: '级联选择 - 多值',
+            //     size: 'mini',
+            //     beginField: 'startTime',
+            //     endField: 'endTime',
+            // },
+        },
+        query: {} as Record<string, any>,
+        setQuery(item: any) {
+            set(item.query, 'a', '手动设置');
+            set(item.query, 'b', '0');
+        },
+    },
     {
         name: 'input-depend',
         title: 'input 存在依赖',
@@ -131,18 +131,22 @@ export const conditionFactory = () => [
                     { code: '插槽', name: '三' },
                     { code: '多大', name: '四' },
                 ],
-                async getDict(cb: any) {
+                depend: true,
+                dependFields: 'bb',
+                async getDict(cb: any, query: Record<string, any>) {
                     setTimeout(() => {
-                        cb([
-                            { code: '啊啊', name: '一' },
-                            { code: '版本', name: '二' },
-                            { code: '插槽', name: '三' },
-                            { code: '多大', name: '四' },
-                            { code: '啊啊dd', name: '一dd' },
-                            { code: '版本dd', name: '二dd' },
-                            { code: '插槽dd', name: '三dd' },
-                            { code: '多大dd', name: '四dd' },
-                        ]);
+                        cb(
+                            [
+                                { code: '啊啊', name: '一' },
+                                { code: '版本', name: '二' },
+                                { code: '插槽', name: '三' },
+                                { code: '多大', name: '四' },
+                                { code: '啊啊dd', name: '一dd' },
+                                { code: '版本dd', name: '二dd' },
+                                { code: '插槽dd', name: '三dd' },
+                                { code: '多大dd', name: '四dd' },
+                            ].concat(query.bb ? [{ code: 'aaaa', name: 'bb exists' }] : []),
+                        );
                     }, 2000);
                 },
             },
@@ -151,6 +155,147 @@ export const conditionFactory = () => [
         setQuery(item: any) {
             set(item.query, 'aa', '2');
             set(item.query, 'cc', '啊啊');
+        },
+    },
+    {
+        name: 'datepicker-depend',
+        title: 'datepicker 存在依赖',
+        description: '',
+        condition: {
+            hhh: {
+                t: 'datepicker',
+                placeholder: '日期选择',
+            },
+            dddd: {
+                t: 'datepicker',
+                disabled: (query: Record<string, string>) => !query.hhh,
+                placeholder: '依赖第一个日期',
+                resetToInitialValue: true,
+            },
+            fffff: {
+                t: 'datepicker',
+                type: 'daterange',
+                hide: (query: Record<string, string>) => !query.hhh,
+                placeholder: '依赖第一个日期',
+                startPlaceholder: '开始',
+                endPlaceholder: '结束',
+                valueFormat: 'yyyy-MM-dd',
+            },
+            dffds: {
+                t: 'datepicker',
+                type: 'daterange',
+                hide: (query: Record<string, string>) => !query.dddd,
+                placeholder: '依赖第一个日期',
+                startPlaceholder: '开始',
+                endPlaceholder: '结束',
+                valueFormat: 'yyyy-MM-dd',
+                beginField: 'tttt',
+                endField: 'eeee',
+                resetToInitialValue: true,
+            },
+        },
+        query: { dddd: '2022-10-18', tttt: '2022-10-18', eeee: '2022-11-18', test: '额外值' } as Record<string, any>,
+        setQuery(item: any) {
+            set(item.query, 'hhh', '1993-02-05');
+            set(item.query, 'dddd', '2005-12-12');
+        },
+    },
+    {
+        name: 'cascader-depend',
+        title: 'cascader 存在依赖',
+        description: '',
+        condition: {
+            ac: {
+                t: 'cascader',
+                placeholder: '级联选择',
+                resetToInitialValue: true,
+                valueKey: 'value',
+                // emitPath: true,
+                props: {
+                    checkStrictly: true,
+                },
+                getDict(cb: any) {
+                    setTimeout(cb, 2000, [
+                        { label: 'A', value: '1', children: [{ label: 'A-11111', value: '1-1' }] },
+                        {
+                            label: 'B',
+                            value: '2',
+                            children: [
+                                { label: 'B-11111', value: '2-1' },
+                                { label: 'B-22222', value: '2-2' },
+                            ],
+                        },
+                        {
+                            label: 'C',
+                            value: '3',
+                            children: [
+                                { label: 'C-11111', value: '3-1' },
+                                { label: 'C-22222', value: '3-2' },
+                                { label: 'C-33333', value: '3-3' },
+                                { label: 'C-44444', value: '3-4' },
+                            ],
+                        },
+                    ]);
+                },
+                // options: [
+                //     { label: 'A', value: '1', children: [{ label: 'A-11111', value: '1-1' }] },
+                //     {
+                //         label: 'B',
+                //         value: '2',
+                //         children: [
+                //             { label: 'B-11111', value: '2-1' },
+                //             { label: 'B-22222', value: '2-2' },
+                //         ],
+                //     },
+                //     {
+                //         label: 'C',
+                //         value: '3',
+                //         children: [
+                //             { label: 'C-11111', value: '3-1' },
+                //             { label: 'C-22222', value: '3-2' },
+                //             { label: 'C-33333', value: '3-3' },
+                //             { label: 'C-44444', value: '3-4' },
+                //         ],
+                //     },
+                // ],
+            },
+            bc: {
+                t: 'cascader',
+                placeholder: '级联选择',
+                fields: ['level1', 'level2', 'level3'],
+                resetToInitialValue: true,
+                valueKey: 'value',
+                emitPath: true,
+                disabled: (query: Record<string, any>) => !query.ac?.length,
+                // hide: (query: Record<string, any>) => !query.ac?.length,
+                options: [
+                    { label: 'A', value: 'bc_1', children: [{ label: 'A-11111', value: 'bc_1-1' }] },
+                    {
+                        label: 'B',
+                        value: 'bc_2',
+                        children: [
+                            { label: 'B-11111', value: 'bc_2-1' },
+                            { label: 'B-22222', value: 'bc_2-2' },
+                        ],
+                    },
+                    {
+                        label: 'C',
+                        value: 'bc_3',
+                        children: [
+                            { label: 'C-11111', value: 'bc_3-1' },
+                            { label: 'C-22222', value: 'bc_3-2' },
+                            { label: 'C-33333', value: 'bc_3-3' },
+                            { label: 'C-44444', value: 'bc_3-4' },
+                        ],
+                    },
+                ],
+            },
+        },
+        query: { test: '额外值', ac: '3-1', level1: 'bc_2', level2: 'bc_2-2' } as Record<string, any>,
+        setQuery(item: any) {
+            set(item.query, 'ac', '2-2');
+            set(item.query, 'level1', 'bc_3');
+            set(item.query, 'level2', 'bc_3-1');
         },
     },
 ];

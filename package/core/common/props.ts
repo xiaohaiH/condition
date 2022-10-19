@@ -86,15 +86,17 @@ export const datepickerProps = {
 export const cascadertProps = {
     ...commonProps,
     /** 不同层级返回不同的字段(可能存在的字段, 不传初始不会回填数据) */
-    fields: { type: [String, Array] as PropType<string | string[]> },
-    /** 不同层级返回不同的字段格式化函数 */
-    formatField: { type: Function as PropType<(...args: any[]) => Record<string, any>>, required: true },
+    fields: { type: [Array] as PropType<string[]> },
     /** 提交给后端的字段 */
-    valueKey: { type: String as PropType<string> },
-    /** 展示的字段 */
-    labelKey: { type: String as PropType<string> },
+    valueKey: { type: String as PropType<string>, required: true },
+    /** 提交给后端的字段 */
+    childrenKey: { type: String as PropType<string> },
+    // /** 展示的字段 */
+    // labelKey: { type: String as PropType<string> },
+    /** 是否返回选中项中所有的值, 否只返回最后一下 */
+    emitPath: { type: [Boolean] as PropType<boolean>, default: false },
     /** 下拉选项的数据源 */
-    option: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
+    options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
     /** 是否依赖其它字段 - 字典请求 */
     depend: { type: Boolean as PropType<boolean> },
     /** 依赖字段 - 字段发生改变时做请求 */
