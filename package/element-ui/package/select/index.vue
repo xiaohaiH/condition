@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreSelect } from 'core';
+import { CoreSelect } from 'core-condition';
 import { Select as ElSelect, Option as ElOption } from 'element-ui';
 
 /**

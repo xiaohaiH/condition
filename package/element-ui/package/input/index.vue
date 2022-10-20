@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreInput } from 'core';
+import { CoreInput } from 'core-condition';
 import { Input as ElInput } from 'element-ui';
 
 /**

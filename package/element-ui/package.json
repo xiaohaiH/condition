@@ -10,7 +10,7 @@
     "author": "xiaohaih",
     "license": "ISC",
     "dependencies": {
-        "core": "workspace:*"
+        "core-condition": "workspace:*"
     },
     "peerDependenciesMeta": {
         "@vue/composition-api": {

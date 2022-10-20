@@ -18,14 +18,14 @@
 <script lang="ts">
 import { defineComponent, markRaw, PropType } from 'vue-demi';
 import { Button as ElButton } from 'element-ui';
-import { CoreWrapper } from 'core';
+import { CoreWrapper } from 'core-condition';
 import HSelect from '../select/index.vue';
 import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
 import { HCondition } from '../../interface';
-import { wrapperProps } from 'core/common/props';
-import type { ElementUIComponentSize } from 'element-ui/types/component';
+import { wrapperProps } from 'core-condition/common/props';
+import { ElementUIComponentSize } from 'element-ui/types/component';
 
 const compMap = {
     select: markRaw(HSelect),

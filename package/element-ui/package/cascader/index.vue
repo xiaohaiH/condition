@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreCascader } from 'core';
+import { CoreCascader } from 'core-condition';
 import { Cascader as ElCascader } from 'element-ui';
 
 /**
