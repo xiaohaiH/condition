@@ -30,8 +30,11 @@ export const conditionFactory = () => [
             },
             d: {
                 t: 'datepicker',
+                type: 'daterange',
                 placeholder: '日期区间选择',
                 size: 'medium',
+                startPlaceholder: '开始',
+                endPlaceholder: '结束',
                 beginField: 'startTime',
                 endField: 'endTime',
             },

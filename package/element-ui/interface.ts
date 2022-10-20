@@ -1,4 +1,4 @@
-import { CoreCondition } from 'core';
+import { CoreCondition } from 'core-condition';
 import { ElSelect } from 'element-ui/types/select';
 import { ElInput } from 'element-ui/types/input';
 import { ElDatePicker } from 'element-ui/types/date-picker';
