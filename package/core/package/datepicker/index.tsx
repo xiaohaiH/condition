@@ -58,7 +58,7 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        if (FIELD && BEGIN_FIELD && END_FIELD) {
+        if (RANGE && BEGIN_FIELD && END_FIELD) {
             unwatchs.push(
                 watch(
                     () => props.backfill?.[BEGIN_FIELD],
