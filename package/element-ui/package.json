@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.ts",
     "scripts": {
-        "build": "rimraf dist && rollup -c rollup.config.js",
+        "build": "vite build --config vite.config.ts && vue-tsc --declaration --emitDeclarationOnly",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
