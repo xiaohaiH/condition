@@ -6,6 +6,8 @@
     "author": "xiaohaih",
     "scripts": {
         "dev": "vite --host",
+        "vue3": "pnpm dev",
+        "vue2": "vite --host --config vite2.config.ts",
         "build": "vue-tsc --noEmit && vite build",
         "preview": "vite preview"
     },

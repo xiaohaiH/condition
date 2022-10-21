@@ -21,7 +21,7 @@ async function main() {
     }
     chdir(resolve(cwd(), './example/'));
 
-    const { cp, promise } = execPromise('pnpm dev ' + args.toString());
+    const { cp, promise } = execPromise(`pnpm vue${vueVersion.slice(0, 1)} ` + args.toString());
 }
 /**
  * @description: 将执行函数转为异步
