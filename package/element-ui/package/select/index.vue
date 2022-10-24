@@ -20,8 +20,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreSelect } from 'core-condition';
+import { CoreSelect } from '@xiaohaih/condition-core';
 import { Select as ElSelect, Option as ElOption } from 'element-ui';
+import { selectProps } from '../../src/common/props';
+import { selectProps as CoreSelectProps } from '@xiaohaih/condition-core/common/props';
 
 /**
  * @file 下拉框
@@ -29,15 +31,12 @@ import { Select as ElSelect, Option as ElOption } from 'element-ui';
 export default defineComponent({
     inheritAttrs: false,
     name: 'HSelect',
-    props: {
-        filterable: { type: Boolean, default: true },
-        clearable: { type: Boolean, default: true },
-    },
     components: {
         CoreSelect,
         ElSelect,
         ElOption,
     },
+    props: selectProps as typeof CoreSelectProps & typeof selectProps,
 });
 </script>
 

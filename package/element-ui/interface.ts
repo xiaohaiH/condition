@@ -1,4 +1,4 @@
-import { CoreCondition } from 'core-condition';
+import { CoreCondition } from '@xiaohaih/condition-core';
 import { ElSelect } from 'element-ui/types/select';
 import { ElInput } from 'element-ui/types/input';
 import { ElDatePicker } from 'element-ui/types/date-picker';
@@ -9,7 +9,7 @@ export declare namespace HCondition {
         renderBtn?: boolean;
     }
 
-    type Condition = SelectProps | InputProps | DatepickerProps | CascadertProps;
+    type Condition = SelectProps | InputProps | DatepickerProps | CascaderProps;
 
     interface SelectProps
         extends CoreCondition.SelectProps,
@@ -22,7 +22,7 @@ export declare namespace HCondition {
     interface DatepickerProps extends CoreCondition.DatepickerProps, Partial<Omit<ElDatePicker, 'disabled'>> {
         t: 'datepicker';
     }
-    interface CascadertProps extends CoreCondition.CascadertProps, Partial<Omit<ElCascader, 'disabled' | 'options'>> {
+    interface CascaderProps extends CoreCondition.CascaderProps, Partial<Omit<ElCascader, 'disabled' | 'options'>> {
         t: 'cascader';
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <!-- eslint-disable vue/no-v-for-template-key-on-child -->
+    <!-- eslint-disable /no-v-for-template-key-on-child -->
     <ElCard>
         <ElCollapse v-model="collapseValue">
             <template v-for="(item, index) of conditions">
@@ -25,13 +25,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, defineComponent, ref, set } from 'vue-demi';
-import ElementUI from 'element-ui';
-import { HWrapper } from 'h-element-ui';
+import { defineComponent, ref, set } from 'vue-demi';
+import { HWrapper } from '@xiaohaih/condition-el';
 import { conditionFactory } from './config';
-import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
 
 /**
  * 下拉框

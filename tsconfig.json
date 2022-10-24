@@ -4,7 +4,7 @@
         /* 指定 ECMAScript 目标版本: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
         "target": "ESNext",
         /* 指定模块代码生成: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
-        "module": "ESNext",
+        "module": "CommonJS",
         /* 指定要包含在编译中的库文件. */
         "lib": ["ESNext", "DOM"],
         /* 允许编译 javascript 文件. */
@@ -106,7 +106,14 @@
         /* 发出符合 ecmascript 标准的类字段 */
         "useDefineForClassFields": true
     },
-    "include": ["package/**/*.ts", "package/**/*.tsx", "package/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
+    "include": [
+        "package/**/*.ts",
+        "package/**/*.tsx",
+        "package/**/*.vue",
+        "tests/**/*.ts",
+        "tests/**/*.tsx",
+        "start.ts"
+    ],
     "exclude": ["node_modules"],
     "references": []
 }

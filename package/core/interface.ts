@@ -1,5 +1,5 @@
 // import { ExtractPropTypes } from 'vue-demi';
-import { wrapperProps, selectProps, inputProps, datepickerProps, cascadertProps } from './common/props';
+import { wrapperProps, selectProps, inputProps, datepickerProps, cascaderProps } from './common/props';
 
 export declare namespace CoreCondition {
     type BuiltInField = 'field' | 'query';
@@ -8,7 +8,7 @@ export declare namespace CoreCondition {
     interface SelectProps extends Omit<ExtractPropTypes<typeof selectProps>, BuiltInField> {}
     interface InputProps extends Omit<ExtractPropTypes<typeof inputProps>, BuiltInField> {}
     interface DatepickerProps extends Omit<ExtractPropTypes<typeof datepickerProps>, BuiltInField> {}
-    interface CascadertProps extends Omit<ExtractPropTypes<typeof cascadertProps>, BuiltInField> {}
+    interface CascaderProps extends Omit<ExtractPropTypes<typeof cascaderProps>, BuiltInField> {}
 }
 
 type ExtractPropTypes<O> = {

@@ -15,8 +15,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreCascader } from 'core-condition';
+import { CoreCascader } from '@xiaohaih/condition-core';
 import { Cascader as ElCascader } from 'element-ui';
+import { cascaderProps } from '../../src/common/props';
+import { cascaderProps as CoreCascaderProps } from '@xiaohaih/condition-core/common/props';
 
 /**
  * @file 级联选择
@@ -24,14 +26,11 @@ import { Cascader as ElCascader } from 'element-ui';
 export default defineComponent({
     inheritAttrs: false,
     name: 'HCascader',
-    props: {
-        filterable: { type: Boolean, default: true },
-        clearable: { type: Boolean, default: true },
-    },
     components: {
         CoreCascader,
         ElCascader,
     },
+    props: cascaderProps as typeof CoreCascaderProps & typeof cascaderProps,
 });
 </script>
 

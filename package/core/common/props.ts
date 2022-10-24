@@ -85,7 +85,7 @@ export const datepickerProps = {
 } as const;
 
 /** cascader props */
-export const cascadertProps = {
+export const cascaderProps = {
     ...commonProps,
     /** 不同层级返回不同的字段(可能存在的字段, 不传初始不会回填数据) */
     fields: { type: [Array] as PropType<string[]> },

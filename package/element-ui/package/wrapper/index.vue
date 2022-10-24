@@ -18,14 +18,13 @@
 <script lang="ts">
 import { defineComponent, markRaw, PropType } from 'vue-demi';
 import { Button as ElButton } from 'element-ui';
-import { CoreWrapper } from 'core-condition';
+import { CoreWrapper } from '@xiaohaih/condition-core';
 import HSelect from '../select/index.vue';
 import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
-import { HCondition } from '../../interface';
-import { wrapperProps } from 'core-condition/common/props';
-import { ElementUIComponentSize } from 'element-ui/types/component';
+import { wrapperProps } from '../../src/common/props';
+import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core/common/props';
 
 const compMap = {
     select: markRaw(HSelect),
@@ -55,19 +54,14 @@ export function unregisterComponent(name: string) {
 /**
  * @file 条件容器
  */
-export default defineComponent<HCondition.WrapperProps>({
+export default defineComponent({
     // export default defineComponent<typeof wrapperProps>({
     inheritAttrs: false,
-    props: {
-        /** 是否渲染按钮 */
-        renderBtn: { type: Boolean as PropType<boolean>, default: true },
-        /** 组件大小 */
-        size: { type: String as PropType<ElementUIComponentSize> },
-    },
     components: {
         CoreWrapper,
         ElButton,
     },
+    props: wrapperProps as typeof CoreWrapperProps & typeof wrapperProps,
     setup() {
         /**
          * option

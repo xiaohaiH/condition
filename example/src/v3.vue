@@ -10,39 +10,21 @@
 
 <script lang="ts">
 import { defineComponent, isVue2, markRaw, ref } from 'vue-demi';
+import element from './components/element-plus.vue';
+const componentMap = {
+    element: markRaw(element),
+};
 
-async function getComponentMap() {
-    // if (isVue2) {
-    const result = await Promise.all([import('./components/element-ui.vue')]);
-    return {
-        element: markRaw(result[0].default),
-    };
-    // } else {
-    //     const result = await Promise.all([import('./components/element-plus.vue')]);
-    //     return {
-    //         element: markRaw(result[0].default),
-    //     };
-    // }
-}
-let componentMap: ComponentMap = {} as ComponentMap;
-type GetComponentMap = typeof getComponentMap;
-type ComponentMap = GetComponentMap extends () => Promise<infer R> ? R : never;
+type ComponentMap = typeof componentMap;
 
 export default defineComponent({
     setup() {
-        const comp = ref<ComponentMap[keyof ComponentMap] | null>(null);
-        (async function a() {
-            componentMap = await getComponentMap();
-            comp.value = componentMap.element;
-        })();
+        const comp = ref<ComponentMap[keyof ComponentMap] | null>(componentMap.element);
+
         /**
          * 更改显示的组件
          */
         function changeComp(val: keyof typeof componentMap) {
-            if (!componentMap.element) {
-                alert('组件未加载完成, 稍后再试');
-                return;
-            }
             if (!val) {
                 comp.value = null;
                 return;

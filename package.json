@@ -6,6 +6,12 @@
     "scripts": {
         "v2": "ts-node ./start.ts mode=2.6.0",
         "v3": "ts-node ./start.ts mode=3.2.40",
+        "publishing": "pnpm publish:core && pnpm publish:el",
+        "publish:core": "pnpm --filter @xiaohaih/condition-core publish --access=public",
+        "publish:el": "pnpm --filter @xiaohaih/condition-el publish --access=public",
+        "build": "pnpm build:core && pnpm build:el",
+        "build:core": "pnpm --filter @xiaohaih/condition-core build",
+        "build:el": "pnpm --filter @xiaohaih/condition-el build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -40,6 +46,7 @@
         "typescript": "4.7.3",
         "unbuild": "0.8.11",
         "vite": "^3.1.0",
+        "vite-plugin-html": "3.2.0",
         "vite-plugin-vue2": "2.0.2",
         "vue": "2.6.0",
         "vue-demi": "^0.13.11",

@@ -1,7 +1,7 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, nextTick } from 'vue-demi';
 import { existsEvent, getSlot } from '../../utils/assist';
 import { hasOwn, emptyToValue, getChained } from '../../utils/index';
-import { cascadertProps } from '../../common/props';
+import { cascaderProps } from '../../common/props';
 // import { cascaderEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
 import { useDisplay } from '../../use';
@@ -19,7 +19,7 @@ function isEmpty(val: any): boolean {
 export default defineComponent({
     inheritAttrs: false,
     name: 'CoreCascader',
-    props: cascadertProps,
+    props: cascaderProps,
     // emits: cascaderEmits,
     setup(props, ctx) {
         const { field: FIELD, fields: FIELDS, backfill: BACKFILL, getOptions: GET_OPTIONS } = props;

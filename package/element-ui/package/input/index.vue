@@ -15,8 +15,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
-import { CoreInput } from 'core-condition';
+import { CoreInput } from '@xiaohaih/condition-core';
 import { Input as ElInput } from 'element-ui';
+import { inputProps } from '../../src/common/props';
+import { inputProps as CoreInputProps } from '@xiaohaih/condition-core/common/props';
 
 /**
  * @file 输入框
@@ -28,9 +30,7 @@ export default defineComponent({
         CoreInput,
         ElInput,
     },
-    props: {
-        clearable: { type: Boolean, default: true },
-    },
+    props: inputProps as typeof CoreInputProps & typeof inputProps,
 });
 </script>
 
