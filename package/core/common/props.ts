@@ -26,7 +26,7 @@ export const commonProps = {
 
 /** 条件容器 props */
 export const wrapperProps = {
-    tag: { type: String as PropType<string>, default: 'div' },
+    tag: { type: [String, Object] as PropType<string | object>, default: 'div' },
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: Boolean as PropType<boolean> },
     /** 数据源 */
