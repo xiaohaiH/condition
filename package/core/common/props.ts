@@ -10,8 +10,6 @@ export const commonProps = {
     emptyValue: { type: [String, null, undefined] as PropType<undefined | null | string>, default: undefined },
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: [Boolean] as PropType<boolean> },
-    /** 显示在 input 框前的文字 */
-    prefix: { type: String as PropType<string> },
     /** 当前条件对象 - 实时变化 */
     query: { type: Object as PropType<Record<string, any>>, required: true },
     /** 回填值的对象 - 非实时变化 */

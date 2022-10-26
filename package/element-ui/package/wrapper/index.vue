@@ -40,7 +40,7 @@ const userCompMap: Record<string, any> = {};
  * @param {} comp 可渲染的组件
  */
 export function registerComponent(name: string, comp: any) {
-    userCompMap[name] = comp;
+    userCompMap[name] = markRaw(comp);
 }
 
 /**
