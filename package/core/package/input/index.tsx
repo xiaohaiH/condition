@@ -4,7 +4,7 @@ import { existsEvent, getSlot } from '../../utils/assist';
 import { inputProps } from '../../common/props';
 // import { inputEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay } from '../../use';
+import { useDisplay, useDisableInCurrentCycle } from '../../use';
 
 /**
  * @file 输入框
@@ -15,9 +15,10 @@ export default defineComponent({
     props: inputProps,
     // emits: inputEmits,
     setup(props, ctx) {
-        const { field: FIELD } = props;
+        const { field: FIELD, depend: DEPEND, dependFields: DEPEND_FIELDS } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string>('');
+        const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
         const initialValue = props.backfill?.[FIELD] || checked.value;
 
@@ -44,12 +45,31 @@ export default defineComponent({
                 () => props.backfill?.[FIELD],
                 (val) => {
                     if (val === checked.value) return;
+                    updateFlag();
                     checked.value = val;
                     option.updateWrapperQuery();
                 },
                 { immediate: true, deep: true },
             ),
         );
+        // 存在依赖项
+        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
+            unwatchs.push(
+                watch(
+                    () =>
+                        ([] as string[])
+                            .concat(DEPEND_FIELDS)
+                            .map((k) => props.query?.[k])
+                            .join(','),
+                    (val, oldVal) => {
+                        if (!flag.value) return;
+                        if (val === oldVal) return;
+                        checked.value = '';
+                        option.updateWrapperQuery();
+                    },
+                ),
+            );
+        }
 
         // /**
         //  * 实时(直接触发 change 事件), 非实时(延时触发 change 事件)
@@ -88,6 +108,7 @@ export default defineComponent({
          * 重置数据
          */
         function reset() {
+            updateFlag();
             checked.value = props.resetToInitialValue ? initialValue : '';
             return option;
         }

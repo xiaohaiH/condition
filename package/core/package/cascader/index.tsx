@@ -4,7 +4,7 @@ import { hasOwn, emptyToValue, getChained } from '../../utils/index';
 import { cascaderProps } from '../../common/props';
 // import { cascaderEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay } from '../../use';
+import { useDisplay, useDisableInCurrentCycle } from '../../use';
 
 export type ValueType = string | number | null | undefined;
 
@@ -22,13 +22,21 @@ export default defineComponent({
     props: cascaderProps,
     // emits: cascaderEmits,
     setup(props, ctx) {
-        const { field: FIELD, fields: FIELDS, backfill: BACKFILL, getOptions: GET_OPTIONS } = props;
+        const {
+            field: FIELD,
+            fields: FIELDS,
+            backfill: BACKFILL,
+            getOptions: GET_OPTIONS,
+            depend: DEPEND,
+            dependFields: DEPEND_FIELDS,
+        } = props;
         const DATA_ASYNC = {
             initialize: isEmpty(BACKFILL?.[FIELD]) || typeof GET_OPTIONS !== 'function',
             initialValue: BACKFILL?.[FIELD],
         };
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<ValueType[]>([]);
+        const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () =>
             FIELDS?.length
                 ? FIELDS.reduce((p, v, i) => Object.assign(p, { [v]: checked.value[i] }), {})
@@ -80,8 +88,8 @@ export default defineComponent({
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
-        // 回填值发生变化时触发更新
         unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
+        // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
                 () =>
@@ -92,8 +100,8 @@ export default defineComponent({
                           }, [] as string[])
                         : props.backfill?.[props.field],
                 (value: ValueType | ValueType[]) => {
+                    updateFlag();
                     if (Array.isArray(value)) {
-                        if (value.join('') === checked.value.join('')) return;
                         updateCheckedValue(value);
                     } else {
                         if (!value && value !== 0) {
@@ -110,6 +118,24 @@ export default defineComponent({
                 { immediate: true, deep: true },
             ),
         );
+        // 存在依赖项
+        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
+            unwatchs.push(
+                watch(
+                    () =>
+                        ([] as string[])
+                            .concat(DEPEND_FIELDS)
+                            .map((k) => props.query?.[k])
+                            .join(','),
+                    (val, oldVal) => {
+                        if (!flag.value) return;
+                        if (val === oldVal) return;
+                        updateCheckedValue(typeof checked.value === 'string' ? '' : []);
+                        getOption();
+                    },
+                ),
+            );
+        }
 
         /**
          * 获取数据源发生变化事件
@@ -149,6 +175,7 @@ export default defineComponent({
          * 重置数据
          */
         function reset() {
+            updateFlag();
             checked.value = props.resetToInitialValue ? initialValue : [];
             return option;
         }
@@ -172,7 +199,16 @@ export default defineComponent({
         };
     },
     render() {
-        const { checked: value, getQuery, finalOption, insetHide, insetDisabled, change, reset, clearable } = this;
+        const {
+            checked: value,
+            getQuery,
+            finalOption,
+            insetHide,
+            insetDisabled,
+            change,
+            reset,
+            // clearable
+        } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
         const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
@@ -185,7 +221,7 @@ export default defineComponent({
                   value,
                   disabled: insetDisabled,
                   change,
-                  clearable,
+                  // clearable,
               })
             : defaultSlot!;
     },

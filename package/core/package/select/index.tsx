@@ -4,7 +4,7 @@ import { hasOwn, emptyToValue } from '../../utils/index';
 import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay } from '../../use';
+import { useDisplay, useDisableInCurrentCycle } from '../../use';
 
 /**
  * @file 下拉框
@@ -18,6 +18,7 @@ export default defineComponent({
         const { field: FIELD, depend: DEPEND, dependFields: DEPEND_FIELDS } = props;
         const wrapper = inject<ProvideValue>(provideKey);
         const checked = ref<string | string[]>(props.multiple ? [] : '');
+        const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
         const initialValue = props.backfill?.[FIELD] || checked.value;
 
@@ -55,7 +56,16 @@ export default defineComponent({
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
         // 回填值发生变化时触发更新
-        unwatchs.push(watch(() => props.backfill?.[FIELD], updateCheckedValue, { immediate: true, deep: true }));
+        unwatchs.push(
+            watch(
+                () => props.backfill?.[FIELD],
+                (val: string | string[]) => {
+                    updateFlag();
+                    updateCheckedValue(val);
+                },
+                { immediate: true, deep: true },
+            ),
+        );
         unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
         if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
             // 存在依赖项
@@ -67,11 +77,11 @@ export default defineComponent({
                             .map((k) => props.query?.[k])
                             .join(','),
                     (val, oldVal) => {
+                        if (!flag.value) return;
                         if (val === oldVal) return;
                         updateCheckedValue(props.multiple ? [] : '');
                         getOption();
                     },
-                    { deep: true, immediate: true },
                 ),
             );
         }
@@ -131,6 +141,7 @@ export default defineComponent({
          */
         function reset() {
             const { multiple } = props;
+            updateFlag();
             checked.value = props.resetToInitialValue ? initialValue : multiple ? [] : '';
             return option;
         }
@@ -163,7 +174,7 @@ export default defineComponent({
             valueKey,
             labelKey,
             multiple,
-            clearable,
+            // clearable,
         } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
@@ -184,7 +195,7 @@ export default defineComponent({
                   valueKey,
                   labelKey,
                   multiple,
-                  clearable,
+                  // clearable,
               })
             : defaultSlot!;
     },

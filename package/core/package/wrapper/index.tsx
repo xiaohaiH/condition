@@ -25,7 +25,7 @@ import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
  */
 
 export default defineComponent({
-    inheritAttrs: false,
+    // inheritAttrs: false,
     name: 'CoreWrapper',
     props: wrapperProps,
     emits: wrapperEmits,
@@ -45,7 +45,8 @@ export default defineComponent({
                     idx !== -1 && child.splice(idx, 1);
                 };
                 const childInstance = getCurrentInstance();
-                childInstance && onBeforeUnmount(unregister, childInstance);
+                // vue2.7 实例是挂载在 proxy 上
+                childInstance && onBeforeUnmount(unregister, childInstance.proxy || childInstance);
                 return unregister;
             },
             updateQueryValue: (field, value) => {
@@ -144,7 +145,7 @@ export default defineComponent({
             query,
             getQuery,
             initQuery,
-            genCompQuery,
+            // genCompQuery,
             querySearch,
             resetAndSearch,
             reset,

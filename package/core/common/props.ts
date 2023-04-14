@@ -19,7 +19,15 @@ export const commonProps = {
     /** 是否隐藏 -> 如果是函数, 需传递依赖项, 可根据依赖项动态隐藏 */
     hide: { type: [Boolean, Function] as PropType<boolean | ((query: Record<string, any>) => any)> },
     /** 校验函数, 返回字符串不通过, 会触发提示 - 提交时触发 */
-    validator: { type: [Function] as PropType<Function | (() => Promise<any>)> },
+    validator: {
+        type: [Function] as PropType<
+            ((query: Record<string, any>) => any) | ((query: Record<string, any>) => Promise<any>)
+        >,
+    },
+    /** 是否依赖其它字段 */
+    depend: { type: Boolean as PropType<boolean> },
+    /** 依赖字段 */
+    dependFields: { type: [String, Array] as PropType<string | string[]> },
 } as const;
 
 /** 条件容器 props */
@@ -50,10 +58,6 @@ export const selectProps = {
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
     /** 是否多选 */
     multiple: { type: Boolean as PropType<boolean> },
-    /** 是否依赖其它字段 - 更新数据源请求 */
-    depend: { type: Boolean as PropType<boolean> },
-    /** 依赖字段 - 字段发生改变重新请求数据源 */
-    dependFields: { type: [String, Array] as PropType<string | string[]> },
     /** 获取数据源 */
     getOptions: {
         type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
@@ -95,10 +99,6 @@ export const cascaderProps = {
     emitPath: { type: [Boolean] as PropType<boolean>, default: false },
     /** 下拉选项的数据源 */
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
-    /** 是否依赖其它字段 - 更新数据源请求 */
-    depend: { type: Boolean as PropType<boolean> },
-    /** 依赖字段 - 字段发生改变重新请求数据源 */
-    dependFields: { type: [String, Array] as PropType<string | string[]> },
     /** 获取数据源 */
     getOptions: {
         type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
