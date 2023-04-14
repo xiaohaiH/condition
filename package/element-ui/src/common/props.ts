@@ -7,6 +7,12 @@ export const wrapperProps = {
     renderBtn: { type: Boolean as PropType<boolean>, default: true },
     /** 组件大小 */
     size: { type: String as PropType<ElementUIComponentSize> },
+    /** 重置时触发搜索事件 */
+    resetTriggerSearch: { type: Boolean as PropType<boolean> },
+    /** 搜索按钮文字 */
+    searchText: { type: String as PropType<string>, default: '搜索' },
+    /** 重置按钮文字 */
+    resetText: { type: String as PropType<string>, default: '重置' },
 } as const;
 
 /** select props */

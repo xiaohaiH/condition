@@ -8,12 +8,12 @@ const external = ['vue', 'vue-demi', 'element-ui'];
 const globals = { vue: 'Vue', 'vue-demi': 'VueDemi', 'element-ui': 'ELEMENT' };
 
 /**
- * 添加获删除名称中的 min
+ * 添加或删除名称中的 min
  * @param {string} name
  * @param {boolean} flag
  */
 function retainMinSuffix(name: string, flag: boolean) {
-    const _name = name.replace(/min/, '');
+    const _name = name.replace(/^dist\//, '').replace(/min/, '');
     return flag ? _name.replace(/(.*)(\..*)$/, '$1.min$2') : _name;
 }
 
@@ -40,47 +40,34 @@ export default defineConfig({
         rollupOptions: {
             external,
             output: [
-                { file: retainMinSuffix(pkg.module, false), format: 'es', sourcemap: true, dir: undefined },
+                { entryFileNames: retainMinSuffix(pkg.module, false), format: 'es', sourcemap: true },
                 {
-                    file: retainMinSuffix(pkg.module, true),
+                    entryFileNames: retainMinSuffix(pkg.module, true),
                     format: 'es',
                     sourcemap: true,
-                    dir: undefined,
-                    // @ts-ignore
                     plugins: [terser({ format: { comments: false } })],
                 },
+                { entryFileNames: retainMinSuffix(pkg.main, false), format: 'cjs', exports: 'named', sourcemap: true },
                 {
-                    file: retainMinSuffix(pkg.main, false),
+                    entryFileNames: retainMinSuffix(pkg.main, true),
                     format: 'cjs',
                     exports: 'named',
                     sourcemap: true,
-                    dir: undefined,
-                },
-                {
-                    file: retainMinSuffix(pkg.main, true),
-                    format: 'cjs',
-                    exports: 'named',
-                    sourcemap: true,
-                    dir: undefined,
-                    // @ts-ignore
                     plugins: [terser({ format: { comments: false } })],
                 },
                 {
-                    file: retainMinSuffix(pkg.unpkg, false),
+                    entryFileNames: retainMinSuffix(pkg.unpkg, false),
                     format: 'umd',
                     name: 'HCondition',
                     sourcemap: true,
                     globals,
-                    dir: undefined,
                 },
                 {
-                    file: retainMinSuffix(pkg.unpkg, true),
+                    entryFileNames: retainMinSuffix(pkg.unpkg, true),
                     format: 'umd',
                     name: 'HCondition',
                     sourcemap: true,
                     globals: globals,
-                    dir: undefined,
-                    // @ts-ignore
                     plugins: [terser({ format: { comments: false } })],
                 },
             ],

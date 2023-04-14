@@ -7,8 +7,10 @@
         <template #btn="option">
             <slot name="btn" v-bind="option">
                 <template v-if="renderBtn">
-                    <ElButton :size="size" @click="option.search">搜索</ElButton>
-                    <ElButton :size="size" @click="option.reset">重置</ElButton>
+                    <ElButton :size="size" @click="option.search">{{ searchText }}</ElButton>
+                    <ElButton :size="size" @click="option[resetTriggerSearch ? 'resetAndSearch' : 'reset']()">
+                        {{ resetText }}
+                    </ElButton>
                 </template>
             </slot>
         </template>
@@ -56,7 +58,7 @@ export function unregisterComponent(name: string) {
  */
 export default defineComponent({
     // export default defineComponent<typeof wrapperProps>({
-    inheritAttrs: false,
+    // inheritAttrs: false,
     components: {
         CoreWrapper,
         ElButton,
