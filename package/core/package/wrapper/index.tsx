@@ -13,7 +13,7 @@ import {
     watchEffect,
 } from 'vue-demi';
 import { hasOwn } from '../../utils/index';
-import { getSlot } from '../../utils/assist';
+import { getSlot, IS_COMPOSITION_VERSION } from '../../utils/assist';
 import { wrapperProps } from '../../common/props';
 import { wrapperEmits } from '../../common/emits';
 import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
@@ -23,7 +23,6 @@ import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
  * 内部会注入关键信息
  * 外部通过 t 来检索并动态渲染组件
  */
-
 export default defineComponent({
     // inheritAttrs: false,
     name: 'CoreWrapper',
@@ -45,8 +44,12 @@ export default defineComponent({
                     idx !== -1 && child.splice(idx, 1);
                 };
                 const childInstance = getCurrentInstance();
-                // vue2.7 实例是挂载在 proxy 上
-                childInstance && onBeforeUnmount(unregister, childInstance.proxy || childInstance);
+                // vue2.7 实例挂载在 proxy 上, 内部逻辑取的 proxy 上的值
+                // 虽然 @vue/composition-api 实例挂载在 proxy 上
+                // 但是内部逻辑取的是整个 getCurrentInstance
+                childInstance &&
+                    // @ts-ignore
+                    onBeforeUnmount(unregister, IS_COMPOSITION_VERSION ? childInstance.proxy : childInstance);
                 return unregister;
             },
             updateQueryValue: (field, value) => {

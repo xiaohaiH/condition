@@ -25,4 +25,11 @@ export declare namespace HCondition {
     interface CascaderProps extends CoreCondition.CascaderProps, Partial<Omit<ElCascader, 'disabled' | 'options'>> {
         t: 'cascader';
     }
+
+    type Props<T extends Record<'$props', any>> = Partial<Writeable<T['$props']>>;
+
+    /** 将数据改为可写 */
+    type Writeable<T> = {
+        -readonly [K in keyof T]: T[K];
+    };
 }

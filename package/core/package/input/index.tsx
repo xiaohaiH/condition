@@ -1,6 +1,6 @@
-import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
+import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, isVue2 } from 'vue-demi';
 import { hasOwn, emptyToValue } from '../../utils/index';
-import { existsEvent, getSlot } from '../../utils/assist';
+import { existsEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { inputProps } from '../../common/props';
 // import { inputEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
@@ -10,7 +10,7 @@ import { useDisplay, useDisableInCurrentCycle } from '../../use';
  * @file 输入框
  */
 export default defineComponent({
-    inheritAttrs: false,
+    // inheritAttrs: false,
     name: 'CoreInput',
     props: inputProps,
     // emits: inputEmits,
@@ -127,13 +127,15 @@ export default defineComponent({
         const { query, checked: value, getQuery, insetDisabled, insetHide, debounceChange, enterHandler, reset } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        // @ts-ignore
         const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
         return typeof defaultSlot === 'function'
-            ? defaultSlot({
+            ? // @ts-ignore
+              defaultSlot({
                   ...this.$attrs,
                   listeners,
-                  value,
+                  [VALUE_KEY]: value,
                   disabled: insetDisabled,
                   debounceChange,
                   enterHandler,

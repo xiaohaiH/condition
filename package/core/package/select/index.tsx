@@ -1,5 +1,5 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { existsEvent, getEvent, getSlot } from '../../utils/assist';
+import { existsEvent, getEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { hasOwn, emptyToValue } from '../../utils/index';
 import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
@@ -178,6 +178,7 @@ export default defineComponent({
         } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        // @ts-ignore
         const listeners = hasOwn(this, '$listeners') ? { ...this.$listeners } : null;
         // listeners && delete listeners.blur;
 
@@ -185,7 +186,7 @@ export default defineComponent({
             ? defaultSlot({
                   ...this.$attrs,
                   listeners,
-                  value,
+                  [VALUE_KEY]: value,
                   options,
                   disabled: insetDisabled,
                   blur,

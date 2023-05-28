@@ -1,5 +1,5 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, nextTick } from 'vue-demi';
-import { existsEvent, getSlot } from '../../utils/assist';
+import { existsEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { hasOwn, emptyToValue, getChained } from '../../utils/index';
 import { cascaderProps } from '../../common/props';
 // import { cascaderEmits } from '../../common/emits';
@@ -211,6 +211,7 @@ export default defineComponent({
         } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        // @ts-ignore
         const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
         return typeof defaultSlot === 'function'
@@ -218,7 +219,7 @@ export default defineComponent({
                   ...this.$attrs,
                   options: finalOption,
                   listeners,
-                  value,
+                  [VALUE_KEY]: value,
                   disabled: insetDisabled,
                   change,
                   // clearable,

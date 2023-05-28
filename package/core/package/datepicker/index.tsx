@@ -1,5 +1,5 @@
 import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
-import { existsEvent, getSlot } from '../../utils/assist';
+import { existsEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { hasOwn, emptyToValue } from '../../utils/index';
 import { datepickerProps } from '../../common/props';
 import { datepickerEmits } from '../../common/emits';
@@ -164,13 +164,14 @@ export default defineComponent({
         const { checked: value, getQuery, insetHide, insetDisabled, updateCheckedValue, change, reset } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
+        // @ts-ignore
         const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
         return typeof defaultSlot === 'function'
             ? defaultSlot({
                   ...this.$attrs,
                   listeners,
-                  value,
+                  [VALUE_KEY]: value,
                   disabled: insetDisabled,
                   updateCheckedValue,
                   change,

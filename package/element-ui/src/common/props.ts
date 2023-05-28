@@ -1,4 +1,4 @@
-import { PropType } from '@vue/composition-api';
+import { PropType } from 'vue-demi';
 import { ElementUIComponentSize } from 'element-ui/types/component';
 
 /** 条件容器 props */
