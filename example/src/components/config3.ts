@@ -1,9 +1,12 @@
 // import { set } from '../composition-api';
-import { set } from '@vue/composition-api';
+// import { set } from '@vue/composition-api';
 // import { defineCondition } from '@xiaohaih/condition-el';
 
 function defineCondition(v: any) {
     return v;
+}
+function set(target: any, key: string, value: any) {
+    target[key] = value;
 }
 
 export const conditionFactory = () => [

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, isVue2, markRaw, ref } from 'vue-demi';
+import { defineComponent, markRaw, ref } from 'vue';
 import element from './components/element-plus.vue';
 const componentMap = {
     element: markRaw(element),
@@ -24,7 +24,7 @@ export default defineComponent({
         /**
          * 更改显示的组件
          */
-        function changeComp(val: keyof typeof componentMap) {
+        function changeComp(val: keyof typeof componentMap | '') {
             if (!val) {
                 comp.value = null;
                 return;
@@ -45,9 +45,11 @@ export default defineComponent({
 .control {
     margin-bottom: 10px;
 }
+
 button + button {
     margin-left: 10px;
 }
+
 .show-empty-message:empty.show-empty-message::before {
     content: '组件未加载';
 }

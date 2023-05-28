@@ -1,5 +1,4 @@
-// import { set } from '../composition-api';
-import { set } from '@vue/composition-api';
+import { set } from 'vue';
 // import { defineCondition } from '@xiaohaih/condition-el';
 
 function defineCondition(v: any) {

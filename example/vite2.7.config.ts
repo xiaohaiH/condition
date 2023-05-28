@@ -12,9 +12,12 @@ export default defineConfig({
             jsx: true,
         }),
         createHtmlPlugin({
-            entry: 'src/main2.ts',
+            entry: 'src/main2.7.ts',
         }),
     ],
+    // server: {
+    //     port: 5175,
+    // },
     // esbuild: {
     //     jsxFactory: 'h',
     //     jsxFragment: 'Fragment',

@@ -9,19 +9,19 @@
 </template>
 
 <script lang="ts">
-import Ac, { defineComponent, markRaw, ref } from '@vue/composition-api';
-import element from './components/element-ui.vue';
+import { defineComponent, markRaw, ref } from 'vue';
+import element from './components/element-ui.2.7.vue';
+import * as vue from 'vue';
+console.log(vue)
 const componentMap = {
     element: markRaw(element),
 };
 
 type ComponentMap = typeof componentMap;
-console.log({ Ac });
 
 export default defineComponent({
     setup() {
         const comp = ref<ComponentMap[keyof ComponentMap] | null>(componentMap.element);
-        console.log(comp, 123);
 
         /**
          * 更改显示的组件

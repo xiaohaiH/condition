@@ -16,8 +16,15 @@
                         :datum="item.condition"
                         size="mini"
                         tag="main"
+                        :resetTriggerSearch="item.resetTriggerSearch"
                         @search="querySearch(index, $event)"
-                    ></HWrapper>
+                    >
+                        <template #btn="option">
+                            <ElButton size="mini" @click="option.search">搜索</ElButton>
+                            <ElButton size="mini" @click="option.search">搜索</ElButton>
+                            <ElButton size="mini" @click="option.resetAndSearch">重置</ElButton>
+                        </template>
+                    </HWrapper>
                 </ElCollapseItem>
             </template>
         </ElCollapse>
@@ -25,9 +32,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, set } from 'vue-demi';
-import { HWrapper } from '@xiaohaih/condition-el';
+// import { defineComponent, ref, set } from '../composition-api';
+import Ab, { defineComponent, ref, set } from '@vue/composition-api';
 import { conditionFactory } from './config';
+import { HWrapper } from '@xiaohaih/condition-el';
+console.log({ Ab });
 
 /**
  * 下拉框

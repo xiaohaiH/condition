@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import { createHtmlPlugin } from 'vite-plugin-html';
 
 /**
@@ -9,13 +10,11 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 export default defineConfig({
     plugins: [
         vue(),
+        vueJsx(),
         createHtmlPlugin({
             entry: 'src/main.ts',
         }),
     ],
-    optimizeDeps: {
-        exclude: ['vue-demi'],
-    },
     esbuild: {
         jsxFactory: 'h',
         jsxFragment: 'Fragment',

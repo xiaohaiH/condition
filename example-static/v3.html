@@ -5,34 +5,35 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>example</title>
-        <link href="./css/element-ui.css" rel="stylesheet" type="text/css" />
-        <script src="./js/vue2.js"></script>
-        <script src="./js/element-ui.js"></script>
-        <script src="./js/vue-composition-api.js"></script>
+        <link href="./css/element-plus.css" rel="stylesheet" type="text/css" />
+        <script src="./js/vue3.js"></script>
+        <script src="./js/element-plus.js"></script>
         <script src="../package/core/dist/index.umd.js"></script>
-        <script src="../package/element-ui/dist/index.umd.js"></script>
+        <script src="../package/element-plus/dist/index.umd.js"></script>
     </head>
     <body>
         <div id="app"></div>
         <script type="text/javascript">
-            const { set } = VueCompositionAPI;
-            const app = new Vue({
+            function set(target, key, value) {
+                target[key] = value;
+            }
+            const app = Vue.createApp({
                 template: `
                     <ElCard>
                         <ElCollapse v-model="collapseValue">
-                            <template v-for="(item, index) of conditions">
-                                <ElCollapseItem :key="item.name" :title="item.title" :name="item.name">
+                            <template v-for="(item, index) of conditions" :key="item.name">
+                                <ElCollapseItem :title="item.title" :name="item.name">
                                     <ElAlert type="success" :closable="false">
                                         <span>当前条件:　</span>
                                         <span>{{ item.query }}</span>
                                     </ElAlert>
                                     <div style="margin: 10px 0">
-                                        <ElButton @click="item.setQuery(item)" type="primary" size="mini">手动设置</ElButton>
+                                        <ElButton @click="item.setQuery(item)" type="primary" size="small">手动设置</ElButton>
                                     </div>
                                     <HWrapper
                                         :backfill="item.query"
                                         :datum="item.condition"
-                                        size="mini"
+                                        size="small"
                                         tag="main"
                                         @search="querySearch(index, $event)"
                                     ></HWrapper>
@@ -52,7 +53,7 @@
                 }),
             });
 
-            app.$mount('#app');
+            app.use(ElementPlus).mount('#app');
 
             function conditionFactory() {
                 return [
@@ -87,7 +88,7 @@
                                 t: 'datepicker',
                                 type: 'daterange',
                                 placeholder: '日期区间选择',
-                                size: 'medium',
+                                size: 'large',
                                 startPlaceholder: '开始',
                                 endPlaceholder: '结束',
                                 beginField: 'startTime',
