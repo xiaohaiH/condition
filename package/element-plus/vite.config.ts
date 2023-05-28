@@ -1,11 +1,12 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-import { createVuePlugin } from 'vite-plugin-vue2';
+import vue from '@vitejs/plugin-vue';
 import { terser } from 'rollup-plugin-terser';
+import dts from 'vite-plugin-dts';
 import pkgJson from './package.json';
 
-const external = ['vue', 'vue-demi', 'element-ui'];
-const globals = { vue: 'Vue', 'vue-demi': 'VueDemi', 'element-ui': 'ELEMENT' };
+const external = ['vue', 'element-plus'];
+const globals = { vue: 'Vue', 'element-plus': 'ElementPlus' };
 // @ts-ignore
 const pkg = pkgJson.publishConfig || pkgJson;
 
@@ -24,11 +25,7 @@ function retainMinSuffix(name: string, flag: boolean) {
  */
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        createVuePlugin({
-            jsx: true,
-        }),
-    ],
+    plugins: [vue(), dts()],
     optimizeDeps: {
         exclude: ['vue-demi'],
     },
@@ -38,7 +35,6 @@ export default defineConfig({
             name: 'HCondition',
             fileName: 'index',
         },
-        minify: true,
         outDir: 'dist',
         rollupOptions: {
             external,
@@ -50,7 +46,12 @@ export default defineConfig({
                     sourcemap: true,
                     plugins: [terser({ format: { comments: false } })],
                 },
-                { entryFileNames: retainMinSuffix(pkg.main, false), format: 'cjs', exports: 'named', sourcemap: true },
+                {
+                    entryFileNames: retainMinSuffix(pkg.main, false),
+                    format: 'cjs',
+                    exports: 'named',
+                    sourcemap: true,
+                },
                 {
                     entryFileNames: retainMinSuffix(pkg.main, true),
                     format: 'cjs',
@@ -64,7 +65,6 @@ export default defineConfig({
                     name: 'HCondition',
                     sourcemap: true,
                     globals,
-                    // plugins: [terser({ compress: false })],
                 },
                 {
                     entryFileNames: retainMinSuffix(pkg.unpkg, true),

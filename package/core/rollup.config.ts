@@ -7,22 +7,20 @@ import babel from '@rollup/plugin-babel';
 import dts from 'rollup-plugin-dts';
 import copy from 'rollup-plugin-copy';
 import { DEFAULT_EXTENSIONS } from '@babel/core';
-import pkg from './package.json';
+import pkgJson from './package.json';
 import type { OutputOptions, Plugin, RollupOptions } from 'rollup';
 
 const external = ['vue', 'vue-demi'];
-const globals = {
-    vue: 'Vue',
-    // 'vue-composition-api': 'VueCompositionAPI',
-    'vue-demi': 'VueDemi',
-};
+const globals = { vue: 'Vue', 'vue-demi': 'VueDemi' };
 const VUE_DEMI_IIFE = fs.readFileSync(require.resolve('vue-demi/lib/index.iife.js'), 'utf-8');
 const injectVueDemi: Plugin = {
     name: 'inject-vue-demi',
     renderChunk(code) {
-        return `${VUE_DEMI_IIFE};\n;${code}`;
+        return `${VUE_DEMI_IIFE};\n${code}`;
     },
 };
+// @ts-ignore
+const pkg = pkgJson.publishConfig || pkgJson;
 
 /**
  * 添加获删除名称中的 min
@@ -43,7 +41,8 @@ const options: RollupOptions[] = [
             resolve(),
             typescript(),
             babel({
-                presets: ['@vue/babel-preset-jsx'],
+                babelHelpers: 'bundled',
+                presets: [['@vue/babel-preset-jsx', { compositionAPI: 'vue-demi' }]],
                 extensions: [...DEFAULT_EXTENSIONS, 'ts', 'tsx'],
             }),
             // copy({

@@ -1,22 +1,25 @@
 {
     "name": "@xiaohaih/condition-el",
-    "version": "0.0.5",
+    "version": "0.0.8",
     "description": "",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
     "unpkg": "dist/index.umd.js",
-    "module": "dist/index.esm.js",
+    "module": "index.ts",
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
             "require": "./dist/index.cjs.js",
-            "import": "./dist/index.esm.js",
+            "import": "./index.ts",
             "browser": "./dist/index.esm.js",
             "types": "./dist/index.d.ts"
         },
         "./*": "./*"
     },
     "scripts": {
+        "vue2": "vue-demi-switch 2",
+        "vue2.7": "vue-demi-switch 2.7",
+        "vue3": "vue-demi-switch 3",
         "build": "vite build --config vite.config.ts && vue-tsc --declaration --emitDeclarationOnly",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -24,11 +27,35 @@
     "author": "xiaohaih",
     "license": "ISC",
     "dependencies": {
-        "@xiaohaih/condition-core": "workspace:*"
+        "@xiaohaih/condition-core": "workspace:*",
+        "vue-demi": "0.14.5"
+    },
+    "devDependencies": {
+        "vue": "2.7.0",
+        "element-ui": "^2.15.13"
+    },
+    "peerDependencies": {
+        "@vue/composition-api": "^1.0.0-rc.1",
+        "element-ui": "^2.0.0",
+        "vue": "^2.0.0 || >=3.0.0"
     },
     "peerDependenciesMeta": {
         "@vue/composition-api": {
             "optional": true
+        }
+    },
+    "publishConfig": {
+        "main": "dist/index.cjs.js",
+        "unpkg": "dist/index.umd.js",
+        "module": "dist/index.esm.js",
+        "exports": {
+            ".": {
+                "require": "./dist/index.cjs.js",
+                "import": "./dist/index.esm.js",
+                "browser": "./dist/index.esm.js",
+                "types": "./dist/index.d.ts"
+            },
+            "./*": "./*"
         }
     }
 }

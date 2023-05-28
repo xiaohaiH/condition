@@ -1,0 +1,23 @@
+diff --git a/dist/node/chunks/dep-7efa13d7.js b/dist/node/chunks/dep-7efa13d7.js
+index 8bc72a498afaf65534c8fd28aacbbd6a1a418484..6b70f206e159ab5e0f59088d8c3d94c2b086220f 100644
+--- a/dist/node/chunks/dep-7efa13d7.js
++++ b/dist/node/chunks/dep-7efa13d7.js
+@@ -54422,7 +54422,8 @@ function isPrimitive(value) {
+ }
+ 
+ function bindShortcuts(server, opts) {
+-    if (!server.httpServer || !process.stdin.isTTY || process.env.CI) {
++    if (!server.httpServer || process.env.CI) {
++    // if (!server.httpServer || !process.stdin.isTTY || process.env.CI) {
+         return;
+     }
+     server._shortcutsOptions = opts;
+@@ -54460,7 +54461,7 @@ function bindShortcuts(server, opts) {
+         await shortcut.action(server);
+         actionRunning = false;
+     };
+-    process.stdin.setRawMode(true);
++    process.stdin.setRawMode && process.stdin.setRawMode(true);
+     process.stdin.on('data', onInput).setEncoding('utf8').resume();
+     server.httpServer.on('close', () => {
+         process.stdin.off('data', onInput).pause();
