@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 import { terser } from 'rollup-plugin-terser';
 import dts from 'vite-plugin-dts';
 import pkgJson from './package.json';
@@ -25,7 +26,7 @@ function retainMinSuffix(name: string, flag: boolean) {
  */
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [vue(), dts()],
+    plugins: [vue(), vueJsx(), dts()],
     optimizeDeps: {
         exclude: ['vue-demi'],
     },

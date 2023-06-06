@@ -1,6 +1,6 @@
 {
     "name": "@xiaohaih/condition-el-plus",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
@@ -28,6 +28,11 @@
     "license": "ISC",
     "dependencies": {
         "@xiaohaih/condition-core": "workspace:*"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^4.2.3",
+        "@vitejs/plugin-vue-jsx": "^3.0.1",
+        "vite-plugin-dts": "^2.3.0"
     },
     "publishConfig": {
         "main": "dist/index.cjs.js",
