@@ -5,12 +5,14 @@ import { wrapperProps, selectProps, inputProps, datepickerProps, cascaderProps }
 export declare namespace CoreCondition {
     type BuiltInField = 'field' | 'query';
 
-    interface WrapperProps extends Omit<ExtractPropTypes<typeof wrapperProps>, BuiltInField> {}
-    interface SelectProps extends Omit<ExtractPropTypes<typeof selectProps>, BuiltInField> {}
-    interface InputProps extends Omit<ExtractPropTypes<typeof inputProps>, BuiltInField> {}
-    interface DatepickerProps extends Omit<ExtractPropTypes<typeof datepickerProps>, BuiltInField> {}
-    interface CascaderProps extends Omit<ExtractPropTypes<typeof cascaderProps>, BuiltInField> {}
+    interface WrapperProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof wrapperProps>>, BuiltInField> {}
+    interface SelectProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof selectProps>>, BuiltInField> {}
+    interface InputProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof inputProps>>, BuiltInField> {}
+    interface DatepickerProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof datepickerProps>>, BuiltInField> {}
+    interface CascaderProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof cascaderProps>>, BuiltInField> {}
 }
+
+type OmitDefaultValue<T> = T extends { default: any } ? Omit<T, 'default'> : T;
 
 // type ExtractPropTypes<O> = {
 //     [K in keyof Pick<O, RequiredKeys<O>>]: InferPropType<O[K]>;
