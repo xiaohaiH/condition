@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api -->
-    <CoreWrapper v-bind="$attrs" :size="size" v-on="$listeners">
+    <CoreWrapper ref="conditionRef" v-bind="$attrs" :size="size" v-on="$listeners">
         <template #default="{ t, ...options }">
             <component :is="getComp(t)" v-bind="options"></component>
         </template>
@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, PropType } from 'vue-demi';
+import { defineComponent, markRaw, PropType, ref } from 'vue-demi';
 import { Button as ElButton } from 'element-ui';
 import { CoreWrapper } from '@xiaohaih/condition-core';
 import HSelect from '../select/index.vue';
@@ -57,21 +57,29 @@ export function unregisterComponent(name: string) {
  * @file 条件容器
  */
 export default defineComponent({
-    // export default defineComponent<typeof wrapperProps>({
-    // inheritAttrs: false,
+    inheritAttrs: false,
     components: {
         CoreWrapper,
         ElButton,
     },
     props: wrapperProps as typeof CoreWrapperProps & typeof wrapperProps,
     setup() {
+        const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
+        /** 重置数据 */
+        function reset() {
+            conditionRef.value?.reset();
+        }
+
         /**
-         * option
+         * 渲染组件
+         * @param {string} t 组件类型
          */
         function getComp(t: string) {
             return userCompMap[t] || compMap[t as keyof typeof compMap] || null;
         }
         return {
+            conditionRef,
+            reset,
             getComp,
         };
     },

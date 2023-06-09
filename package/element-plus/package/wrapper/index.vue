@@ -1,5 +1,5 @@
 <template>
-    <CoreWrapper v-bind="$attrs" :size="size">
+    <CoreWrapper ref="conditionRef" v-bind="$attrs" :size="size">
         <template #default="{ t, ...options }">
             <component :is="getComp(t)" v-bind="options" />
         </template>
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, PropType } from 'vue';
+import { defineComponent, markRaw, PropType, ref } from 'vue';
 import { ElButton } from 'element-plus';
 import { CoreWrapper } from '@xiaohaih/condition-core';
 import HSelect from '../select/index.vue';
@@ -63,13 +63,22 @@ export default defineComponent({
     },
     props: wrapperProps as typeof CoreWrapperProps & typeof wrapperProps,
     setup() {
+        const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
+        /** 重置数据 */
+        function reset() {
+            conditionRef.value?.reset();
+        }
+
         /**
-         * option
+         * 渲染组件
+         * @param {string} t 组件类型
          */
         function getComp(t: string) {
             return userCompMap[t] || compMap[t as keyof typeof compMap] || null;
         }
         return {
+            conditionRef,
+            reset,
             getComp,
         };
     },
