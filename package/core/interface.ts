@@ -8,14 +8,18 @@ export * from './common/provide';
 export declare namespace CoreCondition {
     type BuiltInField = 'field' | 'query';
 
-    interface WrapperProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof wrapperProps>>, BuiltInField> {}
-    interface SelectProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof selectProps>>, BuiltInField> {}
-    interface InputProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof inputProps>>, BuiltInField> {}
-    interface DatepickerProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof datepickerProps>>, BuiltInField> {}
-    interface CascaderProps extends Omit<ExtractPropTypes<OmitDefaultValue<typeof cascaderProps>>, BuiltInField> {}
+    interface WrapperProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof wrapperProps>>, BuiltInField> {}
+    interface SelectProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof selectProps>>, BuiltInField> {}
+    interface InputProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof inputProps>>, BuiltInField> {}
+    interface DatepickerProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof datepickerProps>>, BuiltInField> {}
+    interface CascaderProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField> {}
 }
 
-type OmitDefaultValue<T> = T extends { default: any } ? Omit<T, 'default'> : T;
+type OmitDefaultKey<T> = T extends Record<string | symbol, any>
+    ? {
+          [K in keyof T]: T[K] extends { default: any } ? Omit<T[K], 'default'> : T[K];
+      }
+    : T;
 
 // type ExtractPropTypes<O> = {
 //     [K in keyof Pick<O, RequiredKeys<O>>]: InferPropType<O[K]>;
