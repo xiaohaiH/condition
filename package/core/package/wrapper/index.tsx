@@ -165,17 +165,19 @@ export default defineComponent({
         return (
             <Tag {...rootProps}>
                 {Object.entries(datum).map(([key, options]) =>
-                    typeof defaultSlot === 'function'
-                        ? defaultSlot({
-                              ...attrs,
-                              key,
-                              field: options.as || key,
-                              resetToInitialValue,
-                              backfill,
-                              query,
-                              ...options,
-                          })
-                        : defaultSlot || '',
+                    options
+                        ? typeof defaultSlot === 'function'
+                            ? defaultSlot({
+                                  ...attrs,
+                                  key,
+                                  field: options.as || key,
+                                  resetToInitialValue,
+                                  backfill,
+                                  query,
+                                  ...options,
+                              })
+                            : defaultSlot || ''
+                        : undefined,
                 )}
                 {typeof btnSlot === 'function'
                     ? btnSlot({
