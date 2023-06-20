@@ -1,18 +1,18 @@
 {
     "name": "@xiaohaih/condition-core",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
     "unpkg": "dist/index.umd.js",
     "module": "index.ts",
-    "types": "dist/index.d.ts",
+    "types": "index.ts",
     "exports": {
         ".": {
             "require": "./dist/index.cjs.js",
             "import": "./index.ts",
             "browser": "./dist/index.esm.js",
-            "types": "./dist/index.d.ts"
+            "types": "./index.ts"
         },
         "./*": "./*"
     },

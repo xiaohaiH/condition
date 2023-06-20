@@ -13,13 +13,13 @@ export declare namespace CoreCondition {
     interface InputProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof inputProps>>, BuiltInField> {}
     interface DatepickerProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof datepickerProps>>, BuiltInField> {}
     interface CascaderProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField> {}
-}
 
-type OmitDefaultKey<T> = T extends Record<string | symbol, any>
-    ? {
-          [K in keyof T]: T[K] extends { default: any } ? Omit<T[K], 'default'> : T[K];
-      }
-    : T;
+    type OmitDefaultKey<T> = T extends Record<string | symbol, any>
+        ? {
+              [K in keyof T]: T[K] extends { default: any } ? Omit<T[K], 'default'> : T[K];
+          }
+        : T;
+}
 
 // type ExtractPropTypes<O> = {
 //     [K in keyof Pick<O, RequiredKeys<O>>]: InferPropType<O[K]>;

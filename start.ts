@@ -36,7 +36,7 @@ function getVersionSuffix(version: string) {
 }
 
 // 监听输入信息
-process.stdin.setRawMode(true);
+process.stdin.isTTY && process.stdin.setRawMode(true);
 const childProcess: ChildProcess[] = [];
 process.stdin
     .on('data', (chunk: string) => {
@@ -78,6 +78,8 @@ async function main() {
             // } catch (error) {}
         }
     }
+    // 仅切换版本, 不启动服务
+    if (args.includes('--only-switch')) return process.exit(0);
     execPromise('pnpm', ['--filter', 'example', `vue${commandSuffix}`, ...args]);
 }
 /**
