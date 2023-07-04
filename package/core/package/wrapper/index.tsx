@@ -1,6 +1,7 @@
 import {
     defineComponent,
     getCurrentInstance,
+    isVue2,
     nextTick,
     onBeforeUnmount,
     onMounted,
@@ -157,8 +158,8 @@ export default defineComponent({
         const datum = this.datum as Record<string, any>;
         const defaultSlot = getSlot('default', this);
         const btnSlot = getSlot('btn', this);
-        const { class: className, style, ...attrs } = this.$attrs;
-        const rootProps: Record<string, any> = { attrs: { class: className, style } };
+        let { class: className, style, ...attrs } = this.$attrs;
+        const rootProps: Record<string, any> = isVue2 ? {} : { attrs: { class: className, style } };
         // @ts-ignore
         hasOwn(this, '$listeners') && (rootProps.on = this.$listeners);
 

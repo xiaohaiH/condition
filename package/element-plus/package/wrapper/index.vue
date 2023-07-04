@@ -56,6 +56,7 @@ export function unregisterComponent(name: string) {
  * @file 条件容器
  */
 export default defineComponent({
+    name: 'HWrapper',
     inheritAttrs: false,
     components: {
         CoreWrapper,
