@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.1.9
+
+### Patch Changes
+
+- 修复定义条件时写计算属性提示报错
+- Updated dependencies
+  - @xiaohaih/condition-core@0.1.9
+
 ## 0.1.8
 
 ## 0.1.7
