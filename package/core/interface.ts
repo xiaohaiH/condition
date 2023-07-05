@@ -1,5 +1,5 @@
 // 不能直接用 vue-demi 的 ExtractPropTypes, 编译后项目会找不到该类型
-import { ExtractPropTypes } from 'vue-demi';
+import { ExtractPropTypes, Ref, UnwrapRef } from 'vue-demi';
 import { wrapperProps, selectProps, inputProps, datepickerProps, cascaderProps } from './common/props';
 export * from './common/emits';
 export * from './common/props';
@@ -7,6 +7,19 @@ export * from './common/provide';
 
 export declare namespace CoreCondition {
     type BuiltInField = 'field' | 'query';
+
+    /** 将值改为原始值或引用值 */
+    type MaybeRef<T> = T | Ref<T>;
+    /** 将整个集合改为原始值或引用值 */
+    type DeepMaybeRef<T> = T extends Ref<infer V>
+        ? MaybeRef<V>
+        : T extends (...args: any) => any
+        ? MaybeRef<T>
+        : T extends Array<any> | Record<string, any>
+        ? { [K in keyof T]: DeepMaybeRef<T[K]> }
+        : MaybeRef<T>;
+    /** 获取实际值(去除 ref 引用) */
+    type ToRaw<T> = UnwrapRef<T>;
 
     interface WrapperProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof wrapperProps>>, BuiltInField> {}
     interface SelectProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof selectProps>>, BuiltInField> {}
