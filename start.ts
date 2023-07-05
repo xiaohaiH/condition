@@ -69,7 +69,7 @@ async function main() {
             // 处理 vue2 相关的依赖 - end
             commandSuffix = getVersionSuffix(version);
             // 更新包依赖, 并重新安装
-            writeFile(resolve(__dirname, './package.json'), JSON.stringify(pkg, null, 4));
+            writeFile(resolve(__dirname, './package.json'), JSON.stringify(pkg, null, 4) + '\n');
             await execPromise('pnpm', ['i']).promise;
             // await execPromise('pnpm', [`switch${commandSuffix}`]).promise;
             // try {
