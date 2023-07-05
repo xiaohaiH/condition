@@ -12,6 +12,7 @@
         "switch3": "esno ./start.ts version=3.2.40 --only-switch",
         "----------------------------": "----------------------------",
         "---------------------------|": "----- --no-git-checks ------",
+        "build:publish": "run-s -c build publishing",
         "publishing": "pnpm publish:core && pnpm publish:el && pnpm publish:plus",
         "publish:core": "pnpm --filter @xiaohaih/condition-core publish --access=public",
         "publish:el": "pnpm --filter @xiaohaih/condition-el publish --access=public",
