@@ -22,6 +22,10 @@
         "build:core": "pnpm --filter @xiaohaih/condition-core build",
         "build:el": "pnpm switch2 && pnpm --filter @xiaohaih/condition-el build",
         "build:plus": "pnpm switch3 && pnpm --filter @xiaohaih/condition-el-plus build",
+        "------|---------------------": "---------|-------------------",
+        "cg": "pnpm changeset",
+        "cg:version": "pnpm changeset version",
+        "cg:publish": "pnpm changeset publish",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],

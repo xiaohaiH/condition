@@ -1,5 +1,12 @@
 # @xiaohaih/condition-el
 
+## 0.1.11
+
+### Patch Changes
+
+- 暴露定义条件的返回值类型
+  - @xiaohaih/condition-core@0.1.11
+
 ## 0.1.10
 
 ## 0.1.9
