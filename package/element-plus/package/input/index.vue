@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreInput v-bind="$attrs">
+    <CoreInput v-bind="$props">
         <template #default="{ listeners, debounceChange, enterHandler, ...surplusProps }">
             <ElInput
                 :clearable="clearable"
@@ -17,7 +17,6 @@ import { defineComponent } from 'vue';
 import { CoreInput } from '@xiaohaih/condition-core';
 import { ElInput } from 'element-plus';
 import { inputProps } from '../../src/common/props';
-import { inputProps as CoreInputProps } from '@xiaohaih/condition-core/common/props';
 
 /**
  * @file 输入框
@@ -29,7 +28,7 @@ export default defineComponent({
         CoreInput,
         ElInput,
     },
-    props: inputProps as typeof CoreInputProps & typeof inputProps,
+    props: inputProps,
 });
 </script>
 

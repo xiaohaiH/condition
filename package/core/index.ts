@@ -4,3 +4,6 @@ export { default as CoreInput } from './package/input/index';
 export { default as CoreDatepicker } from './package/datepicker/index';
 export { default as CoreCascader } from './package/cascader/index';
 export * from './interface';
+export * from './common/emits';
+export * from './common/props';
+export * from './common/provide';

@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-unused-vars -->
-    <CoreSelect v-bind="$attrs">
+    <CoreSelect v-bind="$props">
         <template #default="{ labelKey, valueKey, options, listeners, blur, change, ...surplusProps }">
             <ElSelect
                 :filterable="filterable"
@@ -22,7 +22,6 @@ import { defineComponent } from 'vue';
 import { CoreSelect } from '@xiaohaih/condition-core';
 import { ElSelect, ElOption } from 'element-plus';
 import { selectProps } from '../../src/common/props';
-import { selectProps as CoreSelectProps } from '@xiaohaih/condition-core/common/props';
 
 /**
  * @file 下拉框
@@ -35,7 +34,7 @@ export default defineComponent({
         ElSelect,
         ElOption,
     },
-    props: selectProps as typeof CoreSelectProps & typeof selectProps,
+    props: selectProps,
 });
 </script>
 

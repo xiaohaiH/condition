@@ -5,3 +5,6 @@ export { default as HDatePicker } from './package/datepicker/index.vue';
 export { default as HCascader } from './package/cascader/index.vue';
 export * from './assist';
 export * from './interface';
+export * from './src/common/props';
+export * from './src/common/emits';
+export * from './src/common/provide';

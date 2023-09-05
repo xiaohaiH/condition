@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.1.12
+
+### Patch Changes
+
+- 调整 props 参数, 并将其导出为全局模块
+
 ## 0.1.11
 
 ## 0.1.10

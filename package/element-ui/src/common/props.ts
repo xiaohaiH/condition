@@ -1,5 +1,13 @@
 import { PropType } from 'vue-demi';
+import { Select, Input, DatePicker, Cascader } from 'element-ui';
 import { ElementUIComponentSize } from 'element-ui/types/component';
+import {
+    wrapperProps as CoreWrapperProps,
+    selectProps as CoreSelectProps,
+    inputProps as CoreInputProps,
+    datepickerProps as CoreDatepickerProps,
+    cascaderProps as CoreCascaderProps,
+} from '@xiaohaih/condition-core';
 
 /** 条件容器 props */
 export const wrapperProps = {
@@ -13,27 +21,51 @@ export const wrapperProps = {
     searchText: { type: String as PropType<string>, default: '搜索' },
     /** 重置按钮文字 */
     resetText: { type: String as PropType<string>, default: '重置' },
+    ...CoreWrapperProps,
 } as const;
 
 /** select props */
 export const selectProps = {
+    // @ts-ignore
+    ...(Select.props as {}),
     filterable: { type: Boolean as PropType<boolean>, default: true },
     clearable: { type: Boolean as PropType<boolean>, default: true },
+    ...CoreSelectProps,
 } as const;
+// @ts-ignore
+delete selectProps.value;
 
 /** input props */
 export const inputProps = {
+    // @ts-ignore
+    ...(Input.props as {}),
     clearable: { type: Boolean as PropType<boolean>, default: true },
+    rows: { type: Number },
+    placeholder: { type: String },
+    ...CoreInputProps,
 } as const;
+
+/** 提取 mixins 中的 props */
+function extractProps(comp: any) {
+    const result = {};
+    comp.props && Object.assign(result, comp.props);
+    comp.mixins?.forEach((o: any) => Object.assign(result, extractProps(o)));
+    return result;
+}
 
 /** datepicker props */
 export const datepickerProps = {
+    ...extractProps(DatePicker),
     /** 日期格式化的类型 - 给了个默认值 */
     valueFormat: { type: String, default: 'yyyy-MM-dd' },
+    ...CoreDatepickerProps,
 } as const;
 
 /** cascader props */
 export const cascaderProps = {
+    // @ts-ignore
+    ...(Cascader.props as {}),
     filterable: { type: Boolean, default: true },
     clearable: { type: Boolean, default: true },
+    ...CoreCascaderProps,
 } as const;

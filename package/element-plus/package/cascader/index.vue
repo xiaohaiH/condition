@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreCascader v-bind="$attrs">
+    <CoreCascader v-bind="$props">
         <template #default="{ listeners, change, ...surplusProps }">
             <ElCascader
                 :filterable="filterable"
@@ -29,7 +29,7 @@ export default defineComponent({
         CoreCascader,
         ElCascader,
     },
-    props: cascaderProps as typeof CoreCascaderProps & typeof cascaderProps,
+    props: cascaderProps,
 });
 </script>
 

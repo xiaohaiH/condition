@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreDatepicker :range="range" v-bind="$attrs" v-on="$listeners">
+    <CoreDatepicker :range="rangeValue" v-bind="$props" v-on="$listeners">
         <template #default="{ listeners, updateCheckedValue, change, ...surplusProps }">
             <ElDatePicker :valueFormat="valueFormat" v-bind="surplusProps" @input="change"></ElDatePicker>
         </template>
@@ -12,7 +12,6 @@ import { defineComponent } from 'vue-demi';
 import { CoreDatepicker } from '@xiaohaih/condition-core';
 import { DatePicker as ElDatePicker } from 'element-ui';
 import { datepickerProps } from '../../src/common/props';
-import { datepickerProps as CoreDatepickerProps } from '@xiaohaih/condition-core/common/props';
 
 const reg = /range$/;
 function isRange(str: string | undefined) {
@@ -28,9 +27,10 @@ export default defineComponent({
         CoreDatepicker,
         ElDatePicker,
     },
-    props: datepickerProps as typeof CoreDatepickerProps & typeof datepickerProps,
+    props: datepickerProps,
     computed: {
-        range(): boolean {
+        rangeValue(): boolean {
+            // @ts-ignore
             return isRange(this.$attrs.type);
         },
     },

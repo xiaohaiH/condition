@@ -11,8 +11,7 @@
 <script lang="ts">
 import { defineComponent, markRaw, ref } from 'vue';
 import element from './components/element-ui.2.7.vue';
-import * as vue from 'vue';
-console.log(vue)
+
 const componentMap = {
     element: markRaw(element),
 };

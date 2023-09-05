@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreDatepicker :range="range" v-bind="$attrs">
+    <CoreDatepicker :range="range" v-bind="$props">
         <template #default="{ listeners, updateCheckedValue, change, ...surplusProps }">
             <ElDatePicker :valueFormat="valueFormat" v-bind="surplusProps" @update:modelValue="change"></ElDatePicker>
         </template>
@@ -12,7 +12,6 @@ import { computed, defineComponent } from 'vue';
 import { CoreDatepicker } from '@xiaohaih/condition-core';
 import { ElDatePicker } from 'element-plus';
 import { datepickerProps } from '../../src/common/props';
-import { datepickerProps as CoreDatepickerProps } from '@xiaohaih/condition-core/common/props';
 
 const reg = /range$/;
 function isRange(str: string | undefined) {
@@ -28,7 +27,7 @@ export default defineComponent({
         CoreDatepicker,
         ElDatePicker,
     },
-    props: datepickerProps as typeof CoreDatepickerProps & typeof datepickerProps,
+    props: datepickerProps,
     setup(props, ctx) {
         const range = computed(() => isRange(ctx.attrs.type as string));
 

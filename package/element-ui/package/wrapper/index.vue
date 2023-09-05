@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api -->
-    <CoreWrapper ref="conditionRef" v-bind="$attrs" :size="size" v-on="$listeners">
+    <CoreWrapper ref="conditionRef" v-bind="$props" :size="size" v-on="$listeners">
         <template #default="{ t, ...options }">
             <component :is="getComp(t)" v-bind="options"></component>
         </template>
@@ -26,7 +26,6 @@ import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
 import { wrapperProps } from '../../src/common/props';
-import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core/common/props';
 
 const compMap = {
     select: markRaw(HSelect),
@@ -63,7 +62,7 @@ export default defineComponent({
         CoreWrapper,
         ElButton,
     },
-    props: wrapperProps as typeof CoreWrapperProps & typeof wrapperProps,
+    props: wrapperProps,
     setup() {
         const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
         /** 重置数据 */
