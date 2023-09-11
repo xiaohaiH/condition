@@ -60,6 +60,8 @@ export const datepickerProps = {
     /** 日期格式化的类型 - 给了个默认值 */
     valueFormat: { type: String, default: 'yyyy-MM-dd' },
 } as const;
+// @ts-ignore
+delete datepickerProps.range;
 
 /** cascader props */
 export const cascaderProps = {

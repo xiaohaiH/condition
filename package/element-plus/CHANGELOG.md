@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.1.14
+
+### Patch Changes
+
+- 修复 element-ui 版本忘记剔除额外属性引起的 bug
+- Updated dependencies
+  - @xiaohaih/condition-core@0.1.14
+
 ## 0.1.13
 
 ### Patch Changes
