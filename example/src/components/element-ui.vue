@@ -18,6 +18,7 @@
                         tag="main"
                         :resetTriggerSearch="item.resetTriggerSearch"
                         @search="querySearch(index, $event)"
+                        @reset="reset(item)"
                     >
                         <template #btn="option">
                             <ElButton size="mini" @click="option.search">搜索</ElButton>
@@ -55,11 +56,20 @@ export default defineComponent({
             set(conditions.value[index], 'query', query);
             console.log(`搜索事件(${index}): `, { ...query });
         }
+        /**
+         * 搜索
+         */
+        function reset(item: Record<string, any>) {
+            set(item.query, 'a', '666');
+            console.log('reset', `a 重置后设置为\`${666}\`了`);
+        }
 
         return {
             conditions,
             collapseValue,
             querySearch,
+            reset,
+            log: console.log,
         };
     },
 });

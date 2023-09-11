@@ -25,6 +25,7 @@ import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
 import { wrapperProps } from '../../src/common/props';
+import { wrapperEmits } from '../../src/common/emits';
 
 const compMap = {
     select: markRaw(HSelect),
@@ -62,6 +63,7 @@ export default defineComponent({
         ElButton,
     },
     props: wrapperProps,
+    emits: wrapperEmits,
     setup() {
         const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
         /** 重置数据 */

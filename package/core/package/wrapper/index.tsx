@@ -128,6 +128,7 @@ export default defineComponent({
             child.forEach((v) => {
                 v.reset().updateWrapperQuery();
             });
+            ctx.emit('reset', getQuery());
         }
         return {
             child,

@@ -18,6 +18,7 @@
                         tag="main"
                         :resetTriggerSearch="item.resetTriggerSearch"
                         @search="querySearch(index, $event)"
+                        @reset="log('reset', $event)"
                     >
                         <template #btn="option">
                             <ElButton size="mini" @click="option.search">搜索</ElButton>
@@ -58,6 +59,7 @@ export default defineComponent({
             conditions,
             collapseValue,
             querySearch,
+            log: console.log,
         };
     },
 });

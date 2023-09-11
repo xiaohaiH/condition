@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.1.13
+
+### Patch Changes
+
+- 修复未触发重置事件, 修复 vue3 下事件不生效以及某些参数未剔除导致的 bug
+- Updated dependencies
+  - @xiaohaih/condition-core@0.1.13
+
 ## 0.1.12
 
 ### Patch Changes

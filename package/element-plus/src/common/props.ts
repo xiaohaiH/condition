@@ -2,6 +2,7 @@ import { PropType } from 'vue';
 import { HCondition } from '../../interface';
 import { ElConfigProvider, ElSelect, ElInput, ElDatePicker, ElCascader } from 'element-plus';
 import {
+    CoreWrapper,
     wrapperProps as CoreWrapperProps,
     selectProps as CoreSelectProps,
     inputProps as CoreInputProps,
@@ -9,9 +10,9 @@ import {
     cascaderProps as CoreCascaderProps,
 } from '@xiaohaih/condition-core';
 
-const reg = /^[a-z]/;
+const reg = /(^[a-z])|(-[a-z])/g;
 /** 首字母大写 */
-const capitalize = (str: string) => str.toUpperCase();
+const capitalize = (_: any, $1: string, $2: string) => ($1 || $2.charAt(1)).toUpperCase();
 let result: Record<string, any>, _events: string[];
 /** 提取 emits 作为 props */
 export function emits2Props(events?: string[] | Record<string, any>) {
@@ -26,6 +27,7 @@ export function emits2Props(events?: string[] | Record<string, any>) {
 
 /** 条件容器 props */
 export const wrapperProps = {
+    ...emits2Props(CoreWrapper.emits),
     /** 是否渲染按钮 */
     renderBtn: { type: Boolean as PropType<boolean>, default: true },
     /** 组件大小 */
@@ -43,9 +45,9 @@ export const wrapperProps = {
 export const selectProps = {
     ...(ElSelect.props as {}),
     ...emits2Props(ElSelect.emits),
+    ...CoreSelectProps,
     filterable: { type: Boolean as PropType<boolean>, default: true },
     clearable: { type: Boolean as PropType<boolean>, default: true },
-    ...CoreSelectProps,
 } as const;
 
 /** input props */
@@ -58,18 +60,20 @@ export const inputProps = {
 
 /** datepicker props */
 export const datepickerProps = {
-    /** 日期格式化的类型 - 给了个默认值 */
-    valueFormat: { type: String, default: 'YYYY-MM-DD' },
-    ...CoreDatepickerProps,
     ...(ElDatePicker.props as {}),
     ...emits2Props(ElDatePicker.emits),
+    ...CoreDatepickerProps,
+    /** 日期格式化的类型 - 给了个默认值 */
+    valueFormat: { type: String, default: 'YYYY-MM-DD' },
 } as const;
+// @ts-ignore
+delete datepickerProps.range;
 
 /** cascader props */
 export const cascaderProps = {
     ...(ElCascader.props as {}),
     ...emits2Props(ElCascader.emits),
+    ...CoreCascaderProps,
     filterable: { type: Boolean, default: true },
     clearable: { type: Boolean, default: true },
-    ...CoreCascaderProps,
 } as const;

@@ -70,7 +70,8 @@ export default defineComponent({
             unwatchs.push(
                 watch(
                     () => props.backfill?.[BEGIN_FIELD],
-                    (value) => {
+                    (value, oldValue) => {
+                        if (value === oldValue) return;
                         updateFlag();
                         typeof checked.value === 'string' && (checked.value = []);
                         checked.value.splice(0, 1);
@@ -83,7 +84,8 @@ export default defineComponent({
             unwatchs.push(
                 watch(
                     () => props.backfill?.[END_FIELD],
-                    (value) => {
+                    (value, oldValue) => {
+                        if (value === oldValue) return;
                         updateFlag();
                         typeof checked.value === 'string' && (checked.value = []);
                         checked.value.splice(1, 1);
@@ -97,7 +99,8 @@ export default defineComponent({
             unwatchs.push(
                 watch(
                     () => props.backfill?.[FIELD],
-                    (value) => {
+                    (value, oldValue) => {
+                        if (value === oldValue) return;
                         updateFlag();
                         checked.value = emptyToValue(value, props.emptyValue);
                         option.updateWrapperQuery();

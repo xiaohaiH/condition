@@ -16,6 +16,7 @@
                         size="small"
                         tag="main"
                         @search="querySearch(index, $event)"
+                        @reset="reset($event, item)"
                     ></HWrapper>
                 </ElCollapseItem>
             </template>
@@ -24,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, nextTick, ref } from 'vue';
 import { HWrapper } from '@xiaohaih/condition-el-plus';
 import { conditionFactory } from './config3';
 
@@ -45,11 +46,26 @@ export default defineComponent({
             conditions.value[index].query = query;
             console.log(`搜索事件(${index}): `, { ...query });
         }
+        /**
+         * 搜索
+         */
+        function reset(query: Record<string, any>, item: Record<string, any>) {
+            // query.a = '999';
+            // console.log('reset', `a 重置后设置为\`${999}\`了`, query);
+            // return;
+            item.query.a = '';
+            nextTick(() => {
+                item.query.a = '999';
+                console.log('reset', `a 重置后设置为\`${999}\`了`, item.query);
+            });
+        }
 
         return {
             conditions,
             collapseValue,
             querySearch,
+            reset,
+            log: console.log,
         };
     },
 });

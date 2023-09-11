@@ -29,7 +29,8 @@ export default defineComponent({
     },
     props: datepickerProps,
     setup(props, ctx) {
-        const range = computed(() => isRange(ctx.attrs.type as string));
+        // @ts-ignore
+        const range = computed(() => isRange(props.type as string));
 
         return { range };
     },

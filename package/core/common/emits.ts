@@ -9,6 +9,8 @@ export const wrapperEmits = {
     ...commonEmits,
     /** query 已初始化 */
     ready: (query: Record<string, any>) => true,
+    /** 重置事件 */
+    reset: (query: Record<string, any>) => true,
 };
 
 /** select emits */
