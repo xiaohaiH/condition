@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el
 
+## 0.1.15
+
+### Patch Changes
+
+- 修复不存在条件中的字段值发生改变后, 触发搜索事件时, 外部仍拿到旧值的问题
+- Updated dependencies
+  - @xiaohaih/condition-core@0.1.15
+
 ## 0.1.14
 
 ### Patch Changes

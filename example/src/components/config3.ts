@@ -20,11 +20,16 @@ export const conditionFactory = () => [
                 clearable: true,
                 placeholder: '输入框搜索',
             },
+            dd: {
+                t: 'input',
+                clearable: true,
+                placeholder: '输入框搜索',
+            },
             b: {
                 t: 'select',
                 placeholder: '下拉框搜索',
                 // disabled: false,
-                disabled: (query: Record<string, any>) => !!query.a,
+                disabled: (query: Record<string, any>) => !query.a,
                 valueKey: 'dictValue',
                 labelKey: 'dictLabel',
                 options: [
@@ -60,10 +65,33 @@ export const conditionFactory = () => [
             //     endField: 'endTime',
             // },
         },
+        condition2: {
+            a: {
+                t: 'input',
+                clearable: true,
+                placeholder: '输入框搜索',
+            },
+            d: {
+                t: 'datepicker',
+                placeholder: '日期选择',
+            },
+        },
         query: {} as Record<string, any>,
         setQuery(item: any) {
             set(item.query, 'a', '手动设置');
-            set(item.query, 'b', '0');
+            set(item.query, 'b', '1');
+            set(item.query, 'dd', (item.query.dd || 0) + 1);
+            set(item.query, 'ad', (item.query.ad || 0) + 1);
+        },
+        setCondition(item: any) {
+            if (item.ab) {
+                set(item, 'condition', item.condition1);
+                item.ab = false;
+            } else {
+                item.condition1 || (item.condition1 = item.condition);
+                set(item, 'condition', item.condition2);
+                item.ab = true;
+            }
         },
     },
     {

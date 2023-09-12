@@ -9,6 +9,14 @@
                     </ElAlert>
                     <div style="margin: 10px 0">
                         <ElButton @click="item.setQuery(item)" type="primary" size="small">手动设置</ElButton>
+                        <ElButton
+                            v-if="!!item.setCondition"
+                            @click="item.setCondition(item)"
+                            type="primary"
+                            size="small"
+                        >
+                            更改条件
+                        </ElButton>
                     </div>
                     <HWrapper
                         :backfill="item.query"

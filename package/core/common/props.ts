@@ -45,6 +45,8 @@ export const wrapperProps = {
     immediateSearch: { type: Boolean as PropType<boolean> },
     /** 校验不合格的提示 */
     toast: { type: Function as PropType<(msg: string) => void>, default: () => {} },
+    /** 数据源发生变化后是否触发一次搜索事件 */
+    searchAtDatumChanged: { type: Boolean as PropType<boolean> },
 } as const;
 
 /** select props */
