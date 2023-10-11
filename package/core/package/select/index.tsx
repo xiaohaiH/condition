@@ -4,7 +4,7 @@ import { hasOwn, emptyToValue } from '../../utils/index';
 import { selectProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay, useDisableInCurrentCycle } from '../../use';
+import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../../use';
 
 /**
  * @file 下拉框
@@ -15,12 +15,35 @@ export default defineComponent({
     props: selectProps,
     // emits: selectEmits,
     setup(props, ctx) {
-        const { field: FIELD, depend: DEPEND, dependFields: DEPEND_FIELDS } = props;
         const wrapper = inject<ProvideValue>(provideKey);
-        const checked = ref<string | string[]>(props.multiple ? [] : '');
+        const initialValue = useInitialValue(props);
+        const initialBackfillValue = props.backfill && props.backfill[props.field];
+        const checked = ref<string | string[]>(
+            initialBackfillValue ||
+                (props.defaultValue !== undefined ? initialValue.value : props.multiple ? [] : '')
+                    // 防止数组引用导致默认值发生改变
+                    .slice(),
+        );
         const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
-        const initialValue = props.backfill?.[FIELD] || checked.value;
+
+        const option: CommonMethod = {
+            reset,
+            updateWrapperQuery() {
+                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
+                return option;
+            },
+            get validator() {
+                return props.validator;
+            },
+            getQuery,
+        };
+        wrapper?.register(option);
+        const { insetDisabled, insetHide } = useDisplay(props, option);
+        /** 不存在回填值且存在默认值时更新父级中的值 */
+        if (!initialBackfillValue && props.defaultValue) {
+            option.updateWrapperQuery();
+        }
 
         /** 远程获取的数据源 */
         const remoteOption = ref<Record<string, any>[]>([]);
@@ -38,77 +61,102 @@ export default defineComponent({
         const customFilterMethod = computed(() => {
             return props.filterMethod && finalFilterMethod;
         });
-        const option: CommonMethod = {
-            reset,
-            updateWrapperQuery() {
-                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
-                return option;
-            },
-            get validator() {
-                return props.validator;
-            },
-            getQuery,
-        };
-        wrapper?.register(option);
-        const { insetDisabled, insetHide } = useDisplay(props, option);
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
+        // 提交字段发生改变时, 删除原有字段并更新最新值
+        unwatchs.push(
+            watch(
+                () => props.field,
+                (val, oldVal) => {
+                    val !== oldVal && wrapper?.removeUnreferencedField(oldVal);
+                    option.updateWrapperQuery();
+                },
+            ),
+        );
+        // 实时值发生变化时触发更新 - 共享同一个字段
+        unwatchs.push(
+            watch(
+                () => [props.field, props.query[props.field]] as const,
+                ([_field, val], [__field]) => {
+                    // 仅在值发生变化时同步
+                    if (_field !== __field || val === checked.value) return;
+                    checked.value = val;
+                },
+            ),
+        );
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
-                () => props.backfill?.[FIELD],
-                (val: string | string[]) => {
+                () => [props.field, props.backfill?.[props.field]] as const,
+                ([_field, val], [__field]) => {
+                    // 存在回填值时回填, 不存在时不做改动
+                    if (_field !== __field && !props.backfill?.hasOwnProperty(_field)) return;
                     updateFlag();
                     updateCheckedValue(val);
                 },
-                { immediate: true, deep: true },
             ),
         );
-        unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
-        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
-            // 存在依赖项
-            unwatchs.push(
-                watch(
-                    () =>
-                        ([] as string[])
-                            .concat(DEPEND_FIELDS)
-                            .map((k) => props.query?.[k])
-                            .join(','),
-                    (val, oldVal) => {
-                        if (!flag.value) return;
-                        if (val === oldVal) return;
-                        updateCheckedValue(props.multiple ? [] : '');
-                        getOption();
-                    },
-                ),
-            );
-        }
+        // 存在依赖项
+        unwatchs.push(
+            watch(
+                () =>
+                    [
+                        props.depend,
+                        props.dependFields,
+                        (props.dependFields &&
+                            ([] as string[])
+                                .concat(props.dependFields)
+                                .map((k) => props.query?.[k])
+                                .join(',')) ||
+                            '',
+                    ] as const,
+                ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
+                    if (!flag.value) return;
+                    if (checked.value === undefined || checked.value.toString() === '') return;
+                    // 更新依赖条件时不做改动
+                    if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
+                    if (val === oldVal) return;
+                    updateCheckedValue(props.multiple ? [] : '');
+                    getOption('depend');
+                },
+            ),
+        );
+        unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial'), { immediate: true }));
 
-        /**
-         * 失焦事件
-         */
+        /** 失焦事件 */
         function blur() {
             // const blurHandler = getEvent(ctx, 'blur');
             // blurHandler?.(...arguments);
             props.filterMethod && finalFilterMethod('');
         }
-        /**
-         * 获取数据源发生变化事件
-         */
-        function getOption() {
-            props.getOptions?.((data) => {
-                const _checked = checked.value;
-                // 重置 checked, 防止增加 option 后, select 值没更新的问题
-                checked.value = undefined as any;
-                remoteOption.value = data || [];
-                checked.value = _checked;
-            }, props.query || {});
+        /** 获取数据源发生变化事件 */
+        function getOption(trigger: 'initial' | 'depend') {
+            props.getOptions?.(
+                (data) => {
+                    const _checked = checked.value;
+                    // 重置 checked, 防止增加 option 后, select 值没更新的问题
+                    checked.value = undefined as any;
+                    remoteOption.value = data || [];
+                    checked.value = _checked;
+                },
+                props.query || {},
+                {
+                    trigger,
+                    change: (value: any, isInitial?: boolean) => {
+                        isInitial && (initialValue.value = value);
+                        change(value);
+                    },
+                    search: (value: any, isInitial?: boolean) => {
+                        isInitial && (initialValue.value = value);
+                        updateCheckedValue(value);
+                        wrapper?.search();
+                    },
+                },
+            );
         }
-        /**
-         * 过滤方法
-         */
+        /** 过滤方法 */
         function finalFilterMethod(value: string) {
             const { filterMethod } = props;
             if (value === '' || value === undefined) {
@@ -142,7 +190,7 @@ export default defineComponent({
         function reset() {
             const { multiple } = props;
             updateFlag();
-            checked.value = props.resetToInitialValue ? initialValue : multiple ? [] : '';
+            checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
             return option;
         }
 

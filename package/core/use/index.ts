@@ -1,6 +1,26 @@
-import { ref, watch, onBeforeUnmount, ExtractPropTypes, nextTick } from 'vue-demi';
+import { ref, watch, onBeforeUnmount, ExtractPropTypes, nextTick, computed } from 'vue-demi';
 import { CommonMethod } from './../common/provide';
 import { commonProps } from './../common/props';
+
+/** 获取条件的初始值 */
+export function useInitialValue<T extends ExtractPropTypes<Readonly<typeof commonProps>>>(props: T) {
+    const setValue = ref<any>();
+    const a = computed({
+        set(value: any) {
+            setValue.value = value;
+        },
+        get() {
+            return setValue.value === undefined
+                ? props.defaultValue !== undefined
+                    ? typeof props.defaultValue === 'function'
+                        ? props.defaultValue(props.query, props.backfill)
+                        : props.defaultValue
+                    : undefined
+                : setValue.value;
+        },
+    });
+    return a;
+}
 
 /**
  * 获取当前组件的显示和隐藏状态

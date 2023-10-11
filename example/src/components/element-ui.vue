@@ -22,9 +22,12 @@
                     <HWrapper
                         :backfill="item.query"
                         :datum="item.condition"
+                        :immediate-search="!!item.defaultValue"
+                        :reset-to-initial-value="true"
+                        :reset-trigger-search="true"
                         size="mini"
                         tag="main"
-                        :resetTriggerSearch="item.resetTriggerSearch"
+                        @ready="querySearch(index, $event)"
                         @search="querySearch(index, $event)"
                         @reset="reset(item)"
                     >
@@ -68,8 +71,8 @@ export default defineComponent({
          * 搜索
          */
         function reset(item: Record<string, any>) {
-            set(item.query, 'a', '666');
-            console.log('reset', `a 重置后设置为\`${666}\`了`);
+            // set(item.query, 'a', '666');
+            // console.log('reset', `a 重置后设置为\`${666}\`了`);
         }
 
         return {

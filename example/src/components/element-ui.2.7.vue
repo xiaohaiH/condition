@@ -22,9 +22,12 @@
                     <HWrapper
                         :backfill="item.query"
                         :datum="item.condition"
+                        :immediate-search="!!item.defaultValue"
+                        :reset-to-initial-value="true"
+                        :reset-trigger-search="true"
                         size="mini"
                         tag="main"
-                        :resetTriggerSearch="item.resetTriggerSearch"
+                        @ready="querySearch(index, $event)"
                         @search="querySearch(index, $event)"
                         @reset="log('reset', $event)"
                     >

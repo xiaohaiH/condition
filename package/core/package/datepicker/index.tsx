@@ -4,7 +4,7 @@ import { hasOwn, emptyToValue } from '../../utils/index';
 import { datepickerProps } from '../../common/props';
 import { datepickerEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay, useDisableInCurrentCycle } from '../../use';
+import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../../use';
 
 /**
  * @file 日期
@@ -15,16 +15,19 @@ export default defineComponent({
     props: datepickerProps,
     // emits: datepickerEmits,
     setup(props, ctx) {
-        const {
-            field: FIELD,
-            range: RANGE,
-            beginField: BEGIN_FIELD,
-            endField: END_FIELD,
-            depend: DEPEND,
-            dependFields: DEPEND_FIELDS,
-        } = props;
         const wrapper = inject<ProvideValue>(provideKey);
-        const checked = ref<string | string[]>(RANGE && BEGIN_FIELD && END_FIELD ? ['', ''] : '');
+        const initialValue = useInitialValue(props);
+        const initialBackfillValue =
+            props.backfill &&
+            (props.range && props.beginField && props.endField ? ['', ''] : props.backfill[props.field]);
+        const initialBackfillValueStr =
+            initialBackfillValue &&
+            (typeof initialBackfillValue === 'string' ? initialBackfillValue : initialBackfillValue.join(''));
+        const checked = ref<string | string[]>(
+            ((initialBackfillValueStr && initialBackfillValue) || initialValue.value || initialBackfillValueStr || '')
+                // 防止数组引用导致默认值发生改变
+                .slice(),
+        );
         const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () =>
             props.range && props.beginField && props.endField
@@ -37,10 +40,6 @@ export default defineComponent({
                           ? [...checked.value]
                           : emptyToValue(checked.value, props.emptyValue),
                   };
-        const initialValue =
-            (RANGE && BEGIN_FIELD && END_FIELD
-                ? [props.backfill?.[BEGIN_FIELD] || '', props.backfill?.[END_FIELD] || '']
-                : props.backfill?.[FIELD]) || '';
 
         const option: CommonMethod = {
             reset,
@@ -61,71 +60,109 @@ export default defineComponent({
         };
         wrapper?.register(option);
         const { insetDisabled, insetHide } = useDisplay(props, option);
+        /** 不存在回填值且存在默认值时更新父级中的值 */
+        if (!initialBackfillValueStr && props.defaultValue) {
+            option.updateWrapperQuery();
+        }
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
+        // 提交字段发生改变时, 删除原有字段并更新最新值
+        unwatchs.push(
+            watch(
+                () => props.field,
+                (val, oldVal) => {
+                    val !== oldVal && wrapper?.removeUnreferencedField(oldVal);
+                    option.updateWrapperQuery();
+                },
+            ),
+        );
+        // 实时值发生变化时触发更新 - 共享同一个字段
+        unwatchs.push(
+            watch(
+                () =>
+                    props.range && props.beginField && props.endField
+                        ? ([
+                              true,
+                              [props.beginField, props.query[props.beginField]],
+                              [props.endField, props.query[props.endField]],
+                          ] as const)
+                        : ([false, [props.field, props.query[props.field]]] as const),
+                ([_range, ..._fields], [__range, ...__fields]) => {
+                    // 仅在值发生变化时同步
+                    if (_fields.some((o, i) => o[0] !== __fields[i][0])) return;
+                    if (_range) {
+                        // 多个日期
+                        typeof checked.value === 'string' && (checked.value = []);
+                        _fields.forEach((o, i) => {
+                            checked.value[i] !== o[1] &&
+                                o[1] !== __fields[i][1] &&
+                                ((checked.value as string[])[i] = o[1] || '');
+                        });
+                    } else {
+                        // 单个日期
+                        checked.value !== _fields[0][1] &&
+                            _fields[0][1] !== __fields[0][1] &&
+                            (checked.value = _fields[0][1] || '');
+                    }
+                },
+            ),
+        );
         // 回填值发生变化时触发更新
-        if (RANGE && BEGIN_FIELD && END_FIELD) {
-            unwatchs.push(
-                watch(
-                    () => props.backfill?.[BEGIN_FIELD],
-                    (value, oldValue) => {
-                        if (value === oldValue) return;
+        unwatchs.push(
+            watch(
+                () =>
+                    props.range && props.beginField && props.endField
+                        ? ([true, props.backfill?.[props.beginField], props.backfill?.[props.endField]] as const)
+                        : ([false, props.backfill?.[props.field]] as const),
+                ([_range, ..._values], [__range, ...__values]) => {
+                    // if (_range !== __range) return;
+                    // 多个日期
+                    if (_range) {
+                        let change = false;
+                        _values.forEach((o, idx) => {
+                            if (o === __values[idx]) return;
+                            updateFlag();
+                            typeof checked.value === 'string' && (checked.value = []);
+                            checked.value.splice(idx, 1);
+                            o && checked.value.splice(idx, 0, o);
+                            change = true;
+                        });
+                        change && option.updateWrapperQuery();
+                    } else {
+                        // 单个日期
+                        if (_values[0] === __values[0]) return;
                         updateFlag();
-                        typeof checked.value === 'string' && (checked.value = []);
-                        checked.value.splice(0, 1);
-                        value && checked.value.splice(0, 0, value);
+                        checked.value = emptyToValue(_values[0], props.emptyValue);
                         option.updateWrapperQuery();
-                    },
-                    { immediate: true },
-                ),
-            );
-            unwatchs.push(
-                watch(
-                    () => props.backfill?.[END_FIELD],
-                    (value, oldValue) => {
-                        if (value === oldValue) return;
-                        updateFlag();
-                        typeof checked.value === 'string' && (checked.value = []);
-                        checked.value.splice(1, 1);
-                        value && checked.value.splice(1, 0, value);
-                        option.updateWrapperQuery();
-                    },
-                    { immediate: true },
-                ),
-            );
-        } else {
-            unwatchs.push(
-                watch(
-                    () => props.backfill?.[FIELD],
-                    (value, oldValue) => {
-                        if (value === oldValue) return;
-                        updateFlag();
-                        checked.value = emptyToValue(value, props.emptyValue);
-                        option.updateWrapperQuery();
-                    },
-                    { immediate: true, deep: true },
-                ),
-            );
-        }
+                    }
+                },
+            ),
+        );
         // 存在依赖项
-        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
-            unwatchs.push(
-                watch(
-                    () =>
-                        ([] as string[])
-                            .concat(DEPEND_FIELDS)
-                            .map((k) => props.query?.[k])
-                            .join(','),
-                    (val, oldVal) => {
-                        if (!flag.value) return;
-                        if (val === oldVal) return;
-                        updateCheckedValue(null);
-                    },
-                ),
-            );
-        }
+        unwatchs.push(
+            watch(
+                () =>
+                    [
+                        props.depend,
+                        props.dependFields,
+                        (props.dependFields &&
+                            ([] as string[])
+                                .concat(props.dependFields)
+                                .map((k) => props.query?.[k])
+                                .join(',')) ||
+                            '',
+                    ] as const,
+                ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
+                    if (!flag.value) return;
+                    // 更新依赖条件时不做改动
+                    if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
+                    if (val === oldVal) return;
+                    updateCheckedValue(null);
+                },
+            ),
+        );
 
         /**
          * 日期更新事件
@@ -149,7 +186,7 @@ export default defineComponent({
         function reset() {
             const { range } = props;
             updateFlag();
-            checked.value = props.resetToInitialValue ? initialValue : range ? ['', ''] : '';
+            checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (range ? ['', ''] : '');
             return option;
         }
 

@@ -20,8 +20,7 @@ import { wrapperProps } from '../../common/props';
 import { wrapperEmits } from '../../common/emits';
 import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
 
-// TODO 所有子组件目前都没支持 field 变化(例如通过 as, beginField 之类)时的处理, 后续需支持
-// tips 日期组件在类型发生变化时需特殊处理
+// TODO 日期组件在类型发生变化时需特殊处理
 
 /**
  * @file 条件包装组件(入口组件)
@@ -53,7 +52,7 @@ export default defineComponent({
                     idx !== -1 && child.splice(idx, 1);
                     props.searchAtDatumChanged && wrapperInstance.search();
                     // TODO 不确定的一点, 数据源更改后是否需要重置整个数据
-                    // TODO 如果需要重置, 得更新后第一次搜索事件时传递的搜索值
+                    // 如果需要重置, 得更新后第一次搜索事件时传递的搜索值
                     isLogField = false;
                     logFields.forEach((k) => del(query.value, k));
                     logFields = [];
@@ -77,6 +76,15 @@ export default defineComponent({
                 return wrapperInstance;
             },
             search: querySearch,
+            removeUnreferencedField(field: string) {
+                let sameFieldCount = 0;
+                child.some((v) => {
+                    v.getQuery().hasOwnProperty(field) && (sameFieldCount += 1);
+                    return sameFieldCount;
+                });
+                sameFieldCount || del(query.value, field);
+                return wrapperInstance;
+            },
         };
         provide<ProvideValue>(provideKey, wrapperInstance);
 

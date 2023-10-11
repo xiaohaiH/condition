@@ -4,7 +4,7 @@ import { hasOwn, emptyToValue, getChained } from '../../utils/index';
 import { cascaderProps } from '../../common/props';
 // import { cascaderEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay, useDisableInCurrentCycle } from '../../use';
+import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../../use';
 
 export type ValueType = string | number | null | undefined;
 
@@ -22,40 +22,24 @@ export default defineComponent({
     props: cascaderProps,
     // emits: cascaderEmits,
     setup(props, ctx) {
-        const {
-            field: FIELD,
-            fields: FIELDS,
-            backfill: BACKFILL,
-            getOptions: GET_OPTIONS,
-            depend: DEPEND,
-            dependFields: DEPEND_FIELDS,
-        } = props;
-        const DATA_ASYNC = {
-            initialize: isEmpty(BACKFILL?.[FIELD]) || typeof GET_OPTIONS !== 'function',
-            initialValue: BACKFILL?.[FIELD],
-        };
+        /** 数据源是否初始化, 未初始化不做任何操作 */
         const wrapper = inject<ProvideValue>(provideKey);
+        const initialValue = useInitialValue(props);
+        // const initialBackfillValue = props.backfill && props.backfill[props.field];
         const checked = ref<ValueType[]>([]);
-        const { flag, updateFlag } = useDisableInCurrentCycle();
-        const getQuery = () =>
-            FIELDS?.length
-                ? FIELDS.reduce((p, v, i) => Object.assign(p, { [v]: checked.value[i] }), {})
-                : { [FIELD]: props.emitPath ? [...checked.value] : checked.value.slice(-1)[0] };
         /** 远程获取的数据源 */
         const remoteOption = ref<Record<string, any>[]>([]);
         /** 优先使用远程数据源 */
         const finalOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
-        let initialValue = FIELDS?.length
-            ? FIELDS.reduce((p, k) => {
-                  BACKFILL?.[k] && p.push(BACKFILL[k]);
-                  return p;
-              }, [] as ValueType[])
-            : Array.isArray(BACKFILL?.[FIELD])
-            ? BACKFILL![FIELD]
-            : DATA_ASYNC.initialize
-            ? insideGetChained(BACKFILL?.[FIELD])
-            : [];
+        const getQuery = () => {
+            // 未初始化且不存在默认值时不返回查询值
+            if (!sourceIsInit.value && !initialValue.value) return {};
+            return props.fields?.length
+                ? props.fields.reduce((p, v, i) => Object.assign(p, { [v]: checked.value[i] }), {})
+                : { [props.field]: props.emitPath ? [...checked.value] : checked.value.slice(-1)[0] };
+        };
 
+        const { flag, updateFlag } = useDisableInCurrentCycle();
         const option: CommonMethod = {
             reset,
             get validator() {
@@ -63,21 +47,17 @@ export default defineComponent({
             },
             updateWrapperQuery() {
                 const { field, fields, emitPath } = props;
-                if (!DATA_ASYNC.initialize) {
-                    // 数据未初始化前, 不对结果做任何操作
-                    wrapper?.updateQueryValue(field, DATA_ASYNC.initialValue);
+                if (fields?.length) {
+                    fields.forEach((k, i) => {
+                        wrapper?.updateQueryValue(k, emptyToValue(checked.value[i], props.emptyValue));
+                    });
                 } else {
-                    if (fields?.length) {
-                        fields.forEach((k, i) => {
-                            wrapper?.updateQueryValue(k, emptyToValue(checked.value[i], props.emptyValue));
-                        });
-                    } else {
-                        wrapper?.updateQueryValue(
-                            field,
-                            emptyToValue(emitPath ? [...checked.value] : checked.value.slice(-1)[0], props.emptyValue),
-                        );
-                    }
+                    wrapper?.updateQueryValue(
+                        field,
+                        emptyToValue(emitPath ? [...checked.value] : checked.value.slice(-1)[0], props.emptyValue),
+                    );
                 }
+                // }
                 return option;
             },
             getQuery,
@@ -88,7 +68,37 @@ export default defineComponent({
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
-        unwatchs.push(watch(() => props.getOptions, getOption, { immediate: true }));
+        const sourceIsInit = ref(typeof props.getOptions !== 'function' || !!props.fields?.length);
+        watch(sourceIsInit, (val) => val && initCheckedInfo(), { immediate: true });
+
+        // 提交字段发生改变时, 删除原有字段并更新最新值
+        unwatchs.push(
+            watch(
+                () => props.fields || [props.field],
+                (val, oldVal) => {
+                    val.toString() !== oldVal.toString() &&
+                        wrapper &&
+                        oldVal.forEach((o) => val.includes(o) || wrapper.removeUnreferencedField(o));
+
+                    option.updateWrapperQuery();
+                },
+            ),
+        );
+        // 实时值发生变化时触发更新 - 共享同一个字段
+        unwatchs.push(
+            watch(
+                () =>
+                    [
+                        props.fields?.toString() || props.field,
+                        props.fields?.map((v) => props.query[v]) || props.field,
+                    ] as const,
+                ([_field, val], [__field]) => {
+                    // 仅在值发生变化时同步
+                    if (_field !== __field) return;
+                    checked.value = typeof val === 'string' ? insideGetChained(val) : val;
+                },
+            ),
+        );
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
@@ -100,6 +110,7 @@ export default defineComponent({
                           }, [] as string[])
                         : props.backfill?.[props.field],
                 (value: ValueType | ValueType[]) => {
+                    if (!sourceIsInit.value) return;
                     updateFlag();
                     if (Array.isArray(value)) {
                         updateCheckedValue(value);
@@ -108,50 +119,92 @@ export default defineComponent({
                             checked.value.length && (checked.value = []);
                             return;
                         }
-                        if (!DATA_ASYNC.initialize) {
-                            option.updateWrapperQuery();
-                        } else {
-                            updateCheckedValue(insideGetChained(value));
-                        }
+                        updateCheckedValue(insideGetChained(value));
                     }
                 },
-                { immediate: true, deep: true },
             ),
         );
         // 存在依赖项
-        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
-            unwatchs.push(
-                watch(
-                    () =>
-                        ([] as string[])
-                            .concat(DEPEND_FIELDS)
-                            .map((k) => props.query?.[k])
-                            .join(','),
-                    (val, oldVal) => {
-                        if (!flag.value) return;
-                        if (val === oldVal) return;
-                        updateCheckedValue(typeof checked.value === 'string' ? '' : []);
-                        getOption();
-                    },
-                ),
-            );
-        }
+        unwatchs.push(
+            watch(
+                () =>
+                    [
+                        props.depend,
+                        props.dependFields,
+                        (props.dependFields &&
+                            ([] as string[])
+                                .concat(props.dependFields)
+                                .map((k) => props.query?.[k])
+                                .join(',')) ||
+                            '',
+                    ] as const,
+                ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
+                    if (!flag.value) return;
+                    if (!checked.value.length) return;
+                    // 更新依赖条件时不做改动
+                    if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
+                    if (val === oldVal) return;
+                    updateCheckedValue(typeof checked.value === 'string' ? '' : []);
+                    getOption('depend');
+                },
+            ),
+        );
+        unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial'), { immediate: true }));
 
-        /**
-         * 获取数据源发生变化事件
-         */
-        function getOption() {
-            props.getOptions?.((data) => {
-                const _checked = checked.value;
-                // 重置 checked, 防止增加 option 后, cascader 值没更新的问题
-                checked.value = [];
-                remoteOption.value = data || [];
-                checked.value = _checked;
-                if (!DATA_ASYNC.initialize) {
-                    updateCheckedValue((initialValue = insideGetChained(DATA_ASYNC.initialValue)));
-                    DATA_ASYNC.initialize = true;
+        /** 设置初次选中的值以及初始值 */
+        function initCheckedInfo() {
+            const { backfill: BACKFILL, field: FIELD, fields: FIELDS } = props;
+            if (BACKFILL) {
+                // 存在回填值且回填值中对应字段为真
+                // 则设置回填值并不处理后续逻辑
+                if (FIELDS) {
+                    const r = FIELDS.reduce((p, v) => {
+                        BACKFILL[v] && p.push(BACKFILL[v]);
+                        return p;
+                    }, [] as string[]);
+                    if (r.length) {
+                        checked.value = r;
+                        option.updateWrapperQuery();
+                        return;
+                    }
+                } else if (BACKFILL[FIELD]) {
+                    checked.value = insideGetChained(BACKFILL[FIELD]);
+                    option.updateWrapperQuery();
+                    return;
                 }
-            }, props.query || {});
+            }
+            // 不存在回填值, 看是否存在初始值
+            // 存在设置默认值
+            if (initialValue.value?.length) {
+                checked.value =
+                    typeof initialValue.value === 'string'
+                        ? insideGetChained(initialValue.value)
+                        : initialValue.value.slice();
+                typeof initialValue.value === 'string' && (initialValue.value = checked.value.slice());
+                option.updateWrapperQuery();
+            }
+        }
+        /** 获取数据源发生变化事件 */
+        function getOption(trigger: 'initial' | 'depend') {
+            props.getOptions?.(
+                (data) => {
+                    remoteOption.value = data || [];
+                    sourceIsInit.value = true;
+                },
+                props.query || {},
+                {
+                    trigger,
+                    change: (value: any, isInitial?: boolean) => {
+                        isInitial && (initialValue.value = value);
+                        change(value);
+                    },
+                    search: (value: any, isInitial?: boolean) => {
+                        isInitial && (initialValue.value = value);
+                        updateCheckedValue(value);
+                        wrapper?.search();
+                    },
+                },
+            );
         }
         /**
          * 更新选中值(父级也同步更改)
@@ -176,7 +229,7 @@ export default defineComponent({
          */
         function reset() {
             updateFlag();
-            checked.value = props.resetToInitialValue ? initialValue : [];
+            checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || [];
             return option;
         }
         /**

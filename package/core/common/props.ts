@@ -1,5 +1,20 @@
 import { PropType } from 'vue-demi';
 
+/** 改变当前条件值触发方式 */
+export interface TriggerOption {
+    /**
+     * 触发来源
+     * @enum {('initial'|'depend')} initial(初始化), depend(依赖项改变)
+     */
+    trigger: string;
+    /** 改变内部的值 */
+    change(value: any, updateInitialValue?: boolean): void;
+    /** 触发搜索事件 */
+    search(value: any, updateInitialValue?: boolean): void;
+}
+/** 条件值可能的类型 */
+export type ValueType = string | string[];
+
 /** 公共 props */
 export const commonProps = {
     /** 提交的字段 */
@@ -22,6 +37,12 @@ export const commonProps = {
     validator: {
         type: [Function] as PropType<
             ((query: Record<string, any>) => any) | ((query: Record<string, any>) => Promise<any>)
+        >,
+    },
+    /** 设置默认值 */
+    defaultValue: {
+        type: [String, Array, Function] as PropType<
+            string | string[] | ((query: Record<string, any>, backfill?: Record<string, any>) => ValueType)
         >,
     },
     /** 是否依赖其它字段 */
@@ -62,7 +83,9 @@ export const selectProps = {
     multiple: { type: Boolean as PropType<boolean> },
     /** 获取数据源 */
     getOptions: {
-        type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
+        type: Function as PropType<
+            (cb: (data: Record<string, any>[]) => void, query: Record<string, any>, option: TriggerOption) => any
+        >,
     },
     /** 自定义筛选方法 */
     filterMethod: { type: Function as PropType<(val: string, data: Record<string, any>) => boolean> },
@@ -103,6 +126,8 @@ export const cascaderProps = {
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
     /** 获取数据源 */
     getOptions: {
-        type: Function as PropType<(cb: (data: Record<string, any>[]) => void, query: Record<string, any>) => any>,
+        type: Function as PropType<
+            (cb: (data: Record<string, any>[]) => void, query: Record<string, any>, option: TriggerOption) => any
+        >,
     },
 } as const;

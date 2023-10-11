@@ -15,6 +15,12 @@ export const conditionFactory = () => [
                 t: 'input',
                 clearable: true,
                 placeholder: '输入框搜索',
+                defaultValue: '666',
+            },
+            dd: {
+                t: 'input',
+                clearable: true,
+                placeholder: '输入框搜索',
             },
             b: {
                 t: 'select',
@@ -23,15 +29,36 @@ export const conditionFactory = () => [
                 disabled: (query: Record<string, any>) => !query.a,
                 valueKey: 'dictValue',
                 labelKey: 'dictLabel',
+                options: [],
+                defaultValue: '2',
+                getOptions(cb, query, option) {
+                    setTimeout(() => {
+                        cb([
+                            { dictValue: '1', dictLabel: '选项一' },
+                            { dictValue: '2', dictLabel: '选项二' },
+                            { dictValue: 'example', dictLabel: '选项三' },
+                        ]);
+                        option.trigger === 'initial' && option.search('example');
+                    });
+                },
+            },
+            ccc: {
+                t: 'select',
+                placeholder: '下拉框搜索',
+                // disabled: false,
+                valueKey: 'dictValue',
+                labelKey: 'dictLabel',
                 options: [
                     { dictValue: '1', dictLabel: '选项一' },
                     { dictValue: '2', dictLabel: '选项二' },
                     { dictValue: 'example', dictLabel: '选项三' },
                 ],
+                defaultValue: () => 'example',
             },
             c: {
                 t: 'datepicker',
                 placeholder: '日期选择',
+                defaultValue: '2023-10-10',
             },
             d: {
                 as: 'startTime_endTime',
@@ -43,13 +70,46 @@ export const conditionFactory = () => [
                 endPlaceholder: '结束',
                 beginField: 'startTime',
                 endField: 'endTime',
+                defaultValue: ['2023-10-08', '2023-10-11'],
             },
-            // e: {
-            //     t: 'cascader',
-            //     placeholder: '级联选择 - 单值',
-            //     beginField: 'startTime',
-            //     endField: 'endTime',
-            // },
+            e: {
+                t: 'cascader',
+                placeholder: '级联选择',
+                resetToInitialValue: true,
+                valueKey: 'value',
+                // fields: ['cascader-a', 'cascader-b'],
+                // emitPath: true,
+                props: {
+                    checkStrictly: true,
+                },
+                defaultValue: ['2', '2-1'],
+                getOptions(cb, query, option) {
+                    setTimeout(() => {
+                        cb([
+                            { label: 'A', value: '1', children: [{ label: 'A-11111', value: '1-1' }] },
+                            {
+                                label: 'B',
+                                value: '2',
+                                children: [
+                                    { label: 'B-11111', value: '2-1' },
+                                    { label: 'B-22222', value: '2-2' },
+                                ],
+                            },
+                            {
+                                label: 'C',
+                                value: '3',
+                                children: [
+                                    { label: 'C-11111', value: '3-1' },
+                                    { label: 'C-22222', value: '3-2' },
+                                    { label: 'C-33333', value: '3-3' },
+                                    { label: 'C-44444', value: '3-4' },
+                                ],
+                            },
+                        ]);
+                        // option.search(['3', '3-3']);
+                    }, 2000);
+                },
+            },
             // f: {
             //     t: 'cascader',
             //     placeholder: '级联选择 - 多值',
@@ -68,7 +128,7 @@ export const conditionFactory = () => [
                 placeholder: '日期选择',
             },
         },
-        query: {} as Record<string, any>,
+        query: { e: '1-1', 'cascader-a': '3', 'cascader-b': '3-3' } as Record<string, any>,
         setQuery(item: any) {
             set(item.query, 'a', '手动设置');
             set(item.query, 'b', '1');

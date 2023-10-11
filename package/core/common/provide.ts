@@ -30,26 +30,20 @@ export interface ProvideValue {
      * 提供给组件内部的直接触发到外部的搜索事件
      */
     search(): Promise<string | void>;
+    /** 删除内部无引用的字段 */
+    removeUnreferencedField(field: string): ProvideValue;
 }
 
 /**
  * 子组件需暴露出来的公共属性
  */
 export interface CommonMethod {
-    /**
-     * 重置
-     */
+    /** 重置 */
     reset(): CommonMethod;
-    /**
-     * 更新父级中 query 的值
-     */
+    /** 更新父级中 query 的值 */
     updateWrapperQuery(): CommonMethod;
-    /**
-     * 校验方法
-     */
+    /** 校验方法 */
     validator?(query: Record<string, string>): Promise<any> | any;
-    /**
-     * 获取该组件拼接的参数
-     */
+    /** 获取该组件拼接的参数 */
     getQuery(): Record<string, any>;
 }

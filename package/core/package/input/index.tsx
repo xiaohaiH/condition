@@ -4,7 +4,7 @@ import { existsEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { inputProps } from '../../common/props';
 // import { inputEmits } from '../../common/emits';
 import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
-import { useDisplay, useDisableInCurrentCycle } from '../../use';
+import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../../use';
 
 /**
  * @file 输入框
@@ -15,12 +15,12 @@ export default defineComponent({
     props: inputProps,
     // emits: inputEmits,
     setup(props, ctx) {
-        const { field: FIELD, depend: DEPEND, dependFields: DEPEND_FIELDS } = props;
         const wrapper = inject<ProvideValue>(provideKey);
-        const checked = ref<string>('');
+        const initialValue = useInitialValue(props);
+        const initialBackfillValue = props.backfill && props.backfill[props.field];
+        const checked = ref<string>(initialBackfillValue || initialValue.value || '');
         const { flag, updateFlag } = useDisableInCurrentCycle();
         const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
-        const initialValue = props.backfill?.[FIELD] || checked.value;
 
         const option: CommonMethod = {
             reset,
@@ -35,41 +35,74 @@ export default defineComponent({
         };
         wrapper?.register(option);
         const { insetDisabled, insetHide } = useDisplay(props, option);
+        /** 不存在回填值且存在默认值时更新父级中的值 */
+        if (!initialBackfillValue && props.defaultValue) {
+            option.updateWrapperQuery();
+        }
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
+        // 提交字段发生改变时, 删除原有字段并更新最新值
+        unwatchs.push(
+            watch(
+                () => props.field,
+                (val, oldVal) => {
+                    val !== oldVal && wrapper?.removeUnreferencedField(oldVal);
+                    option.updateWrapperQuery();
+                },
+            ),
+        );
+        // 实时值发生变化时触发更新 - 共享同一个字段
+        unwatchs.push(
+            watch(
+                () => [props.field, props.query[props.field]] as const,
+                ([_field, val], [__field]) => {
+                    // 仅在值发生变化时同步
+                    if (_field !== __field || val === checked.value) return;
+                    checked.value = val;
+                },
+            ),
+        );
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
-                () => props.backfill?.[FIELD],
-                (val) => {
+                () => [props.field, props.backfill?.[props.field]] as const,
+                ([_field, val], [__field]) => {
+                    // 存在回填值时回填, 不存在时不做改动
+                    if (_field !== __field && !props.backfill?.hasOwnProperty(_field)) return;
                     if (val === checked.value) return;
                     updateFlag();
                     checked.value = val;
                     option.updateWrapperQuery();
                 },
-                { immediate: true, deep: true },
             ),
         );
         // 存在依赖项
-        if (DEPEND && DEPEND_FIELDS && DEPEND_FIELDS.length) {
-            unwatchs.push(
-                watch(
-                    () =>
-                        ([] as string[])
-                            .concat(DEPEND_FIELDS)
-                            .map((k) => props.query?.[k])
-                            .join(','),
-                    (val, oldVal) => {
-                        if (!flag.value) return;
-                        if (val === oldVal) return;
-                        checked.value = '';
-                        option.updateWrapperQuery();
-                    },
-                ),
-            );
-        }
+        unwatchs.push(
+            watch(
+                () =>
+                    [
+                        props.depend,
+                        props.dependFields,
+                        (props.dependFields &&
+                            ([] as string[])
+                                .concat(props.dependFields)
+                                .map((k) => props.query?.[k])
+                                .join(',')) ||
+                            '',
+                    ] as const,
+                ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
+                    if (!flag.value) return;
+                    if (checked.value === '') return;
+                    // 更新依赖条件时不做改动
+                    if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
+                    if (val === oldVal) return;
+                    checked.value = '';
+                    option.updateWrapperQuery();
+                },
+            ),
+        );
 
         // /**
         //  * 实时(直接触发 change 事件), 非实时(延时触发 change 事件)
@@ -109,7 +142,7 @@ export default defineComponent({
          */
         function reset() {
             updateFlag();
-            checked.value = props.resetToInitialValue ? initialValue : '';
+            checked.value = (props.resetToInitialValue && initialValue.value) || '';
             return option;
         }
 
