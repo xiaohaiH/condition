@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.1.16
+
+### Patch Changes
+
+- 增加默认值设置, 支持 field 字段动态改变
+
 ## 0.1.15
 
 ### Patch Changes
