@@ -4,7 +4,7 @@
         <template
             #default="{ labelKey, valueKey, options, listeners, blur, change, label, labelSuffix, ...surplusProps }"
         >
-            <div :class="`condition-item condition-item--cascader condition-item--${field}`">
+            <div :class="`condition-item condition-item--select condition-item--${field}`">
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
                 <ElSelect
                     :filterable="filterable"

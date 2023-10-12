@@ -1,5 +1,6 @@
 // import { set } from '../composition-api';
 // import { set } from '@vue/composition-api';
+import { defineComponent, markRaw, h } from 'vue';
 import { defineCondition } from '@xiaohaih/condition-el-plus';
 
 // function defineCondition(v: any) {
@@ -8,14 +9,14 @@ import { defineCondition } from '@xiaohaih/condition-el-plus';
 function set(target: any, key: string, value: any) {
     target[key] = value;
 }
-
+let a;
 export const conditionFactory = () => [
     {
         name: 'base',
         title: '基础用法',
         description: '',
         defaultValue: true,
-        condition: defineCondition({
+        condition: (a = defineCondition({
             a: {
                 t: 'input',
                 label: '名称搜索',
@@ -25,9 +26,13 @@ export const conditionFactory = () => [
             },
             dd: {
                 t: 'input',
-                label: 'dd搜索',
+                label: 'dd年龄段搜索',
                 clearable: true,
-                placeholder: '输入框搜索',
+                placeholders: ['起始年龄段', '中层年龄段', '结束年龄段'],
+                inputNum: 3,
+                inputSuffix: '-',
+                fields: ['input-1', 'input-2', 'input-3'],
+                defaultValue: () => ['aa', 'bb', 'cc'],
             },
             b: {
                 t: 'select',
@@ -124,7 +129,8 @@ export const conditionFactory = () => [
             //     beginField: 'startTime',
             //     endField: 'endTime',
             // },
-        }),
+        })),
+        b: console.log(a, 'ggg'),
         condition2: defineCondition({
             a: {
                 t: 'input',

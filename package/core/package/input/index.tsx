@@ -1,4 +1,4 @@
-import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, isVue2 } from 'vue-demi';
+import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, isVue2, set } from 'vue-demi';
 import { hasOwn, emptyToValue } from '../../utils/index';
 import { existsEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { inputProps } from '../../common/props';
@@ -18,14 +18,25 @@ export default defineComponent({
         const wrapper = inject<ProvideValue>(provideKey);
         const initialValue = useInitialValue(props);
         const initialBackfillValue = props.backfill && props.backfill[props.field];
-        const checked = ref<string>(initialBackfillValue || initialValue.value || '');
+        const checked = ref<string[]>([].concat(initialBackfillValue || initialValue.value || ''));
         const { flag, updateFlag } = useDisableInCurrentCycle();
-        const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
+        const getQuery = () =>
+            props.inputNum > 1 && props.fields
+                ? props.fields.reduce(
+                      (p, v, i) => ((p[v] = emptyToValue(checked.value[i], props.emptyValue)), p),
+                      {} as Record<string, any>,
+                  )
+                : {
+                      [props.field]: emptyToValue(
+                          props.inputNum > 1 ? checked.value : checked.value[0],
+                          props.emptyValue,
+                      ),
+                  };
 
         const option: CommonMethod = {
             reset,
             updateWrapperQuery() {
-                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
+                wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v));
                 return option;
             },
             get validator() {
@@ -46,9 +57,11 @@ export default defineComponent({
         // 提交字段发生改变时, 删除原有字段并更新最新值
         unwatchs.push(
             watch(
-                () => props.field,
+                () => (props.inputNum > 1 && props.fields?.length ? props.fields : [props.field]),
                 (val, oldVal) => {
-                    val !== oldVal && wrapper?.removeUnreferencedField(oldVal);
+                    val.toString() !== oldVal.toString() &&
+                        wrapper &&
+                        oldVal.forEach((o) => wrapper.removeUnreferencedField(o));
                     option.updateWrapperQuery();
                 },
             ),
@@ -56,10 +69,13 @@ export default defineComponent({
         // 实时值发生变化时触发更新 - 共享同一个字段
         unwatchs.push(
             watch(
-                () => [props.field, props.query[props.field]] as const,
+                () =>
+                    props.inputNum > 1 && props.fields?.length
+                        ? ([props.fields, props.fields.map((v) => props.query[v])] as const)
+                        : ([props.field, [props.query[props.field]] as string[]] as const),
                 ([_field, val], [__field]) => {
                     // 仅在值发生变化时同步
-                    if (_field !== __field || val === checked.value) return;
+                    if (_field.toString() !== __field.toString() || val.toString() === checked.value.toString()) return;
                     checked.value = val;
                 },
             ),
@@ -67,11 +83,14 @@ export default defineComponent({
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
-                () => [props.field, props.backfill?.[props.field]] as const,
-                ([_field, val], [__field]) => {
+                () =>
+                    props.inputNum > 1 && props.fields?.length
+                        ? props.fields.map((v) => props.backfill?.[v])
+                        : [props.backfill?.[props.field]],
+                (val) => {
                     // 存在回填值时回填, 不存在时不做改动
-                    if (_field !== __field && !props.backfill?.hasOwnProperty(_field)) return;
-                    if (val === checked.value) return;
+                    // if (_field.toString() !== __field.toString() && !props.backfill?.hasOwnProperty(_field)) return;
+                    if (val.toString() === checked.value.toString()) return;
                     updateFlag();
                     checked.value = val;
                     option.updateWrapperQuery();
@@ -94,11 +113,11 @@ export default defineComponent({
                     ] as const,
                 ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
                     if (!flag.value) return;
-                    if (checked.value === '') return;
+                    if (checked.value.toString() === '') return;
                     // 更新依赖条件时不做改动
                     if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
                     if (val === oldVal) return;
-                    checked.value = '';
+                    checked.value = [];
                     option.updateWrapperQuery();
                 },
             ),
@@ -115,9 +134,10 @@ export default defineComponent({
          * @param {String} value: 输入值
          */
         let timer = 0;
-        function debounceChange(value: string) {
+        function debounceChange(value: string, idx: number) {
             const { realtime, waitTime } = props;
-            checked.value = value;
+            set(checked.value, idx, value);
+            checked.value[idx] = value;
             timer && clearTimeout(timer);
             // 外部组件非实时的情况下, 延时触发会导致延迟时间内触发搜索按钮时
             // 值不是最新的, 因为容易存在搜索按钮时, 立即触发
@@ -132,8 +152,8 @@ export default defineComponent({
          * input enter 事件
          * @param {KeyboardEvent} ev
          */
-        function enterHandler(ev: KeyboardEvent | string) {
-            checked.value = typeof ev === 'string' ? ev : (ev.target as any)?.value || '';
+        function enterHandler(ev: KeyboardEvent | string, idx: number) {
+            set(checked.value, idx, typeof ev === 'string' ? ev : (ev.target as any)?.value || '');
             option.updateWrapperQuery();
             wrapper?.search();
         }
@@ -142,7 +162,7 @@ export default defineComponent({
          */
         function reset() {
             updateFlag();
-            checked.value = (props.resetToInitialValue && initialValue.value) || '';
+            checked.value = [].concat((props.resetToInitialValue && initialValue.value) || '');
             return option;
         }
 

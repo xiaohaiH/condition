@@ -94,6 +94,10 @@ export const selectProps = {
 /** input props */
 export const inputProps = {
     ...commonProps,
+    /** 输入框的数量 */
+    inputNum: { type: Number, default: 1, validator: (val: number) => val >= 1 },
+    /** 存在多个输入框时每个输入框对应的字段, inputNum 需大于 1 */
+    fields: { type: Array as PropType<string[]> },
     /** 实时触发时做抖动, 防止频繁触发 */
     realtime: { type: Boolean as PropType<boolean> },
     /** 实时触发时防抖动的时间 */

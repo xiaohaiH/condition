@@ -23,7 +23,11 @@ export const conditionFactory = () => [
                 t: 'input',
                 label: 'dd搜索',
                 clearable: true,
-                placeholder: '输入框搜索',
+                placeholders: ['起始年龄段', '中层年龄段', '结束年龄段'],
+                inputNum: 3,
+                inputSuffix: '-',
+                fields: ['input-1', 'input-2', 'input-3'],
+                defaultValue: () => ['aa', 'bb', 'cc'],
             },
             b: {
                 t: 'select',

@@ -137,13 +137,12 @@ export default defineComponent({
         const defaultSlot = getSlot('default', this);
         const btnSlot = getSlot('btn', this);
         const { class: className, style, ...attrs } = this.$attrs;
-        // const rootProps: Record<string, any> = isVue2 ? {} : {};
+        const rootProps: Record<string, any> = isVue2 ? {} : {};
         // @ts-ignore
         hasOwn(this, '$listeners') && (rootProps.on = this.$listeners);
 
         return (
-            <Tag>
-                {/* <Tag {...rootProps}> */}
+            <Tag {...rootProps}>
                 {Object.entries(datum).map(([key, options]) =>
                     options
                         ? typeof defaultSlot === 'function'

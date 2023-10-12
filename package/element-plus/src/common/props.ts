@@ -69,6 +69,12 @@ export const inputProps = {
     clearable: { type: Boolean as PropType<boolean>, default: true },
     /** 条件项标签 */
     label: { type: String },
+    /** 多个输入框之间的间隔 */
+    inputSuffix: {
+        type: [String, Function, Object] as PropType<string | ((index: number) => any) | any>,
+    },
+    /** 多个输入框对应的占位语 */
+    placeholders: { type: Array as PropType<string[]>, default: () => [] },
 } as const;
 
 /** datepicker props */
