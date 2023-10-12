@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.1.17
+
+### Patch Changes
+
+- 1.增加单选框组件 2.输入增加范围段类型(比如年龄段输入) 3.给条件项增加 label 字段
+
 ## 0.1.16
 
 ### Patch Changes
