@@ -25,9 +25,17 @@ export function emits2Props(events?: string[] | Record<string, any>) {
     return result;
 }
 
+/** 公共 props */
+export const commonProps = {
+    /** 条件项的标签后缀 */
+    labelSuffix: { type: String, default: ':' },
+};
+
 /** 条件容器 props */
 export const wrapperProps = {
     ...emits2Props(CoreWrapper.emits),
+    ...CoreWrapperProps,
+    ...commonProps,
     /** 是否渲染按钮 */
     renderBtn: { type: Boolean as PropType<boolean>, default: true },
     /** 组件大小 */
@@ -38,7 +46,6 @@ export const wrapperProps = {
     searchText: { type: String as PropType<string>, default: '搜索' },
     /** 重置按钮文字 */
     resetText: { type: String as PropType<string>, default: '重置' },
-    ...CoreWrapperProps,
 } as const;
 
 /** select props */
@@ -46,16 +53,22 @@ export const selectProps = {
     ...(ElSelect.props as {}),
     ...emits2Props(ElSelect.emits),
     ...CoreSelectProps,
+    ...commonProps,
     filterable: { type: Boolean as PropType<boolean>, default: true },
     clearable: { type: Boolean as PropType<boolean>, default: true },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 
 /** input props */
 export const inputProps = {
     ...(ElInput.props as {}),
     ...emits2Props(ElInput.emits),
-    clearable: { type: Boolean as PropType<boolean>, default: true },
     ...CoreInputProps,
+    ...commonProps,
+    clearable: { type: Boolean as PropType<boolean>, default: true },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 
 /** datepicker props */
@@ -63,8 +76,11 @@ export const datepickerProps = {
     ...(ElDatePicker.props as {}),
     ...emits2Props(ElDatePicker.emits),
     ...CoreDatepickerProps,
+    ...commonProps,
     /** 日期格式化的类型 - 给了个默认值 */
     valueFormat: { type: String, default: 'YYYY-MM-DD' },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 // @ts-ignore
 delete datepickerProps.range;
@@ -74,6 +90,9 @@ export const cascaderProps = {
     ...(ElCascader.props as {}),
     ...emits2Props(ElCascader.emits),
     ...CoreCascaderProps,
+    ...commonProps,
     filterable: { type: Boolean, default: true },
     clearable: { type: Boolean, default: true },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;

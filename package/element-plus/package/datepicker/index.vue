@@ -1,8 +1,16 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
     <CoreDatepicker :range="range" v-bind="$props">
-        <template #default="{ listeners, updateCheckedValue, change, ...surplusProps }">
-            <ElDatePicker :valueFormat="valueFormat" v-bind="surplusProps" @update:modelValue="change"></ElDatePicker>
+        <template #default="{ listeners, updateCheckedValue, change, label, labelSuffix, ...surplusProps }">
+            <div :class="`condition-item condition-item--datepicker condition-item--${field}`">
+                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
+                <ElDatePicker
+                    :valueFormat="valueFormat"
+                    v-bind="surplusProps"
+                    class="condition-item__content"
+                    @update:modelValue="change"
+                ></ElDatePicker>
+            </div>
         </template>
     </CoreDatepicker>
 </template>

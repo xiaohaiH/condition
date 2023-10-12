@@ -1,14 +1,18 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier -->
     <CoreInput v-bind="$props" v-on="$listeners">
-        <template #default="{ listeners, debounceChange, enterHandler, ...surplusProps }">
-            <ElInput
-                :clearable="clearable"
-                v-bind="surplusProps"
-                v-on="listeners"
-                @input="debounceChange"
-                @keydown.native.enter="enterHandler"
-            ></ElInput>
+        <template #default="{ listeners, debounceChange, enterHandler, label, labelSuffix, ...surplusProps }">
+            <div :class="`condition-item condition-item--input condition-item--${field}`">
+                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
+                <ElInput
+                    :clearable="clearable"
+                    v-bind="surplusProps"
+                    v-on="listeners"
+                    class="condition-item__content"
+                    @input="debounceChange"
+                    @keydown.native.enter="enterHandler"
+                ></ElInput>
+            </div>
         </template>
     </CoreInput>
 </template>

@@ -9,9 +9,16 @@ import {
     cascaderProps as CoreCascaderProps,
 } from '@xiaohaih/condition-core';
 
+/** 公共 props */
+export const commonProps = {
+    /** 条件项的标签后缀 */
+    labelSuffix: { type: String, default: ':' },
+};
+
 /** 条件容器 props */
 export const wrapperProps = {
     ...CoreWrapperProps,
+    ...commonProps,
     /** 是否渲染按钮 */
     renderBtn: { type: Boolean as PropType<boolean>, default: true },
     /** 组件大小 */
@@ -29,8 +36,11 @@ export const selectProps = {
     // @ts-ignore
     ...(Select.props as {}),
     ...CoreSelectProps,
+    ...commonProps,
     filterable: { type: Boolean as PropType<boolean>, default: true },
     clearable: { type: Boolean as PropType<boolean>, default: true },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 // @ts-ignore
 delete selectProps.value;
@@ -40,9 +50,12 @@ export const inputProps = {
     // @ts-ignore
     ...(Input.props as {}),
     ...CoreInputProps,
+    ...commonProps,
     clearable: { type: Boolean as PropType<boolean>, default: true },
     rows: { type: Number },
     placeholder: { type: String },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 
 /** 提取 mixins 中的 props */
@@ -57,8 +70,11 @@ function extractProps(comp: any) {
 export const datepickerProps = {
     ...extractProps(DatePicker),
     ...CoreDatepickerProps,
+    ...commonProps,
     /** 日期格式化的类型 - 给了个默认值 */
     valueFormat: { type: String, default: 'yyyy-MM-dd' },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;
 // @ts-ignore
 delete datepickerProps.range;
@@ -68,6 +84,9 @@ export const cascaderProps = {
     // @ts-ignore
     ...(Cascader.props as {}),
     ...CoreCascaderProps,
+    ...commonProps,
     filterable: { type: Boolean, default: true },
     clearable: { type: Boolean, default: true },
+    /** 条件项标签 */
+    label: { type: String },
 } as const;

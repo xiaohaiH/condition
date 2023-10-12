@@ -27,6 +27,7 @@
                         :reset-trigger-search="true"
                         size="mini"
                         tag="main"
+                        class="h-condition"
                         @ready="querySearch(index, $event)"
                         @search="querySearch(index, $event)"
                         @reset="reset(item)"
@@ -86,4 +87,21 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
+<style>
+.h-condition {
+    display: flex;
+    flex-wrap: wrap;
+}
+.condition-item {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: flex;
+}
+.condition-item__label {
+    flex: none;
+}
+.condition-item__label::after {
+    content: attr(suffix);
+    margin-right: 10px;
+}
+</style>

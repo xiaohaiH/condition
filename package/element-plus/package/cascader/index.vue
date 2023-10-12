@@ -1,13 +1,17 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
     <CoreCascader v-bind="$props">
-        <template #default="{ listeners, change, ...surplusProps }">
-            <ElCascader
-                :filterable="filterable"
-                :clearable="clearable"
-                v-bind="surplusProps"
-                @update:modelValue="change"
-            ></ElCascader>
+        <template #default="{ listeners, change, label, labelSuffix, ...surplusProps }">
+            <div :class="`condition-item condition-item--cascader condition-item--${field}`">
+                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
+                <ElCascader
+                    :filterable="filterable"
+                    :clearable="clearable"
+                    v-bind="surplusProps"
+                    class="condition-item__content"
+                    @update:modelValue="change"
+                ></ElCascader>
+            </div>
         </template>
     </CoreCascader>
 </template>

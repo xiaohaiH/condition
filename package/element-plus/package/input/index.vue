@@ -1,13 +1,17 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
     <CoreInput v-bind="$props">
-        <template #default="{ listeners, debounceChange, enterHandler, ...surplusProps }">
-            <ElInput
-                :clearable="clearable"
-                v-bind="surplusProps"
-                @input="debounceChange"
-                @keydown.native.enter="enterHandler"
-            ></ElInput>
+        <template #default="{ listeners, debounceChange, enterHandler, label, labelSuffix, ...surplusProps }">
+            <div :class="`condition-item condition-item--cascader condition-item--${field}`">
+                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
+                <ElInput
+                    :clearable="clearable"
+                    v-bind="surplusProps"
+                    class="condition-item__content"
+                    @input="debounceChange"
+                    @keydown.native.enter="enterHandler"
+                ></ElInput>
+            </div>
         </template>
     </CoreInput>
 </template>

@@ -2,18 +2,22 @@
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child -->
     <CoreSelect v-bind="$props" v-on="$listeners">
         <template #default="{ labelKey, valueKey, options, listeners, blur, change, ...surplusProps }">
-            <ElSelect
-                :filterable="filterable"
-                :clearable="clearable"
-                v-bind="surplusProps"
-                v-on="listeners"
-                @blur="blur"
-                @input="change"
-            >
-                <template v-for="item of options">
-                    <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
-                </template>
-            </ElSelect>
+            <div :class="`condition-item condition-item--select condition-item--${field}`">
+                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
+                <ElSelect
+                    :filterable="filterable"
+                    :clearable="clearable"
+                    v-bind="surplusProps"
+                    v-on="listeners"
+                    class="condition-item__content"
+                    @blur="blur"
+                    @input="change"
+                >
+                    <template v-for="item of options">
+                        <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                    </template>
+                </ElSelect>
+            </div>
         </template>
     </CoreSelect>
 </template>

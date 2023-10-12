@@ -18,17 +18,20 @@ export const conditionFactory = () => [
         condition: defineCondition({
             a: {
                 t: 'input',
+                label: '名称搜索',
                 clearable: true,
                 placeholder: '输入框搜索',
                 defaultValue: '666',
             },
             dd: {
                 t: 'input',
+                label: 'dd搜索',
                 clearable: true,
                 placeholder: '输入框搜索',
             },
             b: {
                 t: 'select',
+                label: 'b搜索',
                 placeholder: '下拉框搜索',
                 // disabled: false,
                 disabled: (query: Record<string, any>) => !query.a,
@@ -49,6 +52,7 @@ export const conditionFactory = () => [
             },
             ccc: {
                 t: 'select',
+                label: 'ccc搜索',
                 placeholder: '下拉框搜索',
                 // disabled: false,
                 valueKey: 'dictValue',

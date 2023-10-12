@@ -1,8 +1,8 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api -->
     <CoreWrapper ref="conditionRef" v-bind="$props" :size="size" v-on="$listeners">
-        <template #default="{ t, ...options }">
-            <component :is="getComp(t)" v-bind="options"></component>
+        <template #default="{ t, labelSuffix: _labelSuffix, ...options }">
+            <component :is="getComp(t)" :labelSuffix="_labelSuffix || labelSuffix" v-bind="options"></component>
         </template>
         <template #btn="option">
             <slot name="btn" v-bind="option">
@@ -58,14 +58,14 @@ export function unregisterComponent(name: string) {
  */
 export default defineComponent({
     name: 'HWrapper',
-    inheritAttrs: false,
+    // inheritAttrs: false,
     components: {
         CoreWrapper,
         ElButton,
     },
     props: wrapperProps,
     emits: wrapperEmits,
-    setup() {
+    setup(props, context) {
         const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
         /** 重置数据 */
         function reset() {
