@@ -34,6 +34,18 @@ export const conditionFactory = () => [
                 fields: ['input-1', 'input-2', 'input-3'],
                 defaultValue: () => ['aa', 'bb', 'cc'],
             },
+            gg: {
+                t: 'radio',
+                label: 'gg单选',
+                type: 'button',
+                valueKey: 'dictValue',
+                labelKey: 'dictLabel',
+                options: [
+                    { dictValue: 'radio-单选1', dictLabel: '单选1' },
+                    { dictValue: 'radio-单选二', dictLabel: '单选二' },
+                ],
+                defaultValue: 'radio-单选1',
+            },
             b: {
                 t: 'select',
                 label: 'b搜索',

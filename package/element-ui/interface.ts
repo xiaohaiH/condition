@@ -3,6 +3,8 @@ import { ElSelect } from 'element-ui/types/select';
 import { ElInput } from 'element-ui/types/input';
 import { ElDatePicker } from 'element-ui/types/date-picker';
 import { ElCascader } from 'element-ui/types/cascader';
+import { ElRadio } from 'element-ui/types/radio';
+import { ElRadioGroup } from 'element-ui/types/radio-group';
 
 export declare namespace HCondition {
     interface WrapperProps extends CoreCondition.WrapperProps {
@@ -14,6 +16,7 @@ export declare namespace HCondition {
         | CoreCondition.DeepMaybeRef<SelectProps>
         | CoreCondition.DeepMaybeRef<InputProps>
         | CoreCondition.DeepMaybeRef<DatepickerProps>
+        | CoreCondition.DeepMaybeRef<RadioProps>
         | CoreCondition.DeepMaybeRef<CascaderProps>;
 
     interface SelectProps
@@ -29,6 +32,9 @@ export declare namespace HCondition {
     }
     interface CascaderProps extends CoreCondition.CascaderProps, Partial<Omit<ElCascader, 'disabled' | 'options'>> {
         t: 'cascader';
+    }
+    interface RadioProps extends CoreCondition.SelectProps, Partial<Omit<ElRadioGroup, 'disabled'>> {
+        t: 'radio';
     }
 
     /** 获取 vue 组件的 props 值 */

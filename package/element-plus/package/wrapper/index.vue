@@ -24,6 +24,7 @@ import HSelect from '../select/index.vue';
 import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
+import HRadio from '../radio/index.vue';
 import { wrapperProps } from '../../src/common/props';
 import { wrapperEmits } from '../../src/common/emits';
 
@@ -32,6 +33,7 @@ const compMap = {
     input: markRaw(HInput),
     datepicker: markRaw(HDatepicker),
     cascader: markRaw(HCascader),
+    radio: markRaw(HRadio),
 };
 const userCompMap: Record<string, any> = {};
 

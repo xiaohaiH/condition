@@ -1,5 +1,5 @@
 import { PropType } from 'vue-demi';
-import { Select, Input, DatePicker, Cascader } from 'element-ui';
+import { Select, Input, DatePicker, Cascader, Radio, RadioGroup } from 'element-ui';
 import { ElementUIComponentSize } from 'element-ui/types/component';
 import {
     wrapperProps as CoreWrapperProps,
@@ -96,3 +96,17 @@ export const cascaderProps = {
     /** 条件项标签 */
     label: { type: String },
 } as const;
+
+/** radio props */
+export const radioProps = {
+    // @ts-ignore
+    ...(RadioGroup.props as {}),
+    ...CoreSelectProps,
+    ...commonProps,
+    /** 按钮类型(radio|button), 默认 radio */
+    type: { type: String },
+    /** 条件项标签 */
+    label: { type: String },
+} as const;
+// @ts-ignore
+delete radioProps.value;
