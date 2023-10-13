@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.1.18
+
+### Patch Changes
+
+- 1.修复依赖发生变化时, 依赖项的请求函数未重新请求 2.下拉框增加分组
+
 ## 0.1.17
 
 ### Patch Changes
