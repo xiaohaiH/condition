@@ -140,12 +140,12 @@ export default defineComponent({
                     ] as const,
                 ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
                     if (!flag.value) return;
-                    if (!checked.value.length) return;
+                    if (val === oldVal) return;
+                    getOption('depend');
                     // 更新依赖条件时不做改动
                     if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
-                    if (val === oldVal) return;
+                    if (!checked.value.length) return;
                     updateCheckedValue(typeof checked.value === 'string' ? '' : []);
-                    getOption('depend');
                 },
             ),
         );
