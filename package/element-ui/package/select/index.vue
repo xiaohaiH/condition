@@ -14,7 +14,20 @@
                     @input="change"
                 >
                     <template v-for="item of options">
-                        <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                        <template v-if="item.group && item.children">
+                            <ElOptionGroup :key="item[valueKey]" :label="item[labelKey]">
+                                <template v-for="group of item.children">
+                                    <ElOption
+                                        :key="group[valueKey]"
+                                        :label="group[labelKey]"
+                                        :value="group[valueKey]"
+                                    ></ElOption>
+                                </template>
+                            </ElOptionGroup>
+                        </template>
+                        <template v-else>
+                            <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                        </template>
                     </template>
                 </ElSelect>
             </div>
@@ -25,7 +38,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue-demi';
 import { CoreSelect } from '@xiaohaih/condition-core';
-import { Select as ElSelect, Option as ElOption } from 'element-ui';
+import { Select as ElSelect, OptionGroup as ElOptionGroup, Option as ElOption } from 'element-ui';
 import { selectProps } from '../../src/common/props';
 
 /**
@@ -37,6 +50,7 @@ export default defineComponent({
     components: {
         CoreSelect,
         ElSelect,
+        ElOptionGroup,
         ElOption,
     },
     props: selectProps,

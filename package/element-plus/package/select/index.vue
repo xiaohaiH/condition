@@ -15,7 +15,16 @@
                     @update:modelValue="change"
                 >
                     <template v-for="item of options" :key="item[valueKey]">
-                        <ElOption :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                        <template v-if="item.group && item.children">
+                            <ElOptionGroup :label="item[labelKey]">
+                                <template v-for="group of item.children" :key="group[valueKey]">
+                                    <ElOption :label="group[labelKey]" :value="group[valueKey]"></ElOption>
+                                </template>
+                            </ElOptionGroup>
+                        </template>
+                        <template v-else>
+                            <ElOption :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                        </template>
                     </template>
                 </ElSelect>
             </div>
@@ -26,7 +35,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { CoreSelect } from '@xiaohaih/condition-core';
-import { ElSelect, ElOption } from 'element-plus';
+import { ElSelect, ElOptionGroup, ElOption } from 'element-plus';
 import { selectProps } from '../../src/common/props';
 
 /**
@@ -38,6 +47,7 @@ export default defineComponent({
     components: {
         CoreSelect,
         ElSelect,
+        ElOptionGroup,
         ElOption,
     },
     props: selectProps,

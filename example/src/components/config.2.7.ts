@@ -69,7 +69,24 @@ export const conditionFactory = () => [
                 valueKey: 'dictValue',
                 labelKey: 'dictLabel',
                 options: [
-                    { dictValue: '1', dictLabel: '选项一' },
+                    {
+                        dictValue: 'group-1',
+                        dictLabel: '分组选项A',
+                        group: true,
+                        children: [
+                            { dictValue: 'group-1-1', dictLabel: '分组一' },
+                            { dictValue: 'group-1-2', dictLabel: '分组二' },
+                        ],
+                    },
+                    {
+                        dictValue: '222',
+                        dictLabel: '分组选项B',
+                        group: true,
+                        children: [
+                            { dictValue: 'group-2-1', dictLabel: 'group-分组一' },
+                            { dictValue: 'group-2-2', dictLabel: 'group-分组二' },
+                        ],
+                    },
                     { dictValue: '2', dictLabel: '选项二' },
                     { dictValue: 'example', dictLabel: '选项三' },
                 ],
