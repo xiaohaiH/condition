@@ -30,7 +30,20 @@ export const conditionFactory = () => [
             },
             gg: {
                 t: 'radio',
-                label: 'gg单选',
+                label: 'gg单选togglable',
+                type: 'button',
+                valueKey: 'dictValue',
+                labelKey: 'dictLabel',
+                togglable: true,
+                options: [
+                    { dictValue: 'radio-单选1', dictLabel: '单选1' },
+                    { dictValue: 'radio-单选二', dictLabel: '单选二' },
+                ],
+                defaultValue: 'radio-单选1',
+            },
+            gg2: {
+                t: 'radio',
+                label: 'gg2单选',
                 type: 'button',
                 valueKey: 'dictValue',
                 labelKey: 'dictLabel',

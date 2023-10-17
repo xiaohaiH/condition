@@ -111,6 +111,8 @@ export const radioProps = {
     ...commonProps,
     /** 按钮类型(radio|button), 默认 radio */
     type: { type: String },
+    /** 选中状态是否可以被取消 */
+    togglable: { type: Boolean },
     /** 条件项标签 */
     label: { type: String },
 } as const;

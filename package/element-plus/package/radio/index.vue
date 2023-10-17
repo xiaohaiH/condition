@@ -1,12 +1,22 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-unused-vars -->
     <CoreSelect v-bind="$props">
-        <template #default="{ labelKey, valueKey, options, listeners, change, ...surplusProps }">
+        <template #default="{ labelKey, valueKey, options, listeners, change, modelValue, ...surplusProps }">
             <div :class="`condition-item condition-item--radio condition-item--${field}`">
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
-                <ElRadioGroup v-bind="surplusProps" class="condition-item__content" @update:modelValue="change">
+                <ElRadioGroup
+                    ref="radioGroupRef"
+                    v-bind="surplusProps"
+                    :modelValue="modelValue"
+                    class="condition-item__content"
+                    @update:modelValue="change"
+                >
                     <template v-for="item of options" :key="item[valueKey]">
-                        <component :is="radioType" :label="item[valueKey]">
+                        <component
+                            :is="radioType"
+                            :label="item[valueKey]"
+                            v-on:[eventName].prevent="customChange(item[valueKey], modelValue, change)"
+                        >
                             {{ item[labelKey] }}
                         </component>
                     </template>
@@ -17,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 import { CoreSelect } from '@xiaohaih/condition-core';
 import { ElRadioGroup, ElRadioButton, ElRadio } from 'element-plus';
 import { radioProps } from '../../src/common/props';
@@ -36,9 +46,21 @@ export default defineComponent({
     },
     props: radioProps,
     setup(props, context) {
+        const radioGroupRef = ref<ElRadioGroup | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));
 
-        return { radioType };
+        const eventName = computed(() => (props.togglable ? 'click' : null));
+        /**
+         * 单选框选中事件
+         * @param {string} newVal 最新选中值
+         * @param {string} currentVal 当前值
+         * @param {Function} cb 值更改的回调
+         */
+        function customChange(newVal: string, currentVal: string, cb: (value?: string) => void) {
+            cb(newVal === currentVal ? '' : newVal);
+        }
+
+        return { radioGroupRef, radioType, eventName, customChange };
     },
 });
 </script>

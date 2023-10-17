@@ -3,7 +3,7 @@
     <ElCard>
         <ElCollapse v-model="collapseValue">
             <template v-for="(item, index) of conditions">
-                <ElCollapseItem :key="item.name" :title="item.title" :name="item.name">
+                <ElCollapseItem :key="item.name" :title="`${item.title}_2.7`" :name="item.name">
                     <ElAlert type="success" :closable="false">
                         <span>当前条件:　</span>
                         <span>{{ item.query }}</span>
