@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.1.20
+
+### Patch Changes
+
+- 修复初始渲染时 query 未能与 backfill 保持一致导致内部逻辑出错
+- Updated dependencies
+  - @xiaohaih/condition-core@0.1.20
+
 ## 0.1.19
 
 ### Patch Changes
