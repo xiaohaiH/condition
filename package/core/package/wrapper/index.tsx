@@ -35,6 +35,16 @@ export default defineComponent({
     setup(props, ctx) {
         const child: CommonMethod[] = [];
         onBeforeUnmount(() => child.splice(0));
+        /**
+         * #fix 修复初始 backfill 存在值时
+         * query 未保持一致的问题
+         * 解决方案:
+         * query 本身逻辑和作用不变
+         * 新增一个对象用来缓存更改的值
+         * 并在获取 query 时, 将该对象作为
+         * 最后一个合并项
+         */
+        const changedQueryObj = {} as Record<string, any>;
         /** 是否标记更新的字段, 防止卸载后的空字段占位 */
         let isLogField = false;
         let logFields: string[] = [];
@@ -54,7 +64,10 @@ export default defineComponent({
                     // TODO 不确定的一点, 数据源更改后是否需要重置整个数据
                     // 如果需要重置, 得更新后第一次搜索事件时传递的搜索值
                     isLogField = false;
-                    logFields.forEach((k) => del(query.value, k));
+                    logFields.forEach((k) => {
+                        del(query.value, k);
+                        delete changedQueryObj[k];
+                    });
                     logFields = [];
                 };
                 const childInstance = getCurrentInstance();
@@ -69,6 +82,7 @@ export default defineComponent({
             updateQueryValue: (field, value) => {
                 if (isLogField) logFields.push(field);
                 set(query.value, field, value);
+                changedQueryObj[field] = value;
                 return wrapperInstance;
             },
             insetSearch: () => {
@@ -82,15 +96,18 @@ export default defineComponent({
                     v.getQuery().hasOwnProperty(field) && (sameFieldCount += 1);
                     return sameFieldCount;
                 });
-                sameFieldCount || del(query.value, field);
+                if (!sameFieldCount) {
+                    del(query.value, field);
+                    delete changedQueryObj[field];
+                }
                 return wrapperInstance;
             },
         };
         provide<ProvideValue>(provideKey, wrapperInstance);
 
         /** 内部条件最新的值, 在没触发搜索按钮前, 不会同步到外部 */
-        const query = ref<Record<string, string>>({});
-        const getQuery = () => ({ ...props.backfill, ...query.value });
+        const query = ref<Record<string, string>>({ ...props.backfill });
+        const getQuery = () => ({ ...query.value, ...props.backfill, ...changedQueryObj });
         onMounted(() => {
             props.immediateSearch && ctx.emit('ready', getQuery());
         });
