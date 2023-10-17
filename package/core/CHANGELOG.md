@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.1.19
+
+### Patch Changes
+
+- 单选框增加配置(选中项再次点击取消选中)
+
 ## 0.1.18
 
 ### Patch Changes
