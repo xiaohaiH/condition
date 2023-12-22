@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script type="text/javascript">
+            window.process = {};
+            window.traverse$1 = {};
+            window.generator = {};
+            window.editorWorker = {};
+            window.tsWorker = {};
+        </script>
+        <link href="./element-el.css" rel="stylesheet" type="text/css" />
+        <link href="../dist/style.css" rel="stylesheet" type="text/css" />
+        <script src="./vue2.7.js"></script>
+        <script src="./vue-demi.js"></script>
+        <script src="./element-el.js"></script>
+        <script type="text/javascript">
+            window.Ui = { toast: ELEMENT.Message };
+        </script>
+        <script src="../../package/element-ui/dist/index.umd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
+        <!-- <script src="./example.umd.cjs"></script> -->
+        <style type="text/css">
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #abc {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="abc"></div>
+    </body>
+    <script type="text/javascript">
+        require.config({
+            paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs' },
+        });
+        require(['vs/editor/editor.main'], function (monaco) {
+            window.tempDefine = window.define;
+            window.define = undefined;
+            window.monaco = monaco;
+            var script = document.createElement('script');
+            script.src = '../dist/example.umd.cjs';
+            script.onload = function onload() {
+                window.define = window.tempDefine;
+                delete window.tempDefine;
+                Vue.use(ELEMENT);
+                new Vue(window.Content).$mount('#abc');
+            };
+            document.head.appendChild(script);
+        });
+    </script>
+</html>
