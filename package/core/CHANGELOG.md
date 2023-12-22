@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.2.0
+
+### Minor Changes
+
+- 对核心组件以及示例进行重构, 同时支持示例在线编辑
+
 ## 0.1.20
 
 ### Patch Changes
