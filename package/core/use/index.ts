@@ -28,28 +28,42 @@ export function useInitialValue<T extends ExtractPropTypes<Readonly<typeof commo
 export function useDisplay<T extends ExtractPropTypes<Readonly<typeof commonProps>>>(props: T, option: CommonMethod) {
     const insetDisabled = ref(typeof props.disabled === 'boolean' ? props.disabled : false);
     const insetHide = ref(typeof props.hide === 'boolean' ? props.hide : false);
-    onBeforeUnmount(
+    const getOption = () => ({ query: props.query, backfill: props.backfill, option });
+    const cb = () => {
+        if (typeof props.hide === 'function') {
+            const currentValue = insetHide.value;
+            const newValue = props.hide(getOption());
+            if (currentValue !== newValue) {
+                insetHide.value = props.hide(getOption());
+            }
+        } else if (typeof props.disabled === 'function') {
+            const currentValue = insetDisabled.value;
+            const newValue = props.disabled(getOption());
+            if (currentValue !== newValue) {
+                insetDisabled.value = props.disabled(getOption());
+            }
+        }
+    };
+    let isChanged = false;
+    let listeners = [
+        watch(() => props.query, cb, { immediate: true, deep: true }),
         watch(
-            () => props.query,
-            () => {
-                if (typeof props.hide === 'function') {
-                    const currentValue = insetHide.value;
-                    const newValue = props.hide(props.query);
-                    if (currentValue !== newValue) {
-                        insetHide.value = props.hide(props.query);
-                        insetHide.value && option.reset().updateWrapperQuery();
-                    }
-                } else if (typeof props.disabled === 'function') {
-                    const currentValue = insetDisabled.value;
-                    const newValue = props.disabled(props.query);
-                    if (currentValue !== newValue) {
-                        insetDisabled.value = props.disabled(props.query);
-                    }
+            () => [props.disabled, props.hide],
+            (val, val2) => {
+                if (val[0] !== val2[0]) {
+                    insetDisabled.value = typeof val[0] === 'boolean' ? val[0] : false;
+                    typeof val[0] === 'function' && (isChanged = true);
                 }
+                if (val[1] !== val2[1]) {
+                    insetHide.value = typeof val[1] === 'boolean' ? val[1] : false;
+                    typeof val[1] === 'function' && (isChanged = true);
+                }
+                cb();
+                isChanged = false;
             },
-            { immediate: true, deep: true },
         ),
-    );
+    ];
+    onBeforeUnmount(() => (listeners.forEach((o) => o()), (listeners = [])));
     return { insetDisabled, insetHide };
 }
 

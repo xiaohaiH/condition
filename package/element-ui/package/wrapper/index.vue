@@ -26,6 +26,7 @@ import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
 import HRadio from '../radio/index.vue';
+import HCheckbox from '../checkbox/index.vue';
 import { wrapperProps } from '../../src/common/props';
 import { wrapperEmits } from '../../src/common/emits';
 
@@ -35,6 +36,7 @@ const compMap = {
     datepicker: markRaw(HDatepicker),
     cascader: markRaw(HCascader),
     radio: markRaw(HRadio),
+    checkbox: markRaw(HCheckbox),
 };
 const userCompMap: Record<string, any> = {};
 
@@ -68,7 +70,7 @@ export default defineComponent({
     props: wrapperProps,
     emits: wrapperEmits,
     setup(props, context) {
-        const conditionRef = ref<InstanceType<typeof CoreWrapper> | undefined>();
+        const conditionRef = ref<InstanceType<typeof CoreWrapper>>();
         /** 重置数据 */
         function reset() {
             conditionRef.value?.reset();

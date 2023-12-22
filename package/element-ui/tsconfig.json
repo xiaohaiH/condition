@@ -5,5 +5,15 @@
         "baseUrl": ".",
         "outDir": "dist"
     },
-    "include": ["package/**/*.ts", "*.ts", "package/**/*.tsx", "package/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"]
+    "include": [
+        "package/**/*.ts",
+        "*.ts",
+        "package/**/*.tsx",
+        "package/**/*.vue",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ]
 }

@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import { createVuePlugin } from 'vite-plugin-vue2';
 import { terser } from 'rollup-plugin-terser';
+import dts from 'vite-plugin-dts';
 import pkgJson from './package.json';
 
 const external = ['vue', 'vue-demi', 'element-ui'];
@@ -27,6 +28,9 @@ export default defineConfig({
     plugins: [
         createVuePlugin({
             jsx: true,
+        }),
+        dts({
+            // rollupTypes: true,
         }),
     ],
     optimizeDeps: {

@@ -1,66 +1,74 @@
-import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch } from 'vue-demi';
+import { computed, defineComponent, inject, onBeforeUnmount, PropType, ref, watch, watchEffect } from 'vue-demi';
 import { existsEvent, getEvent, getSlot, VALUE_KEY } from '../../utils/assist';
 import { hasOwn, emptyToValue } from '../../utils/index';
-import { selectProps } from '../../common/props';
+import { plainProps } from '../../common/props';
 import { selectEmits } from '../../common/emits';
-import { CommonMethod, provideKey, ProvideValue } from '../../common/provide';
+import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../../common/provide';
 import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../../use';
 
 /**
- * @file 下拉框
+ * @file 普通数据结构组件
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'CoreSelect',
-    props: selectProps,
+    name: 'CorePlain',
+    props: plainProps,
     // emits: selectEmits,
     setup(props, ctx) {
+        /** 容器注入值 */
         const wrapper = inject<ProvideValue>(provideKey);
+        /** 初始值(重置时回填的值) */
         const initialValue = useInitialValue(props);
+        /** 初始是否存在回填值 */
         const initialBackfillValue = props.backfill && props.backfill[props.field];
+        /** 当前选中值 */
         const checked = ref<string | string[]>(
             initialBackfillValue ||
                 (props.defaultValue !== undefined ? initialValue.value : props.multiple ? [] : '')
                     // 防止数组引用导致默认值发生改变
                     .slice(),
         );
-        const { flag, updateFlag } = useDisableInCurrentCycle();
-        const getQuery = () => ({ [props.field]: emptyToValue(checked.value, props.emptyValue) });
+        /** 远程获取的数据源 */
+        const remoteOption = ref<Record<string, any>[]>([]);
+        /** 渲染的数据源(远程数据源 > 本地数据源) */
+        const finalOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
+        const getQuery = () => {
+            if (props.customGetQuery) return props.customGetQuery(checked.value, emptyToValue, props);
+            return props.multiple && props.fields
+                ? props.fields.reduce(
+                      (p, k, i) => ((p[k] = emptyToValue(checked.value?.[i], props.emptyValue)), p),
+                      {} as Record<string, any>,
+                  )
+                : { [props.field]: emptyToValue(checked.value, props.emptyValue) };
+        };
+        // 防止触发搜索时, query 产生变化内部重复赋值
+        const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
+        // 防止触发搜索时, backfill 产生变化内部重复赋值
+        const { flag: backfillFlag, updateFlag: updateBackfillFlag } = useDisableInCurrentCycle();
 
-        const option: CommonMethod = {
-            reset,
+        const option = defineCommonMethod({
+            reset() {
+                const { multiple } = props;
+                updateRealtimeFlag();
+                updateBackfillFlag();
+                checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
+            },
             updateWrapperQuery() {
-                wrapper?.updateQueryValue(props.field, emptyToValue(checked.value, props.emptyValue));
-                return option;
+                updateRealtimeFlag();
+                wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v));
             },
             get validator() {
                 return props.validator;
             },
             getQuery,
-        };
+        });
+
         wrapper?.register(option);
         const { insetDisabled, insetHide } = useDisplay(props, option);
         /** 不存在回填值且存在默认值时更新父级中的值 */
         if (!initialBackfillValue && props.defaultValue) {
             option.updateWrapperQuery();
         }
-
-        /** 远程获取的数据源 */
-        const remoteOption = ref<Record<string, any>[]>([]);
-        /** 优先使用远程数据源 */
-        const originOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
-        /** 是否使用筛选过后的数据 */
-        const backFilterOption = ref(false);
-        /** 筛选后的数据 */
-        const filterOption = ref<Record<string, any>[]>([]);
-        // 根据是否过滤返回不同的数据源
-        const finalOption = computed(() => {
-            return backFilterOption.value ? filterOption.value : originOption.value;
-        });
-        // 自定义的过滤事件
-        const customFilterMethod = computed(() => {
-            return props.filterMethod && finalFilterMethod;
-        });
 
         const unwatchs: (() => void)[] = [];
         onBeforeUnmount(() => unwatchs.forEach((v) => v()));
@@ -78,23 +86,41 @@ export default defineComponent({
         // 实时值发生变化时触发更新 - 共享同一个字段
         unwatchs.push(
             watch(
-                () => [props.field, props.query[props.field]] as const,
+                () =>
+                    [
+                        props.fields || props.field,
+                        props.fields
+                            ? props.fields.map((k) => props.query[k]).filter(Boolean)
+                            : props.query[props.field],
+                    ] as const,
+                // [props.field, props.query[props.field]] as const,
                 ([_field, val], [__field]) => {
+                    const _val = props.backfillToValue(val, _field, props.query);
                     // 仅在值发生变化时同步
-                    if (_field !== __field || val === checked.value) return;
-                    checked.value = val;
+                    if (_field.toString() !== __field.toString() || _val?.toString() === checked.value?.toString())
+                        return;
+                    if (!realtimeFlag.value) return;
+                    checked.value = _val;
                 },
             ),
         );
         // 回填值发生变化时触发更新
         unwatchs.push(
             watch(
-                () => [props.field, props.backfill?.[props.field]] as const,
+                () =>
+                    [
+                        props.fields || props.field,
+                        props.fields
+                            ? props.fields.map((k) => props.backfill?.[k]).filter(Boolean)
+                            : props.backfill?.[props.field],
+                    ] as const,
                 ([_field, val], [__field]) => {
                     // 存在回填值时回填, 不存在时不做改动
-                    if (_field !== __field && !props.backfill?.hasOwnProperty(_field)) return;
-                    updateFlag();
-                    updateCheckedValue(val);
+                    const _val = props.backfillToValue(val, _field, props.backfill);
+                    if (_field.toString() !== __field.toString() || _val?.toString() === checked.value?.toString())
+                        return;
+                    updateBackfillFlag();
+                    updateCheckedValue(_val);
                 },
             ),
         );
@@ -113,7 +139,7 @@ export default defineComponent({
                             '',
                     ] as const,
                 ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
-                    if (!flag.value) return;
+                    if (!backfillFlag.value) return;
                     if (val === oldVal) return;
                     getOption('depend');
                     // 更新依赖条件时不做改动
@@ -125,12 +151,6 @@ export default defineComponent({
         );
         unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial'), { immediate: true }));
 
-        /** 失焦事件 */
-        function blur() {
-            // const blurHandler = getEvent(ctx, 'blur');
-            // blurHandler?.(...arguments);
-            props.filterMethod && finalFilterMethod('');
-        }
         /** 获取数据源发生变化事件 */
         function getOption(trigger: 'initial' | 'depend') {
             props.getOptions?.(
@@ -156,17 +176,6 @@ export default defineComponent({
                 },
             );
         }
-        /** 过滤方法 */
-        function finalFilterMethod(value: string) {
-            const { filterMethod } = props;
-            if (value === '' || value === undefined) {
-                backFilterOption.value = false;
-                filterOption.value = [];
-            } else {
-                backFilterOption.value = true;
-                filterOption.value = originOption.value.filter((v) => filterMethod!(value, v));
-            }
-        }
         /**
          * 更新选中值(父级也同步更改)
          * @param {string | string[]} value 待更改的值
@@ -177,34 +186,25 @@ export default defineComponent({
             option.updateWrapperQuery();
         }
         /**
-         * select change 事件
+         * 更新选中值并触发内部搜索事件
          * @param {string | string[]} value 待更改的值
          */
         function change(value: string | string[]) {
             updateCheckedValue(value);
             wrapper?.insetSearch();
         }
-        /**
-         * 重置数据
-         */
-        function reset() {
-            const { multiple } = props;
-            updateFlag();
-            checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
-            return option;
-        }
 
         return {
+            wrapper,
+            option,
             checked,
             getQuery,
             insetDisabled,
             insetHide,
             finalOption,
-            customFilterMethod,
-            blur,
             updateCheckedValue,
             change,
-            reset,
+            reset: option.reset,
         };
     },
     render() {
@@ -214,21 +214,16 @@ export default defineComponent({
             insetDisabled,
             insetHide,
             finalOption: options,
-            blur,
-            customFilterMethod: filterMethod,
             change,
             reset,
 
-            valueKey,
-            labelKey,
             multiple,
             // clearable,
         } = this;
         if (insetHide) return void 0 as any;
         const defaultSlot = getSlot('default', this);
         // @ts-ignore
-        const listeners = hasOwn(this, '$listeners') ? { ...this.$listeners } : null;
-        // listeners && delete listeners.blur;
+        const listeners = hasOwn(this, '$listeners') ? this.$listeners : null;
 
         return typeof defaultSlot === 'function'
             ? defaultSlot({
@@ -237,12 +232,8 @@ export default defineComponent({
                   [VALUE_KEY]: value,
                   options,
                   disabled: insetDisabled,
-                  blur,
-                  filterMethod,
                   change,
 
-                  valueKey,
-                  labelKey,
                   multiple,
                   // clearable,
               })

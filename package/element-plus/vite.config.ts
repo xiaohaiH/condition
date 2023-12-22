@@ -26,7 +26,13 @@ function retainMinSuffix(name: string, flag: boolean) {
  */
 // https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [vue(), vueJsx(), dts()],
+    plugins: [
+        vue(),
+        vueJsx(),
+        dts({
+            // rollupTypes: true,
+        }),
+    ],
     optimizeDeps: {
         exclude: ['vue-demi'],
     },

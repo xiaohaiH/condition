@@ -20,7 +20,8 @@
         "vue2": "vue-demi-switch 2",
         "vue2.7": "vue-demi-switch 2.7",
         "vue3": "vue-demi-switch 3",
-        "build": "rimraf dist && rollup -c rollup.config.js",
+        "build": "rimraf dist && rollup -c rollup.config.js && npm run build:dts",
+        "build:dts": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -54,13 +55,13 @@
         "main": "dist/index.cjs.js",
         "unpkg": "dist/index.umd.js",
         "module": "dist/index.esm.js",
-        "types": "dist/index.d.ts",
+        "types": "dist/types/index.d.ts",
         "exports": {
             ".": {
                 "require": "./dist/index.cjs.js",
                 "import": "./dist/index.esm.js",
                 "browser": "./dist/index.esm.js",
-                "types": "./dist/index.d.ts"
+                "types": "./dist/types/index.d.ts"
             },
             "./*": "./*"
         }

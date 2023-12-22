@@ -21,29 +21,33 @@ export interface ProvideValue {
      * @param {string} field 更新的字段
      * @param {*} value 更新的值
      */
-    updateQueryValue(field: string, value: any): ProvideValue;
+    updateQueryValue(field: string, value: any): void;
     /**
      * 子组件内部值发生了变动, 由父级决定是否触发搜索事件(实时搜索时需要区分这两种方式)
      */
-    insetSearch(): ProvideValue;
+    insetSearch(): void;
     /**
      * 提供给组件内部的直接触发到外部的搜索事件
      */
     search(): Promise<string | void>;
     /** 删除内部无引用的字段 */
-    removeUnreferencedField(field: string): ProvideValue;
+    removeUnreferencedField(field: string): void;
+}
+export function defineProvideValue<T extends ProvideValue>(option: T) {
+    return option;
 }
 
-/**
- * 子组件需暴露出来的公共属性
- */
+/** 子组件需暴露出来的公共属性 */
 export interface CommonMethod {
     /** 重置 */
-    reset(): CommonMethod;
+    reset(): void;
     /** 更新父级中 query 的值 */
-    updateWrapperQuery(): CommonMethod;
+    updateWrapperQuery(): void;
     /** 校验方法 */
     validator?(query: Record<string, string>): Promise<any> | any;
     /** 获取该组件拼接的参数 */
     getQuery(): Record<string, any>;
+}
+export function defineCommonMethod<T extends CommonMethod>(option: T): T {
+    return option;
 }

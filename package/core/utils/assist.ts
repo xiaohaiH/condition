@@ -1,4 +1,4 @@
-import { isVue2, SetupContext, version, VNode } from 'vue-demi';
+import { isVue2, markRaw, SetupContext, version, VNode } from 'vue-demi';
 import { hasOwn } from './index';
 
 /**
@@ -38,3 +38,11 @@ export const IS_COMPOSITION_VERSION = version.slice(0, 3) === '2.7';
 
 /** vue2 和 vue3 的 value 值不一致 */
 export const VALUE_KEY = isVue2 ? 'value' : 'modelValue';
+
+/**
+ * 渲染节点
+ * @param {string | Object | Function} node 需渲染元素
+ */
+export function getNode(node: string | ((...args: any[]) => VNode) | VNode, ...args: any[]) {
+    return typeof node === 'function' ? node(...args) : typeof node === 'string' ? node : markRaw(node);
+}

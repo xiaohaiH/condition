@@ -1,7 +1,7 @@
-## 条件校验 - `element-ui` 版本
+## 表单组件 - `element-ui` 版本
 
-> -   基于 `@xiaohaih/condition-core` 实现的条件校验
-> -   提供了 `defineCondition` 函数来做 `ts` 提示
+> -   基于 `@xiaohaih/condition-core` 实现
+> -   提供了 `defineCondition `函数用来定义条件(支持 `typescript` 提示)
 > -   提供了 `registerComponent` 函数来注册自定义的组件, `unregisterComponent` 函数来删除自定义的组件
 > -   使用示例
 >

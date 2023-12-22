@@ -1,48 +1,34 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreInput v-bind="$props">
-        <template
-            #default="{ listeners, debounceChange, enterHandler, label, labelSuffix, modelValue, ...surplusProps }"
-        >
+    <CorePlain ref="coreRef" v-bind="$props">
+        <template #default="{ listeners, change, label, labelSuffix, ...surplusProps }">
             <div
-                :class="`condition-item condition-item--input condition-item--${field} ${
-                    inputNum > 1 && 'multiple-input'
-                }`"
+                :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
             >
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
-                <template v-for="inputIndex of inputNum">
-                    <ElInput
-                        :clearable="clearable"
-                        v-bind="surplusProps"
-                        :model-value="modelValue[inputIndex - 1]"
-                        :placeholder="placeholders[inputIndex - 1] || placeholder"
-                        class="condition-item__content"
-                        @input="debounceChange($event, inputIndex - 1)"
-                        @keydown.native.enter="enterHandler($event, inputIndex - 1)"
-                    ></ElInput>
-                    <template v-if="inputSuffix && inputIndex !== inputNum">
-                        <span class="condition-item__content-suffix">
-                            <template v-if="typeof getNode(inputSuffix, inputIndex) === 'string'">
-                                {{ getNode(inputSuffix, inputIndex) }}
-                            </template>
-                            <template v-else>
-                                <component :is="getNode(inputSuffix, inputIndex)"></component>
-                            </template>
-                        </span>
-                    </template>
-                </template>
+                <ElInput
+                    :clearable="clearable"
+                    v-bind="surplusProps"
+                    class="condition-item__content"
+                    @input="debounceChange"
+                    @keydown.enter="enterHandle"
+                ></ElInput>
+                <div v-if="postfix" class="condition-item__postfix">
+                    <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+                    <template v-else><component :is="getNode(postfix, surplusProps.modelValue)"></component></template>
+                </div>
             </div>
         </template>
-    </CoreInput>
+    </CorePlain>
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, VNode } from 'vue';
-import { CoreInput } from '@xiaohaih/condition-core';
+import { defineComponent, ref } from 'vue';
+import { CorePlain } from '@xiaohaih/condition-core';
 import { ElInput } from 'element-plus';
 import { inputProps } from '../../src/common/props';
+import { getNode } from '@xiaohaih/condition-core/utils/assist';
 
-let r: any;
 /**
  * @file 输入框
  */
@@ -50,18 +36,42 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HInput',
     components: {
-        CoreInput,
+        CorePlain,
         ElInput,
     },
     props: inputProps,
-    setup(props, context) {
-        /** 获取渲染节点 */
-        function getNode(node: string | ((index: number) => VNode) | VNode, idx: number) {
-            r = typeof node === 'function' ? node(idx - 1) : node;
-            return typeof r === 'string' ? r : markRaw(r);
+    setup(props, ctx) {
+        const coreRef = ref<InstanceType<typeof CorePlain>>();
+
+        /**
+         * 节流
+         * @param {string} value: 输入值
+         */
+        let timer = 0;
+        function debounceChange(value: string) {
+            if (!coreRef.value) return;
+            const { realtime, waitTime } = props;
+            timer && clearTimeout(timer);
+            if (realtime || !coreRef.value.wrapper?.realtime.value) {
+                coreRef.value.change(value);
+            } else {
+                if (value !== coreRef.value.checked) {
+                    coreRef.value.checked = value;
+                }
+                if (!coreRef.value.wrapper) return;
+                timer = setTimeout(coreRef.value.wrapper.insetSearch, waitTime) as unknown as number;
+            }
+        }
+        /** 回车事件 */
+        function enterHandle(ev: Event | KeyboardEvent) {
+            if (!coreRef.value) return;
+            timer && clearTimeout(timer);
+            coreRef.value.checked = (ev.target as HTMLInputElement).value;
+            coreRef.value.option.updateWrapperQuery();
+            coreRef.value.wrapper?.search();
         }
 
-        return { getNode };
+        return { coreRef, debounceChange, enterHandle, getNode };
     },
 });
 </script>

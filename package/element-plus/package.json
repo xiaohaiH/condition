@@ -20,7 +20,7 @@
         "vue2": "vue-demi-switch 2",
         "vue2.7": "vue-demi-switch 2.7",
         "vue3": "vue-demi-switch 3",
-        "build": "vite build --config vite.config.ts && vue-tsc --declaration --emitDeclarationOnly",
+        "build": "vite build --config vite.config.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -32,7 +32,7 @@
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.2.3",
         "@vitejs/plugin-vue-jsx": "^3.0.1",
-        "vite-plugin-dts": "^2.3.0"
+        "vite-plugin-dts": "^3.6.3"
     },
     "publishConfig": {
         "main": "dist/index.cjs.js",

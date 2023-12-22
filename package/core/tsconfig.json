@@ -5,5 +5,18 @@
         "baseUrl": ".",
         "rootDir": "."
     },
-    "include": ["package/**/*.ts", "package/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"]
+    "include": [
+        "package/**/*.ts",
+        "package/**/*.tsx",
+        "common/**/*.ts",
+        "common/**/*.tsx",
+        "use/**/*.ts",
+        "use/**/*.tsx",
+        "utils/**/*.ts",
+        "utils/**/*.tsx",
+        "index.ts",
+        "interface.ts",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ]
 }

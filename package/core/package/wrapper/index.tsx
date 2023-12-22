@@ -18,9 +18,7 @@ import { hasOwn } from '../../utils/index';
 import { getSlot, IS_COMPOSITION_VERSION } from '../../utils/assist';
 import { wrapperProps } from '../../common/props';
 import { wrapperEmits } from '../../common/emits';
-import { provideKey, ProvideValue, CommonMethod } from '../../common/provide';
-
-// TODO 日期组件在类型发生变化时需特殊处理
+import { provideKey, ProvideValue, CommonMethod, defineProvideValue } from '../../common/provide';
 
 /**
  * @file 条件包装组件(入口组件)
@@ -48,19 +46,18 @@ export default defineComponent({
         /** 是否标记更新的字段, 防止卸载后的空字段占位 */
         let isLogField = false;
         let logFields: string[] = [];
-        /**
-         * 提供给子条件组件的方法
-         */
-        const wrapperInstance: ProvideValue = {
+        /** 提供给子条件组件的方法 */
+        const wrapperInstance = defineProvideValue({
             realtime: toRef(props, 'realtime'),
-            register: (compOption) => {
+            register(compOption) {
                 child.push(compOption);
                 const unregister = () => {
                     isLogField = true;
-                    compOption.reset().updateWrapperQuery();
+                    compOption.reset();
+                    compOption.updateWrapperQuery();
                     const idx = child.indexOf(compOption);
                     idx !== -1 && child.splice(idx, 1);
-                    props.searchAtDatumChanged && wrapperInstance.search();
+                    props.searchAtDatumChanged && this.search();
                     // TODO 不确定的一点, 数据源更改后是否需要重置整个数据
                     // 如果需要重置, 得更新后第一次搜索事件时传递的搜索值
                     isLogField = false;
@@ -79,15 +76,13 @@ export default defineComponent({
                     onBeforeUnmount(unregister, IS_COMPOSITION_VERSION ? childInstance.proxy : childInstance);
                 return unregister;
             },
-            updateQueryValue: (field, value) => {
+            updateQueryValue(field, value) {
                 if (isLogField) logFields.push(field);
                 set(query.value, field, value);
                 changedQueryObj[field] = value;
-                return wrapperInstance;
             },
-            insetSearch: () => {
-                props.realtime && wrapperInstance.search();
-                return wrapperInstance;
+            insetSearch() {
+                props.realtime && this.search();
             },
             search: querySearch,
             removeUnreferencedField(field: string) {
@@ -100,9 +95,8 @@ export default defineComponent({
                     del(query.value, field);
                     delete changedQueryObj[field];
                 }
-                return wrapperInstance;
             },
-        };
+        });
         provide<ProvideValue>(provideKey, wrapperInstance);
 
         /** 内部条件最新的值, 在没触发搜索按钮前, 不会同步到外部 */
@@ -133,7 +127,8 @@ export default defineComponent({
          */
         function reset() {
             child.forEach((v) => {
-                v.reset().updateWrapperQuery();
+                v.reset();
+                v.updateWrapperQuery();
             });
             ctx.emit('reset', getQuery());
         }

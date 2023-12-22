@@ -1,34 +1,59 @@
+import { ExtractPropTypes } from 'vue';
 import { CoreCondition } from '@xiaohaih/condition-core';
-import { ElSelect, ElInput, ElDatePicker, ElCascader } from 'element-plus';
+import { ElSelect, ElInput, ElDatePicker, ElCascader, ElRadio, ElCheckbox } from 'element-plus';
+import {
+    wrapperProps,
+    selectProps,
+    inputProps,
+    datepickerProps,
+    radioProps,
+    checkboxProps,
+    cascaderProps,
+} from './src/common/props';
 
 export declare namespace HCondition {
-    interface WrapperProps extends CoreCondition.WrapperProps {
-        renderBtn?: boolean;
-    }
+    type BuiltInField<T = ''> = CoreCondition.BuiltInField | 'customGetQuery' | 'backfillToValue' | T;
+    type OmitDefaultKey<T> = CoreCondition.OmitDefaultKey<T>;
+
+    interface WrapperProps extends CoreCondition.WrapperProps, ExtractPropTypes<OmitDefaultKey<typeof wrapperProps>> {}
 
     /** 条件声明集合 */
     type Condition =
-        | CoreCondition.DeepMaybeRef<SelectProps>
         | CoreCondition.DeepMaybeRef<InputProps>
+        | CoreCondition.DeepMaybeRef<SelectProps>
         | CoreCondition.DeepMaybeRef<DatepickerProps>
+        | CoreCondition.DeepMaybeRef<RadioProps>
+        | CoreCondition.DeepMaybeRef<CheckboxProps>
         | CoreCondition.DeepMaybeRef<CascaderProps>;
 
-    interface SelectProps
-        extends CoreCondition.SelectProps,
-            Omit<Props<InstanceType<typeof ElSelect>>, 'disabled' | 'filterMethod' | 'valueKey' | 'multiple'> {
-        t: 'select';
-    }
-    interface InputProps extends CoreCondition.InputProps, Omit<Props<InstanceType<typeof ElInput>>, 'disabled'> {
+    interface InputProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof inputProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElInput>>, keyof typeof inputProps> {
         t: 'input';
     }
+    interface SelectProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof selectProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElSelect>>, keyof typeof selectProps> {
+        t: 'select';
+    }
     interface DatepickerProps
-        extends CoreCondition.DatepickerProps,
-            Omit<Props<InstanceType<typeof ElDatePicker>>, 'disabled'> {
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof datepickerProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElDatePicker>>, keyof typeof datepickerProps> {
         t: 'datepicker';
     }
+    interface RadioProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof radioProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElRadio>>, keyof typeof radioProps> {
+        t: 'radio';
+    }
+    interface CheckboxProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof checkboxProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElCheckbox>>, keyof typeof checkboxProps> {
+        t: 'checkbox';
+    }
     interface CascaderProps
-        extends CoreCondition.CascaderProps,
-            Omit<Props<InstanceType<typeof ElCascader>>, 'disabled' | 'options'> {
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElCascader>>, keyof typeof cascaderProps> {
         t: 'cascader';
     }
 

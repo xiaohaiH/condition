@@ -1,8 +1,10 @@
 <template>
     <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier vue/no-unused-vars -->
-    <CoreDatepicker :range="range" v-bind="$props" v-on="$listeners">
+    <CorePlain v-bind="$props" v-on="$listeners" :multiple="isMultiple" :fields="insetFields">
         <template #default="{ listeners, updateCheckedValue, change, ...surplusProps }">
-            <div :class="`condition-item condition-item--datepicker condition-item--${field}`">
+            <div
+                :class="`condition-item condition-item--datepicker condition-item--${field} condition-item--${!!postfix}`"
+            >
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
                 <ElDatePicker
                     :valueFormat="valueFormat"
@@ -10,16 +12,21 @@
                     class="condition-item__content"
                     @input="change"
                 ></ElDatePicker>
+                <div v-if="postfix" class="condition-item__postfix">
+                    <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+                    <template v-else><component :is="getNode(postfix, surplusProps.value)"></component></template>
+                </div>
             </div>
         </template>
-    </CoreDatepicker>
+    </CorePlain>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi';
-import { CoreDatepicker } from '@xiaohaih/condition-core';
+import { computed, defineComponent } from 'vue-demi';
+import { CorePlain } from '@xiaohaih/condition-core';
 import { DatePicker as ElDatePicker } from 'element-ui';
 import { datepickerProps } from '../../src/common/props';
+import { getNode } from '@xiaohaih/condition-core/utils/assist';
 
 const reg = /range$/;
 function isRange(str: string | undefined) {
@@ -32,15 +39,24 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HDatepicker',
     components: {
-        CoreDatepicker,
+        CorePlain,
         ElDatePicker,
     },
     props: datepickerProps,
-    computed: {
-        range(): boolean {
+    setup(props, ctx) {
+        const isMultiple = computed(() =>
             // @ts-ignore
-            return isRange(this.type);
-        },
+            props.multiple !== undefined ? props.multiple : isRange(props.type as string),
+        );
+        const insetFields = computed(
+            () =>
+                props.fields ||
+                (isMultiple.value && props.beginField && props.endField
+                    ? [props.beginField, props.endField]
+                    : undefined),
+        );
+
+        return { isMultiple, insetFields, getNode };
     },
 });
 </script>

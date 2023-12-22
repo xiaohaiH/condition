@@ -6,7 +6,7 @@
     "jsdelivr": "dist/index.umd.js",
     "unpkg": "dist/index.umd.js",
     "module": "index.ts",
-    "types": "dist/index.d.ts",
+    "types": "index.ts",
     "exports": {
         ".": {
             "require": "./dist/index.cjs.js",
@@ -20,7 +20,7 @@
         "vue2": "vue-demi-switch 2",
         "vue2.7": "vue-demi-switch 2.7",
         "vue3": "vue-demi-switch 3",
-        "build": "vite build --config vite.config.ts && vue-tsc --declaration --emitDeclarationOnly",
+        "build": "vite build --config vite.config.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -31,8 +31,9 @@
         "vue-demi": "0.14.5"
     },
     "devDependencies": {
-        "vue": "2.7.0",
-        "element-ui": "^2.15.13"
+        "element-ui": "^2.15.13",
+        "vite-plugin-dts": "^3.6.3",
+        "vue": "2.7.0"
     },
     "peerDependencies": {
         "@vue/composition-api": "^1.0.0-rc.1",

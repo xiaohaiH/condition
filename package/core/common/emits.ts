@@ -13,26 +13,12 @@ export const wrapperEmits = {
     reset: (query: Record<string, any>) => true,
 };
 
-/** select emits */
+/** plain emits */
 export const selectEmits = {
     ...commonEmits,
-    /** 失焦进行检索 */
-    blur: (...args: any[]) => true,
 };
 
-/** input emits */
-export const inputEmits = {
-    ...commonEmits,
-    /** 让容器触发搜索事件 */
-    triggerSearch: () => true,
-};
-
-/** datepicker emits */
-export const datepickerEmits = {
-    ...commonEmits,
-};
-
-/** cascader emits */
-export const cascaderEmits = {
+/** tree emits */
+export const treeEmits = {
     ...commonEmits,
 };

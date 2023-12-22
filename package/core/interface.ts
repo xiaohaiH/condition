@@ -1,6 +1,6 @@
 // 不能直接用 vue-demi 的 ExtractPropTypes, 编译后项目会找不到该类型
 import { ExtractPropTypes, Ref, UnwrapRef } from 'vue-demi';
-import { wrapperProps, selectProps, inputProps, datepickerProps, cascaderProps } from './common/props';
+import { wrapperProps, plainProps, treeProps } from './common/props';
 export * from './common/emits';
 export * from './common/props';
 export * from './common/provide';
@@ -22,10 +22,8 @@ export declare namespace CoreCondition {
     type ToRaw<T> = UnwrapRef<T>;
 
     interface WrapperProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof wrapperProps>>, BuiltInField> {}
-    interface SelectProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof selectProps>>, BuiltInField> {}
-    interface InputProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof inputProps>>, BuiltInField> {}
-    interface DatepickerProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof datepickerProps>>, BuiltInField> {}
-    interface CascaderProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField> {}
+    interface PlainProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof plainProps>>, BuiltInField> {}
+    interface TreeProps extends Omit<ExtractPropTypes<OmitDefaultKey<typeof treeProps>>, BuiltInField> {}
 
     type OmitDefaultKey<T> = T extends Record<string | symbol, any>
         ? {
