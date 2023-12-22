@@ -57,8 +57,8 @@ importers:
         specifier: workspace:^
         version: link:../package/element-plus
       '@xiaohaih/vue-monaco-editor':
-        specifier: ^0.0.5
-        version: 0.0.5(@vue/composition-api@1.7.1)(monaco-editor@0.44.0)(vue@3.2.40)
+        specifier: ^0.0.6
+        version: 0.0.6(@vue/composition-api@1.7.1)(monaco-editor@0.44.0)(vue@3.2.40)
       element-plus:
         specifier: ^2.3.5
         version: 2.3.5(@vue/composition-api@1.7.1)(vue@3.2.40)
@@ -1998,8 +1998,8 @@ packages:
       - vue
     dev: false
 
-  /@xiaohaih/monaco-editor@0.0.5(monaco-editor@0.44.0):
-    resolution: {integrity: sha512-X4T4ZqCu0wcMSVYKAx/omOMIyy9TL1r/ZZaFe6Z0T8cfu+j22Fovu5sVAvHiK3eiukrR+ZbReOeCCJwszK/AWg==}
+  /@xiaohaih/monaco-editor@0.0.6(monaco-editor@0.44.0):
+    resolution: {integrity: sha512-L280tX26LINruuhzgHe+SOeLXSiE4Flcgo0HiAZzyZ74KomQnvbJHlacmcodm/5FaxEIZCxJN7P/0sMgnC3HLg==}
     peerDependencies:
       monaco-editor: '>0.30.0'
     dependencies:
@@ -2007,8 +2007,8 @@ packages:
       monaco-editor: 0.44.0
     dev: false
 
-  /@xiaohaih/vue-monaco-editor@0.0.5(@vue/composition-api@1.7.1)(monaco-editor@0.44.0)(vue@3.2.40):
-    resolution: {integrity: sha512-m5ToI1GR04FymX/wmfskraHjfc0TvwX20XcHE5sDeL7zOcCKIcLei0ogej03DaTwjlfsnY01cYnSCpJ9DuPXqQ==}
+  /@xiaohaih/vue-monaco-editor@0.0.6(@vue/composition-api@1.7.1)(monaco-editor@0.44.0)(vue@3.2.40):
+    resolution: {integrity: sha512-G/oUZWcm3Gl/+wKEWlHKI8iMwCfeulk+qhGExwvGWwqarr6ckjNPk0a2M3H6q6ajvnuaEl0JrScX32PIIdlHxQ==}
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1
       monaco-editor: '>0.30.0'
@@ -2018,7 +2018,7 @@ packages:
         optional: true
     dependencies:
       '@vue/composition-api': 1.7.1(vue@3.2.40)
-      '@xiaohaih/monaco-editor': 0.0.5(monaco-editor@0.44.0)
+      '@xiaohaih/monaco-editor': 0.0.6(monaco-editor@0.44.0)
       monaco-editor: 0.44.0
       vue: 3.2.40
       vue-demi: 0.14.6(@vue/composition-api@1.7.1)(vue@3.2.40)

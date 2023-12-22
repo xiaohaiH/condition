@@ -181,39 +181,37 @@ export default defineComponent({
 
         const modLoadHelper = [
             [
-                '@xiaohaih/condition-el',
-                (modName: string, absolutePath: string, mod: string) =>
-                    `http://localhost:7890/element-ui/dist/${
-                        modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
-                    }`,
-
+                '@xiaohaih/condition-core',
                 // (modName: string, absolutePath: string, mod: string) =>
-                //     `https://unpkg.com/@xiaohaih/condition-el@latest/dist/${
+                //     `http://localhost:7890/core/dist/${
                 //         modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
                 //     }`,
+                (modName: string, absolutePath: string, mod: string) =>
+                    `https://fastly.jsdelivr.net/npm/@xiaohaih/condition-core@latest/dist/${
+                        modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
+                    }`,
+            ],
+            [
+                '@xiaohaih/condition-el',
+                // (modName: string, absolutePath: string, mod: string) =>
+                //     `http://localhost:7890/element-ui/dist/${
+                //         modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
+                //     }`,
+                (modName: string, absolutePath: string, mod: string) =>
+                    `https://fastly.jsdelivr.net/npm/@xiaohaih/condition-el@latest/dist/${
+                        modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
+                    }`,
             ],
             [
                 '@xiaohaih/condition-plus',
-                (modName: string, absolutePath: string, mod: string) =>
-                    `http://localhost:7890/element-plus/dist/${
-                        modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
-                    }`,
-
                 // (modName: string, absolutePath: string, mod: string) =>
-                //     `https://unpkg.com/@xiaohaih/condition-plus@latest/dist/${
+                //     `http://localhost:7890/element-plus/dist/${
                 //         modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
                 //     }`,
-            ],
-            [
-                '@xiaohaih/condition-core',
                 (modName: string, absolutePath: string, mod: string) =>
-                    `http://localhost:7890/core/dist/${
+                    `https://fastly.jsdelivr.net/npm/@xiaohaih/condition-el-plus@latest/dist/${
                         modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
                     }`,
-                // (modName: string, absolutePath: string, mod: string) =>
-                //     `https://unpkg.com/@xiaohaih/condition-core@latest/dist/${
-                //         modName === mod ? 'index.d.ts' : `${absolutePath.slice(mod.length + 1)}.d.ts`
-                //     }`,
             ],
             [
                 'element-ui',
@@ -228,6 +226,21 @@ export default defineComponent({
                             : `${absolutePath.slice('element-ui/'.length)}.d.ts`
                     }`,
             ],
+            // element-plus 文件夹都省略了路径, 又存在大量重名(同关键字既可以是目录又可以是文件)
+            // 所以用 element-ui 的类型
+            [
+                'element-plus',
+                (modName: string, absolutePath: string, mod: string) =>
+                    `https://fastly.jsdelivr.net/npm/element-ui@latest/types/${
+                        modName === mod
+                            ? `index.d.ts`
+                            : modName === './element-ui'
+                            ? `element-ui.d.ts`
+                            : absolutePath.slice(0, 'element-ui/types/'.length) === 'element-ui/types/'
+                            ? `${absolutePath.slice('element-ui/types/'.length)}.d.ts`
+                            : `${absolutePath.slice('element-plus/'.length)}.d.ts`
+                    }`,
+            ],
             [
                 'vue-demi',
                 (modName: string, absolutePath: string, mod: string) =>
@@ -239,7 +252,7 @@ export default defineComponent({
                     `https://fastly.jsdelivr.net/npm/@vue/composition-api@1.7.2/dist/vue-composition-api.d.ts`,
             ],
             version.charAt(0) === '3'
-                ? [
+                ? ([
                       'vue',
                       (modName: string, absolutePath: string, mod: string) =>
                           `https://fastly.jsdelivr.net/npm/vue@3.4.0-beta.4/dist/${
@@ -249,8 +262,8 @@ export default defineComponent({
                                   ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
                                   : `${absolutePath.slice('vue/'.length)}.d.ts`
                           }`,
-                  ]
-                : [
+                  ] as const)
+                : ([
                       'vue',
                       (modName: string, absolutePath: string, mod: string) =>
                           `https://fastly.jsdelivr.net/npm/vue@2.6.0/types/${
@@ -260,7 +273,7 @@ export default defineComponent({
                                   ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
                                   : `${absolutePath.slice('vue/'.length)}.d.ts`
                           }`,
-                  ],
+                  ] as const),
             [
                 '@vue/compiler-dom',
                 (modName: string, absolutePath: string, mod: string) =>
@@ -303,7 +316,7 @@ export default defineComponent({
             ],
         ] as const;
         /** 加载模块 */
-        async function loadModule(modName: string, absolutePath: string) {
+        async function loadModule(modName: string, absolutePath: string, cb: any) {
             const r = modLoadHelper.find(([mod]) => absolutePath.slice(0, mod.length) === mod);
             if (!r) return '';
             return fetch(r[1](modName, absolutePath, r[0])).then((v) => {
