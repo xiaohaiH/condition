@@ -20,7 +20,7 @@ export default defineComponent({
         /** 初始值(重置时回填的值) */
         const initialValue = useInitialValue(props);
         /** 初始是否存在回填值 */
-        const initialBackfillValue = props.backfill && props.backfill[props.field];
+        const initialBackfillValue = props.backfill && (props.fields?.length ? props.fields.map((key) => props.backfill![key]) : props.backfill[props.field]);
         /** 当前选中值 */
         const checked = ref<string | string[]>(
             initialBackfillValue ||
