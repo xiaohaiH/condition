@@ -3,7 +3,7 @@
     <CorePlain v-bind="$props" :multiple="isMultiple" :fields="insetFields">
         <template #default="{ listeners, updateCheckedValue, change, label, labelSuffix, ...surplusProps }">
             <div
-                :class="`condition-item condition-item--datepicker condition-item--${field} condition-item--${!!postfix}`"
+                :class="`condition-item condition-item--datepicker ${isMultiple && 'condition-item--datepicker-range'} condition-item--${field} condition-item--${!!postfix}`"
             >
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
                 <ElDatePicker

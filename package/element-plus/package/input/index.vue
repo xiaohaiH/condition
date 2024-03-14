@@ -3,7 +3,7 @@
     <CorePlain ref="coreRef" v-bind="$props">
         <template #default="{ listeners, change, label, labelSuffix, ...surplusProps }">
             <div
-                :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
+                :class="`condition-item condition-item--input condition-item--${field} condition-item--${!!postfix}`"
             >
                 <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
                 <ElInput
