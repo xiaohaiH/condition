@@ -54,8 +54,8 @@
     "publishConfig": {
         "main": "dist/index.cjs.js",
         "unpkg": "dist/index.umd.js",
-        "module": "index.ts",
-        "types": "index.ts",
+        "module": "dist/index.esm.js",
+        "types": "dist/types/index.d.ts",
         "exports": {
             ".": {
                 "require": "./dist/index.cjs.js",
