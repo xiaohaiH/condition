@@ -1,5 +1,14 @@
 # @xiaohaih/condition-el-plus
 
+## 0.2.1
+
+### Patch Changes
+
+- 1. 优化第三方开发环境下调源码, 以便调试
+- 2. 不同类型的组件增加类名以作区分, 方便设置样式
+- Updated dependencies
+  - @xiaohaih/condition-core@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
