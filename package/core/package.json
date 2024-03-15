@@ -1,6 +1,6 @@
 {
     "name": "@xiaohaih/condition-core",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
@@ -52,6 +52,7 @@
         }
     },
     "publishConfig": {
+        "registry": "https://registry.npmjs.org/",
         "main": "dist/index.cjs.js",
         "unpkg": "dist/index.umd.js",
         "module": "dist/index.esm.js",

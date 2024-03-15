@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el
 
+## 0.2.2
+
+### Patch Changes
+
+- 调整 npm 忽略文件, 设置发布的镜像源
+- Updated dependencies
+  - @xiaohaih/condition-core@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes
