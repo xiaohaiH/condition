@@ -56,7 +56,7 @@
 >
 > ## `input`
 >
-> `tips: ` 支持 [`element-plus`.`input`](https://element-plus.gitee.io/zh-CN/component/input.html#api) 所有属性
+> `tips: ` 支持 [`element-plus.input`](https://element-plus.gitee.io/zh-CN/component/input.html#api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                       | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | -------------------------- | --------- |
@@ -79,7 +79,7 @@
 >
 > ## `select`
 >
-> `tips: ` 支持 [`element-plus`.`select`](https://element-plus.gitee.io/zh-CN/component/select.html#select-api) 所有属性
+> `tips: ` 支持 [`element-plus.select`](https://element-plus.gitee.io/zh-CN/component/select.html#select-api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -105,7 +105,7 @@
 >
 > ## `datepicker`
 >
-> `tips: ` 支持 [`element-plus`.`datePicker`](https://element-plus.gitee.io/zh-CN/component/date-picker.html#api) 所有属性
+> `tips: ` 支持 [`element-plus.datePicker`](https://element-plus.gitee.io/zh-CN/component/date-picker.html#api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                             | 默认值     |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | -------------------------------- | ---------- |
@@ -129,7 +129,7 @@
 >
 > ## `cascader`
 >
-> `tips: ` 支持 [`element-plus`.`cascader`](https://element-plus.gitee.io/zh-CN/component/cascader.html#cascader-api) 所有属性
+> `tips: ` 支持 [`element-plus.cascader`](https://element-plus.gitee.io/zh-CN/component/cascader.html#cascader-api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -157,7 +157,7 @@
 >
 > ## `radio`
 >
-> `tips: ` 支持 [`element-plus`.`radioGroup`](https://element-plus.gitee.io/zh-CN/component/radio.html#radiogroup-api) 所有属性
+> `tips: ` 支持 [`element-plus.radioGroup`](https://element-plus.gitee.io/zh-CN/component/radio.html#radiogroup-api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -186,7 +186,7 @@
 >
 > ## `checkbox`
 >
-> `tips: ` 支持 [`element-plus`.`checkbox`](https://element-plus.gitee.io/zh-CN/component/radio.html#checkbox-api) 所有属性
+> `tips: ` 支持 [`element-plus.checkbox`](https://element-plus.gitee.io/zh-CN/component/radio.html#checkbox-api) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |

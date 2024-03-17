@@ -56,7 +56,7 @@
 >
 > ## `input`
 >
-> `tips: ` 支持 [`element-ui`.`input`](https://element.eleme.cn/#/zh-CN/component/input#input-attributes) 所有属性
+> `tips: ` 支持 [`element-ui.input`](https://element.eleme.cn/#/zh-CN/component/input#input-attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                       | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | -------------------------- | --------- |
@@ -79,7 +79,7 @@
 >
 > ## `select`
 >
-> `tips: ` 支持 [`element-ui`.`select`](https://element.eleme.cn/#/zh-CN/component/select#select-attributes) 所有属性
+> `tips: ` 支持 [`element-ui.select`](https://element.eleme.cn/#/zh-CN/component/select#select-attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -105,7 +105,7 @@
 >
 > ## `datepicker`
 >
-> `tips: ` 支持 [`element-ui`.`datePicker`](https://element.eleme.cn/#/zh-CN/component/date-picker#attributes) 所有属性
+> `tips: ` 支持 [`element-ui.datePicker`](https://element.eleme.cn/#/zh-CN/component/date-picker#attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                             | 默认值     |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | -------------------------------- | ---------- |
@@ -129,7 +129,7 @@
 >
 > ## `cascader`
 >
-> `tips: ` 支持 [`element-ui`.`cascader`](https://element.eleme.cn/#/zh-CN/component/cascader#cascader-attributes) 所有属性
+> `tips: ` 支持 [`element-ui.cascader`](https://element.eleme.cn/#/zh-CN/component/cascader#cascader-attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -157,7 +157,7 @@
 >
 > ## `radio`
 >
-> `tips: ` 支持 [`element-ui`.`radioGroup`](https://element.eleme.cn/#/zh-CN/component/radio#radio-group-attributes) 所有属性
+> `tips: ` 支持 [`element-ui.radioGroup`](https://element.eleme.cn/#/zh-CN/component/radio#radio-group-attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
@@ -186,7 +186,7 @@
 >
 > ## `checkbox`
 >
-> `tips: ` 支持 [`element-ui`.`checkbox`](https://element.eleme.cn/#/zh-CN/component/checkbox#checkbox-attributes) 所有属性
+> `tips: ` 支持 [`element-ui.checkbox`](https://element.eleme.cn/#/zh-CN/component/checkbox#checkbox-attributes) 所有属性
 >
 > | 属性名              | 是否必填 | 类型                                                                           | 描述                           | 默认值    |
 > | ------------------- | -------- | ------------------------------------------------------------------------------ | ------------------------------ | --------- |
