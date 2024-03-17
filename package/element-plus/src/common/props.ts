@@ -84,7 +84,7 @@ export const datepickerProps = {
     ...emits2Props(ElDatePicker.emits),
     ...CorePlainProps,
     ...commonProps,
-    /** 日期格式化的类型 - 给了个默认值 */
+    /** 日期格式化的类型 */
     valueFormat: { type: String as PropType<string>, default: 'YYYY-MM-DD' },
     /** 作为字符串时提交的的字段 - 起始字段 */
     beginField: { type: String as PropType<string> },

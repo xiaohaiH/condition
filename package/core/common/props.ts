@@ -79,7 +79,7 @@ export const commonProps = {
     /** 设置默认值 */
     defaultValue: {
         type: [String, Array, Function] as PropType<
-            string | string[] | ((query: Record<string, any>, backfill?: Record<string, any>) => ValueType)
+            ValueType | ((query: Record<string, any>, backfill?: Record<string, any>) => ValueType)
         >,
     },
     /** 是否依赖其它字段 */
