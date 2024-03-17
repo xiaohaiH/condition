@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.2.3
+
+### Patch Changes
+
+- 更新文档
+
 ## 0.2.2
 
 ### Patch Changes
