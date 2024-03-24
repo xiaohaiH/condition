@@ -1,36 +1,39 @@
 <template>
-    <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-unused-vars -->
-    <CorePlain v-bind="$props" :multiple="true">
-        <template #default="{ labelKey, valueKey, options, listeners, change, ...surplusProps }">
-            <div
-                :class="`condition-item condition-item--checkbox condition-item--${field} condition-item--${!!postfix}`"
-            >
-                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
-                <ElCheckboxGroup
-                    ref="checkboxGroupRef"
-                    v-bind="surplusProps"
-                    class="condition-item__content"
-                    @update:modelValue="change"
-                >
-                    <template v-for="item of options" :key="item[valueKey]">
-                        <component :is="checkboxType" :label="item[valueKey]">{{ item[labelKey] }}</component>
-                    </template>
-                </ElCheckboxGroup>
-                <div v-if="postfix" class="condition-item__postfix">
-                    <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-                    <template v-else><component :is="getNode(postfix, surplusProps.modelValue)"></component></template>
-                </div>
-            </div>
-        </template>
-    </CorePlain>
+    <ElFormItem
+        :class="`condition-item condition-item--checkbox condition-item--${field} condition-item--${!!postfix}`"
+        v-bind="formItemProps"
+        :prop="formItemProps.prop || field"
+    >
+        <ElCheckboxGroup
+            v-bind="checkboxProps"
+            :disabled="insetDisabled"
+            :model-value="(checked as string[])"
+            ref="checkboxGroupRef"
+            class="condition-item__content"
+            @update:modelValue="(change as () => void)"
+        >
+            <template v-for="item of finalOption" :key="item[valueKey]">
+                <component :is="checkboxType" :label="item[valueKey]">{{ item[labelKey] }}</component>
+            </template>
+        </ElCheckboxGroup>
+        <div v-if="postfix" class="condition-item__postfix">
+            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)"></component>
+            </template>
+        </div>
+    </ElFormItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { CorePlain } from '@xiaohaih/condition-core';
-import { ElCheckboxGroup, ElCheckboxButton, ElCheckbox } from 'element-plus';
-import { checkboxProps } from '../../src/common/props';
-import { getNode } from '@xiaohaih/condition-core/utils/assist';
+import { ElFormItem, ElCheckboxGroup, ElCheckboxButton, ElCheckbox } from 'element-plus';
+import { pick } from 'lodash-es';
+import { usePlain, getNode } from '@xiaohaih/condition-core';
+import { checkboxProps as props } from './props';
+import { formItemPropKeys } from '../share';
+
+const checkboxPropKeys = Object.keys(ElCheckbox.props);
 
 /**
  * @file 复选框
@@ -39,17 +42,27 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HCheckbox',
     components: {
-        CorePlain,
+        ElFormItem,
         ElCheckboxGroup,
         ElCheckboxButton,
         ElCheckbox,
     },
-    props: checkboxProps,
+    props,
     setup(props, context) {
         const checkboxGroupRef = ref<InstanceType<typeof ElCheckboxGroup> | undefined>();
         const checkboxType = computed(() => (props.type === 'button' ? 'ElCheckboxButton' : 'ElCheckbox'));
+        const plain = usePlain(props);
+        const formItemProps = computed(() => pick(props, formItemPropKeys));
+        const checkboxProps = computed(() => pick(props, checkboxPropKeys));
 
-        return { checkboxGroupRef, checkboxType, getNode };
+        return {
+            ...plain,
+            formItemProps,
+            checkboxProps,
+            checkboxGroupRef,
+            checkboxType,
+            getNode,
+        };
     },
 });
 </script>

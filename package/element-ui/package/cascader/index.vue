@@ -1,34 +1,34 @@
 <template>
-    <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-deprecated-v-on-native-modifier -->
-    <CoreTree v-bind="$props" v-on="$listeners">
-        <template #default="{ listeners, change, label, labelSuffix, ...surplusProps }">
-            <div
-                :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
-            >
-                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
-                <ElCascader
-                    :filterable="filterable"
-                    :clearable="clearable"
-                    v-bind="surplusProps"
-                    v-on="listeners"
-                    class="condition-item__content"
-                    @change="change"
-                ></ElCascader>
-                <div v-if="postfix" class="condition-item__postfix">
-                    <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-                    <template v-else><component :is="getNode(postfix, surplusProps.value)"></component></template>
-                </div>
-            </div>
-        </template>
-    </CoreTree>
+    <ElFormItem
+        :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
+        v-bind="formItemProps"
+        :prop="formItemProps.prop || field"
+    >
+        <ElCascader
+            v-bind="cascaderProps"
+            :disabled="insetDisabled"
+            :options="finalOption"
+            v-on="$listeners"
+            class="condition-item__content"
+            @change="change"
+        ></ElCascader>
+        <div v-if="postfix" class="condition-item__postfix">
+            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+        </div>
+    </ElFormItem>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue-demi';
-import { CoreTree } from '@xiaohaih/condition-core';
-import { Cascader as ElCascader } from 'element-ui';
-import { cascaderProps } from '../../src/common/props';
-import { getNode } from '@xiaohaih/condition-core/utils/assist';
+import { defineComponent, computed } from 'vue-demi';
+import { FormItem as ElFormItem, Cascader as ElCascader } from 'element-ui';
+import { pick } from 'lodash-es';
+import { useTree, getNode } from '@xiaohaih/condition-core';
+import { cascaderProps as props } from './props';
+import { formItemPropKeys } from '../share';
+
+// @ts-expect-error UI.props报错
+const cascaderPropKeys = Object.keys(ElCascader.props);
 
 /**
  * @file 级联选择
@@ -37,12 +37,21 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HCascader',
     components: {
-        CoreTree,
+        ElFormItem,
         ElCascader,
     },
-    props: cascaderProps,
+    props,
     setup(props, ctx) {
-        return { getNode };
+        const plain = useTree(props);
+        const formItemProps = computed(() => pick(props, formItemPropKeys));
+        const cascaderProps = computed(() => pick(props, cascaderPropKeys));
+
+        return {
+            ...plain,
+            formItemProps,
+            cascaderProps,
+            getNode,
+        };
     },
 });
 </script>

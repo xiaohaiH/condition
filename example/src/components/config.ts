@@ -8,9 +8,12 @@ export const conditionFactory = () => ({
         resetToInitialValue: true,
         resetTriggerSearch: true,
         size: 'small',
-        tag: 'main',
+        // tag: 'main',
         class: 'h-condition',
         key: '',
+        rules: {
+            ra2: { required: true, message: '哈哈哈' },
+        },
     },
     condition: defineCondition({
         ageBegin: {
@@ -20,6 +23,7 @@ export const conditionFactory = () => ({
             clearable: true,
             defaultValue: '10',
             postfix: '-',
+            rules: [{ required: true }],
         },
         ageMiddle: {
             t: 'input',

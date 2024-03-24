@@ -1,4 +1,7 @@
-import { type Ref } from 'vue-demi';
+import { version, type Ref } from 'vue-demi';
+
+/** 判断是否是 2.7.* 版本, 监听生命周期需对该版本做处理 */
+export const IS_COMPOSITION_VERSION = version.slice(0, 3) === '2.7';
 
 /** 容器注入的 key */
 export const provideKey = 'condition-wrapper';
@@ -11,7 +14,7 @@ export interface ProvideValue {
     realtime: Ref<boolean | undefined>;
     /**
      * 子组件需主动注册组件, 否则不会生效
-     * @param {CommonMethod} compOption 提供父组件校验, 重置等方法
+     * @param {CommonMethod} config 提供父组件校验, 重置等方法
      *
      * @returns {() => void} 取消注册 - 默认会自动取消, 如果是异步任务内注册, 需自己手动取消
      */

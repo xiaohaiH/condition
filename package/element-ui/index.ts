@@ -13,5 +13,3 @@ export { default as HCheckbox } from './package/checkbox/index.vue';
 export * from './assist';
 export * from './interface';
 export * from './src/common/props';
-export * from './src/common/emits';
-export * from './src/common/provide';

@@ -1,41 +1,43 @@
 <template>
-    <!-- eslint-disable vue/no-deprecated-dollar-listeners-api vue/no-v-for-template-key-on-child vue/no-unused-vars -->
-    <CorePlain v-bind="$props">
-        <template #default="{ labelKey, valueKey, options, listeners, change, modelValue, ...surplusProps }">
-            <div :class="`condition-item condition-item--radio condition-item--${field} condition-item--${!!postfix}`">
-                <div v-if="label" :suffix="labelSuffix" class="condition-item__label">{{ label }}</div>
-                <ElRadioGroup
-                    ref="radioGroupRef"
-                    v-bind="surplusProps"
-                    :modelValue="modelValue"
-                    class="condition-item__content"
-                    @update:modelValue="change"
+    <ElFormItem
+        :class="`condition-item condition-item--radio condition-item--${field} condition-item--${!!postfix}`"
+        v-bind="formItemProps"
+        :prop="formItemProps.prop || field"
+    >
+        <ElRadioGroup
+            ref="radioGroupRef"
+            v-bind="radioProps"
+            :disabled="insetDisabled"
+            :model-value="(checked as any)"
+            class="condition-item__content"
+            @update:modelValue="(change as () => void)"
+        >
+            <template v-for="item of finalOption" :key="item[valueKey]">
+                <component
+                    :is="radioType"
+                    :label="item[valueKey]"
+                    v-on:[eventName].prevent="customChange(item[valueKey], checked as string, change)"
                 >
-                    <template v-for="item of options" :key="item[valueKey]">
-                        <component
-                            :is="radioType"
-                            :label="item[valueKey]"
-                            v-on:[eventName].prevent="customChange(item[valueKey], modelValue, change)"
-                        >
-                            {{ item[labelKey] }}
-                        </component>
-                    </template>
-                </ElRadioGroup>
-                <div v-if="postfix" class="condition-item__postfix">
-                    <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-                    <template v-else><component :is="getNode(postfix, modelValue)"></component></template>
-                </div>
-            </div>
-        </template>
-    </CorePlain>
+                    {{ item[labelKey] }}
+                </component>
+            </template>
+        </ElRadioGroup>
+        <div v-if="postfix" class="condition-item__postfix">
+            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+        </div>
+    </ElFormItem>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
-import { CorePlain } from '@xiaohaih/condition-core';
-import { ElRadioGroup, ElRadioButton, ElRadio } from 'element-plus';
-import { radioProps } from '../../src/common/props';
-import { getNode } from '@xiaohaih/condition-core/utils/assist';
+import { ElFormItem, ElRadioGroup, ElRadioButton, ElRadio } from 'element-plus';
+import { pick } from 'lodash-es';
+import { usePlain, getNode } from '@xiaohaih/condition-core';
+import { radioProps as props } from './props';
+import { formItemPropKeys } from '../share';
+
+const radioPropKeys = Object.keys(ElRadioGroup.props);
 
 /**
  * @file 单选框
@@ -44,13 +46,17 @@ export default defineComponent({
     inheritAttrs: false,
     name: 'HRadio',
     components: {
-        CorePlain,
+        ElFormItem,
         ElRadioGroup,
         ElRadioButton,
         ElRadio,
     },
-    props: radioProps,
+    props,
     setup(props, context) {
+        const plain = usePlain(props);
+        const formItemProps = computed(() => pick(props, formItemPropKeys));
+        const radioProps = computed(() => pick(props, radioPropKeys));
+
         const radioGroupRef = ref<InstanceType<typeof ElRadioGroup> | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));
 
@@ -61,11 +67,20 @@ export default defineComponent({
          * @param {string} currentVal 当前值
          * @param {Function} cb 值更改的回调
          */
-        function customChange(newVal: string, currentVal: string, cb: (value?: string) => void) {
+        function customChange(newVal: string, currentVal: string, cb: (value: string | string[]) => void) {
             cb(newVal === currentVal ? '' : newVal);
         }
 
-        return { radioGroupRef, radioType, eventName, customChange, getNode };
+        return {
+            ...plain,
+            formItemProps,
+            radioProps,
+            radioGroupRef,
+            radioType,
+            eventName,
+            customChange,
+            getNode,
+        };
     },
 });
 </script>

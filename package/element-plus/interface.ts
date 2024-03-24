@@ -9,7 +9,7 @@ import {
     radioProps,
     checkboxProps,
     cascaderProps,
-} from './src/common/props';
+} from './package/index';
 
 export declare namespace HCondition {
     type BuiltInField<T = ''> = CoreCondition.BuiltInField | 'customGetQuery' | 'backfillToValue' | T;
