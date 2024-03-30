@@ -1,11 +1,15 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue-demi';
 import { Checkbox as ElCheckbox } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+export const elCheckboxProps = { ...ElCheckbox.props } as {};
+// @ts-expect-error UI.props报错
+delete elCheckboxProps.checked;
+
 export const checkboxProps = {
-    // @ts-expect-error UI.props报错
-    ...(ElCheckbox.props as {}),
+    ...elCheckboxProps,
     // ...emits2Props(ElCheckbox.emits),
     ...plainProps,
     ...commonProps,

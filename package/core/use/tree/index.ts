@@ -9,6 +9,11 @@ type ValueType = string | number | null | undefined;
 /** 外部需传递的 props */
 export type TreeProps = ExtractPropTypes<typeof treeProps>;
 
+/** 空值转字符串(去除空值不一致导致 formItem.rules 校验) */
+function emptyValue2Str(val?: string | number | undefined | null | any[]) {
+    return val?.toString() ?? '';
+}
+
 /** 封装 tree 组件必备的信息 */
 export function useTree(props: TreeProps) {
     /** 容器注入值 */
@@ -40,8 +45,9 @@ export function useTree(props: TreeProps) {
     };
     // 防止触发搜索时, query 产生变化内部重复赋值
     const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
-    // 防止触发搜索时, backfill 产生变化内部重复赋值
+    // 防止触发搜索时, `backfill` 产生变化内部重复赋值
     const { flag: backfillFlag, updateFlag: updateBackfillFlag } = useDisableInCurrentCycle();
+
     /** 需暴露给父级操作 */
     const option = defineCommonMethod({
         reset() {
@@ -123,9 +129,9 @@ export function useTree(props: TreeProps) {
                     props.fields?.toString() || props.field,
                     props.fields?.map((v) => props.query[v]).filter(Boolean) || props.query[props.field],
                 ] as const,
-            ([_field, val], [__field]) => {
+            ([_field, val], [__field, oldVal]) => {
                 // 仅在值发生变化时同步
-                if (_field !== __field) return;
+                if (_field !== __field || emptyValue2Str(val) === emptyValue2Str(oldVal)) return;
                 if (!realtimeFlag.value) return;
                 checked.value = typeof val === 'string' ? insideGetChained(val) : val;
             },
@@ -141,8 +147,9 @@ export function useTree(props: TreeProps) {
                           return p;
                       }, [] as string[])
                     : props.backfill?.[props.field],
-            (value: ValueType | ValueType[]) => {
+            (value: ValueType | ValueType[], oldVal: ValueType | ValueType[]) => {
                 if (!sourceIsInit.value) return;
+                if (emptyValue2Str(value) === emptyValue2Str(oldVal)) return;
                 updateBackfillFlag();
                 if (Array.isArray(value)) {
                     updateCheckedValue(value);
@@ -220,7 +227,7 @@ export function useTree(props: TreeProps) {
      * @param {Array} values 待更改的值
      */
     function change(values: ValueType[] | ValueType) {
-        updateCheckedValue(values);
+        updateCheckedValue(values || []);
         wrapper?.insetSearch();
     }
     /**

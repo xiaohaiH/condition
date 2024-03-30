@@ -1,4 +1,4 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue-demi';
 import { Radio as ElRadio, RadioGroup as ElRadioGroup } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';

@@ -22,19 +22,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue-demi';
+import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
 import { FormItem as ElFormItem, DatePicker as ElDatePicker } from 'element-ui';
 import { pick } from 'lodash-es';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { datepickerProps as props } from './props';
+import { datepickerProps as props, elDatepickerProps } from './props';
 import { formItemPropKeys } from '../share';
 
 const reg = /range$/;
 function isRange(str: string | undefined) {
     return str ? reg.test(str) : false;
 }
-// @ts-expect-error UI.props报错
-const datepickerPropKeys = Object.keys(ElDatePicker.props);
+const datepickerPropKeys = Object.keys(elDatepickerProps);
 
 /**
  * @file 日期选择
@@ -48,6 +47,7 @@ export default defineComponent({
     },
     props,
     setup(props, ctx) {
+        const { multiple, fields, ..._props } = toRefs(props);
         const isMultiple = computed(() =>
             // @ts-ignore
             props.multiple !== undefined ? props.multiple : isRange(props.type as string),

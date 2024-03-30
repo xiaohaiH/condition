@@ -13,12 +13,12 @@
             class="condition-item__content"
             @input="change"
         >
-            <template v-for="item of options">
+            <template v-for="item of finalOption">
                 <component
                     :is="radioType"
                     :key="item[valueKey]"
                     :label="item[valueKey]"
-                    v-on:[eventName].native.prevent="customChange(item[valueKey], value, change)"
+                    v-on:[eventName].native.prevent="customChange(item[valueKey], checked, change)"
                 >
                     {{ item[labelKey] }}
                 </component>

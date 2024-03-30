@@ -88,13 +88,14 @@ export default defineComponent({
                 t: 'datepicker',
                 label: 'date1',
                 placeholder: 'fff',
-                format: 'MM-DD',
-                valueFormat: 'YYYY-MM-DD',
+                // format: 'MM-DD',
+                // valueFormat: 'YYYY-MM-DD',
             },
-            datepikcer2: {
+            date11: {
                 t: 'datepicker',
                 type: 'daterange',
                 label: 'date2',
+                fields: ['date11', 'date22'],
                 placeholder: '999',
                 startPlaceholder: '起',
                 endPlaceholder: '止',
@@ -104,6 +105,7 @@ export default defineComponent({
                 t: 'cascader',
                 label: 'cas1',
                 placeholder: 'fff',
+                fields: ['cas1', 'cas1_1'],
                 props: { checkStrictly: true },
                 options: [
                     {

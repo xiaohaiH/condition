@@ -10,6 +10,7 @@ export const commonProps = {
 };
 
 export const formItemProps = {
+    // @ts-expect-error UI.props报错
     ...(ElFormItem.props as {}),
     prop: { type: String as PropType<string> },
 };

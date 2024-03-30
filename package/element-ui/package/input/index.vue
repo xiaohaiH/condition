@@ -25,11 +25,11 @@ import { computed, defineComponent, markRaw, ref, VNode } from 'vue-demi';
 import { FormItem as ElFormItem, Input as ElInput } from 'element-ui';
 import { pick } from 'lodash-es';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { inputProps as props } from './props';
+import { inputProps as props, elInputInsetField } from './props';
 import { formItemPropKeys } from '../share';
 
 // @ts-expect-error UI.props报错
-const inputPropKeys = Object.keys(ElInput.props);
+const inputPropKeys = Object.keys(ElInput.props).concat(Object.keys(elInputInsetField));
 
 /**
  * @file 输入框

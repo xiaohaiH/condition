@@ -22,7 +22,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            vue: 'vue/dist/vue.js',
+            vue: 'vue/dist/vue.esm.js',
         },
     },
     // esbuild: {
@@ -70,9 +70,9 @@ function myPlugin() {
     };
     if (!vueVersion.startsWith('2.7.')) {
         template.Vue = [
-            `import * as Vue from 'vue';`,
+            `import Vue from 'vue';`,
             'console.log(111)',
-            `window.Vue = { ...Vue };`,
+            `window.Vue = { ...Vue, version: Vue.version };`,
             `import * as VueCompositionAPI from '@vue/composition-api'`,
             `for (var key in VueCompositionAPI) {`,
             `if (Object.hasOwnProperty.call(VueCompositionAPI, key)) {`,

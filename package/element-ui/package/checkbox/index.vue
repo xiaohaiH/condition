@@ -13,7 +13,7 @@
             class="condition-item__content"
             @input="change"
         >
-            <template v-for="item of options">
+            <template v-for="item of finalOption">
                 <component :is="checkboxType" :key="item[valueKey]" :label="item[valueKey]">
                     {{ item[labelKey] }}
                 </component>
@@ -36,11 +36,10 @@ import {
 } from 'element-ui';
 import { pick } from 'lodash-es';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { checkboxProps as props } from './props';
+import { checkboxProps as props, elCheckboxProps } from './props';
 import { formItemPropKeys } from '../share';
 
-// @ts-expect-error UI.props报错
-const checkboxPropKeys = Object.keys(ElCheckbox.props);
+const checkboxPropKeys = Object.keys(elCheckboxProps);
 
 /**
  * @file 复选框

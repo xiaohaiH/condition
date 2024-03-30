@@ -7,8 +7,8 @@ import { plainProps } from './props';
 /** 外部需传递的 props */
 export type PlainProps = ExtractPropTypes<typeof plainProps>;
 
-/** 空值转字符串 */
-function emptyValue2Str(val?: string | number | any[]) {
+/** 空值转字符串(去除空值不一致导致 formItem.rules 校验) */
+function emptyValue2Str(val?: string | number | undefined | null | any[]) {
     return val?.toString() ?? '';
 }
 
@@ -21,7 +21,10 @@ export function usePlain(props: PlainProps) {
     /** 初始是否存在回填值 */
     const initialBackfillValue =
         props.backfill &&
-        (props.fields?.length ? props.fields.map((key) => props.backfill![key]) : props.backfill[props.field]);
+        (props.fields?.length
+            ? // 防止回填值不存在时产生一个空数组(undefined[])
+              props.fields.map((key) => props.backfill![key]).filter(Boolean)
+            : props.backfill[props.field]);
     /** 当前选中值 */
     const checked = ref<string | string[]>(
         initialBackfillValue ||
@@ -95,8 +98,9 @@ export function usePlain(props: PlainProps) {
             // [props.field, props.query[props.field]] as const,
             ([_field, val], [__field]) => {
                 const _val = props.backfillToValue(val, _field, props.query);
-                // 仅在值发生变化时同步
-                if (_field.toString() !== __field.toString() || _val?.toString() === checked.value?.toString()) return;
+                // 仅在值发生变化时同步 忽视空值不一致的问题
+                if (_field.toString() !== __field.toString() || emptyValue2Str(_val) === emptyValue2Str(checked.value))
+                    return;
                 if (!realtimeFlag.value) return;
                 checked.value = _val;
             },

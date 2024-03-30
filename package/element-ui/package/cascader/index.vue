@@ -6,9 +6,10 @@
     >
         <ElCascader
             v-bind="cascaderProps"
+            v-on="$listeners"
             :disabled="insetDisabled"
             :options="finalOption"
-            v-on="$listeners"
+            :value="checked"
             class="condition-item__content"
             @change="change"
         ></ElCascader>

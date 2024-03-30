@@ -1,4 +1,4 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue-demi';
 import { Cascader as ElCascader } from 'element-ui';
 import { treeProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
@@ -6,7 +6,6 @@ import { commonProps, formItemProps } from '../share';
 export const cascaderProps = {
     // @ts-expect-error UI.props报错
     ...(ElCascader.props as {}),
-    // ...emits2Props(ElCascader.emits),
     ...treeProps,
     ...commonProps,
     ...formItemProps,

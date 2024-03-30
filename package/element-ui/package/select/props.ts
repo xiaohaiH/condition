@@ -1,12 +1,15 @@
-import { PropType } from 'vue';
+import type { PropType } from 'vue-demi';
 import { Select as ElSelect } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+const a = { ...ElSelect.props } as {};
+// @ts-expect-error UI.props报错
+delete a.value;
+
 export const selectProps = {
-    // @ts-expect-error UI.props报错
-    ...(ElSelect.props as {}),
-    // ...emits2Props(ElSelect.emits),
+    ...a,
     ...plainProps,
     ...commonProps,
     ...formItemProps,
