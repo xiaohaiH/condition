@@ -1,0 +1,26 @@
+name: copy example
+# 在 master 分支推送代码的时候执行该脚本
+on:
+    push:
+        branches:
+            - master
+# 授予写权限
+permissions:
+    contents: write
+# 开始一个任务
+jobs:
+    build-and-deploy:
+        # 运行环境
+        runs-on: ubuntu-latest
+        steps:
+            # 第一步: 定义名称并使用插件(检出仓库代码)
+            - name: Checkout 🛎️
+              # 使用插件
+              uses: actions/checkout@v4
+
+            # 第二步: 使用插件将文件复制到 github-pages 中
+            - name: Deploy 🚀
+              uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  # 复制该文件到
+                  folder: example/dist
