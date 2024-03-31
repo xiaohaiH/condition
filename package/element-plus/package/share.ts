@@ -11,6 +11,6 @@ export const commonProps = {
 
 export const formItemProps = {
     ...(ElFormItem.props as {}),
-    prop: { type: String as PropType<string> },
+    prop: { type: [String, Array] as PropType<string | (string | number)[]> },
 };
 export const formItemPropKeys = Object.keys(formItemProps);

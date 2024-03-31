@@ -1,6 +1,6 @@
 // 不能直接用 vue-demi 的 ExtractPropTypes, 编译后项目会找不到该类型
 import { ExtractPropTypes, Ref, UnwrapRef } from 'vue-demi';
-import { wrapperProps, plainProps, treeProps } from './config/props';
+import { wrapperProps, plainProps, treeProps } from './use/index';
 
 export declare namespace CoreCondition {
     type BuiltInField = 'field' | 'query';
