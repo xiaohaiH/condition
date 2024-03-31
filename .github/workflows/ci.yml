@@ -33,12 +33,16 @@ jobs:
 
             - run: pnpm install
 
-              # 对示例包进行打包
+              # 设置vue, 防止示例打包失败
             - name: build
+              run: pnpm switch3
+
+              # 对示例包进行打包
+            - name: build2
               run: pnpm --filter="example" run build
 
               # 对npm包进行打包
-            - name: build2
+            - name: build3
               run: pnpm run build
 
               # 要操作的文件
