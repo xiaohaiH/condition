@@ -11,15 +11,25 @@
             window.editorWorker = {};
             window.tsWorker = {};
         </script>
-        <link href="./element-plus.css" rel="stylesheet" type="text/css" />
+        <link
+            href="https://fastly.jsdelivr.net/npm/element-plus@2.6.3/dist/index.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <!-- 开发环境中 example.css 相对路径 -->
         <link href="../dist/style.css" rel="stylesheet" type="text/css" />
-        <script src="./vue3.js"></script>
-        <script src="./vue-demi.js"></script>
-        <script src="./element-plus.js"></script>
+        <!-- 部署后 example.css 相对路径 -->
+        <link href="./style.css" rel="stylesheet" type="text/css" />
+        <script src="https://fastly.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/vue-demi@0.14.7/lib/index.iife.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/element-plus@2.6.3/dist/index.full.min.js"></script>
         <script type="text/javascript">
             window.Ui = { toast: ElementPlus.ElMessage };
         </script>
+        <!-- 开发环境中element-plus相对路径 -->
         <script src="../../package/element-plus/dist/index.umd.js"></script>
+        <!-- 部署后element-plus相对路径 -->
+        <script src="./element-plus/index.umd.js"></script>
         <script src="https://fastly.jsdelivr.net/npm/monaco-editor@0.34.1/min/vs/loader.js"></script>
         <!-- <script src="./example.umd.cjs"></script> -->
         <style type="text/css">
@@ -52,14 +62,23 @@
             window.monaco = monaco;
             // window.tsWorker = tsWorker.TypeScriptWorker;
             // window.editorWorker = editorWorker;
-            var script = document.createElement('script');
-            script.src = '../dist/example.umd.cjs';
-            script.onload = function onload() {
-                window.define = window.tempDefine;
-                delete window.tempDefine;
-                Vue.createApp(window.Content).use(ElementPlus).mount('#abc');
-            };
-            document.head.appendChild(script);
+            var scriptObj = {};
+            [
+                // 开发环境中 example.js 相对路径
+                '../dist/example.umd.cjs',
+                // 部署后 example.js 相对路径
+                './example.umd.cjs',
+            ].forEach(function (path, i) {
+                scriptObj[i] = document.createElement('script');
+                scriptObj[i].src = path;
+                scriptObj[i].onload = function onload() {
+                    window.define = window.tempDefine;
+                    delete window.tempDefine;
+                    Vue.createApp(window.Content).use(ElementPlus).mount('#abc');
+                };
+                document.head.appendChild(scriptObj[i]);
+                delete scriptObj[i];
+            });
         });
     </script>
 </html>
