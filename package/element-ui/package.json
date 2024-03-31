@@ -35,7 +35,7 @@
     ],
     "author": "xiaohai",
     "license": "MIT",
-    "homepage": "https://github.com/xiaohaiH/condition/tree/master/package/element-ui",
+    "homepage": "https://xiaohaih.github.io/condition/index.html",
     "dependencies": {
         "@xiaohaih/condition-core": "workspace:*",
         "vue-demi": "0.14.5"

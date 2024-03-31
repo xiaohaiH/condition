@@ -9,6 +9,8 @@
     -   <a href="#api-radio">`radio` (单选框)</a>
     -   <a href="#api-checkbox">`checkbox` (多选框)</a>
 
+> **[在线`demo`](https://xiaohaih.github.io/condition/index.html)**
+
 <details>
 <summary>使用示例(条件形式)</summary>
 
