@@ -1,7 +1,7 @@
 {
     "name": "@xiaohaih/condition-el",
     "version": "0.2.3",
-    "description": "",
+    "description": "基于element-ui实现, 通过JSON配置表单组件(条件间可相互依赖)",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
     "unpkg": "dist/index.umd.js",
@@ -23,9 +23,19 @@
         "build": "vite build --config vite.config.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [],
-    "author": "xiaohaih",
-    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xiaohaiH/condition/tree/master/package/element-ui"
+    },
+    "keywords": [
+        "vue2",
+        "element-ui",
+        "condition",
+        "JSON Form"
+    ],
+    "author": "xiaohai",
+    "license": "MIT",
+    "homepage": "https://github.com/xiaohaiH/condition/tree/master/package/element-ui",
     "dependencies": {
         "@xiaohaih/condition-core": "workspace:*",
         "vue-demi": "0.14.5"

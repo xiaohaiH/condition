@@ -7,8 +7,8 @@
             :rules="rules"
             :backfill="query"
             :render-btn="false"
-            @search="query = $event"
             :realtime="true"
+            @search="query = $event"
         ></HWrapper>
         <div style="height: 110px; line-height: 50px">{{ query }}</div>
         <ElButton @click="validate">校验</ElButton>
