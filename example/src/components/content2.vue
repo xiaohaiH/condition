@@ -1,22 +1,3 @@
-<template>
-    <div>
-        <HWrapper
-            style="display: flex; flex-wrap: wrap"
-            ref="formRef"
-            :datum="forms"
-            :rules="rules"
-            :backfill="query"
-            :render-btn="false"
-            :realtime="true"
-            @search="query = $event"
-        ></HWrapper>
-        <div style="height: 110px; line-height: 50px">{{ query }}</div>
-        <ElButton @click="validate">校验</ElButton>
-        <ElButton @click="validateField">逐个校验</ElButton>
-        <ElButton @click="clearValidate">清空校验</ElButton>
-    </div>
-</template>
-
 <script lang="ts">
 const { defineComponent, nextTick, onMounted, ref, set, version } = window.Vue;
 const { HWrapper, defineCondition } = window.HCondition;
@@ -26,6 +7,24 @@ const { HWrapper, defineCondition } = window.HCondition;
  */
 export default defineComponent({
     name: '',
+    template: `
+        <div>
+            <HWrapper
+                style="display: flex; flex-wrap: wrap"
+                ref="formRef"
+                :datum="formCondition"
+                :rules="rules"
+                :backfill="query"
+                :render-btn="false"
+                :realtime="true"
+                @search="query = $event"
+            ></HWrapper>
+            <div style="min-height: 50px; line-height: 50px">{{ query }}</div>
+            <ElButton @click="validate">校验</ElButton>
+            <ElButton @click="validateField">逐个校验</ElButton>
+            <ElButton @click="clearValidate">清空校验</ElButton>
+        </div>
+    `,
     components: { HWrapper },
     // props: {},
     setup(props, context) {
@@ -44,7 +43,7 @@ export default defineComponent({
             // radio1: 'radio1',
             // radio2: 'rad1',
         });
-        const forms = defineCondition({
+        const formCondition = defineCondition({
             input1: {
                 t: 'input',
                 label: 'input1',
@@ -203,7 +202,7 @@ export default defineComponent({
                 },
             },
         });
-        const keys = Object.keys(forms);
+        const keys = Object.keys(formCondition);
         let idx = 0;
 
         const rules = {
@@ -236,7 +235,7 @@ export default defineComponent({
         return {
             formRef,
             query,
-            forms,
+            formCondition,
             rules,
             validate,
             validateField,
