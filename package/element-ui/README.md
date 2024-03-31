@@ -60,7 +60,7 @@ export default {
             :realtime="true"
             @search="query = $event"
         ></HWrapper>
-        <div style="height: 110px; line-height: 50px">{{ query }}</div>
+        <div style="min-height: 50px; line-height: 50px">{{ query }}</div>
         <ElButton @click="validate">校验</ElButton>
         <ElButton @click="validateField">逐个校验</ElButton>
         <ElButton @click="clearValidate">清空校验</ElButton>
@@ -350,11 +350,11 @@ export default {
 
 > `tips: ` 支持 [`element-ui.input`](https://element.eleme.cn/#/zh-CN/component/input#input-attributes) 所有 `props`
 >
-> | 属性名    | 是否必填 | 类型    | 描述                     | 默认值 |
-> | --------- | -------- | ------- | ------------------------ | ------ |
-> | realtime  | 否       | boolean | 值改变时是否立即触发事件 | -      |
-> | waitTime  | 否       | number  | 实时触发事件的防抖动时长 | 300    |
-> | clearable | 否       | boolean | 是否可清空               | true   |
+> | 属性名    | 是否必填 | 类型    | 描述                                                                                          | 默认值 |
+> | --------- | -------- | ------- | --------------------------------------------------------------------------------------------- | ------ |
+> | realtime  | 否       | boolean | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
+> | waitTime  | 否       | number  | 实时触发事件的防抖动时长                                                                      | 300    |
+> | clearable | 否       | boolean | 是否可清空                                                                                    | true   |
 
 ## <span id="api-select">`select`</span>
 

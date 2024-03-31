@@ -55,12 +55,10 @@ export default defineComponent({
         function debounceChange(value: string) {
             const { realtime, waitTime } = props;
             timer && clearTimeout(timer);
-            if (realtime || plain.wrapper?.realtime.value) {
+            if (realtime) {
                 plain.change(value);
             } else {
-                if (value !== plain.checked.value) {
-                    plain.checked.value = value;
-                }
+                plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
             }
