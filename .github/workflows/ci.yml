@@ -21,6 +21,8 @@ jobs:
             # 第二步: 安装 pnpm
             - name: Install pnpm
               uses: pnpm/action-setup@v2
+              with:
+                  version: 8
 
             # 第三步: 设置 node 版本
             - name: Set node version to 18
