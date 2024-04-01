@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.3.0
+
+### Minor Changes
+
+- 重构条件, 增加表单校验支持
+
 ## 0.2.3
 
 ### Patch Changes
