@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   vite: 4.3.2
   vite-plugin-vue2: 2.0.0
@@ -961,7 +965,7 @@ packages:
   /@element-plus/icons-vue@2.1.0(vue@3.2.40):
     resolution: {integrity: sha512-PSBn3elNoanENc1vnCfh+3WA9fimRC7n+fWkf3rE5jvv+aBohNHABC/KAR5KWPecxWxDTVT1ERpRbOMRcOV/vA==}
     peerDependencies:
-      vue: ^3.2.0
+      vue: 3.2.40
     dependencies:
       vue: 3.2.40
     dev: false
@@ -1519,8 +1523,8 @@ packages:
     resolution: {integrity: sha512-+Jb7ggL48FSPS1uhPnJbJwWa9Sr90vQ+d0InW+AhBM22n+cfuYqJZDckBc+W3QSHe1WDvewMZfa4wZOtk5pRgw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^4.0.0
-      vue: ^3.0.0
+      vite: 4.3.2
+      vue: 3.2.40
     dependencies:
       '@babel/core': 7.22.1
       '@babel/plugin-transform-typescript': 7.21.3(@babel/core@7.22.1)
@@ -1535,8 +1539,8 @@ packages:
     resolution: {integrity: sha512-R6JDUfiZbJA9cMiguQ7jxALsgiprjBeHL5ikpXfJCH62pPHtI+JdJ5xWj6Ev73yXSlYl86+blXn1kZHQ7uElxw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
-      vite: ^4.0.0
-      vue: ^3.2.25
+      vite: 4.3.2
+      vue: 3.2.40
     dependencies:
       vite: 4.3.2(patch_hash=p3dxrrl23x2yby5llakcuqfhgi)
       vue: 3.2.40
@@ -1648,7 +1652,7 @@ packages:
     resolution: {integrity: sha512-QmfRpssBOPZWL5xw7fOuHNifCQcNQC1PrOo/4fu6xlhlKJJKSA3HqX92Nvgyx8fqHZTUGMPHmFA+IDqwXlqkSA==}
     peerDependencies:
       '@babel/core': ^7.0.0-0
-      vue: '*'
+      vue: 3.2.40
     peerDependenciesMeta:
       vue:
         optional: true
@@ -1886,7 +1890,7 @@ packages:
   /@vue/composition-api@1.7.1(vue@3.2.40):
     resolution: {integrity: sha512-xDWoEtxGXhH9Ku3ROYX/rzhcpt4v31hpPU5zF3UeVC/qxA3dChmqU8zvTUYoKh3j7rzpNsoFOwqsWG7XPMlaFA==}
     peerDependencies:
-      vue: '>= 2.5 < 2.7'
+      vue: 3.2.40
     dependencies:
       vue: 3.2.40
     dev: false
@@ -2016,7 +2020,7 @@ packages:
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1
       monaco-editor: '>0.30.0'
-      vue: ^2.0.0 || >=3.0.0
+      vue: 3.2.40
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
@@ -2902,7 +2906,7 @@ packages:
   /element-plus@2.3.5(@vue/composition-api@1.7.1)(vue@3.2.40):
     resolution: {integrity: sha512-g27DHm2C5/tPwte9H6Juu+JOdzT9z1ALHTIvia6MwnBdCrI4kd77o6KcYdodU15/tYiPBoCEmobhl/7GUDb+1Q==}
     peerDependencies:
-      vue: ^3.2.0
+      vue: 3.2.40
     dependencies:
       '@ctrl/tinycolor': 3.6.0
       '@element-plus/icons-vue': 2.1.0(vue@3.2.40)
@@ -2927,7 +2931,7 @@ packages:
   /element-ui@2.15.10(vue@3.2.40):
     resolution: {integrity: sha512-jmD++mU2wKXbisvx4fxOl2mHaU+HWHTAq/3Wf8x9Bwyu4GdDZPLABb+CGi3DWN6fPqdgRcd74aX39DO+YHObLw==}
     peerDependencies:
-      vue: ^2.5.17
+      vue: 3.2.40
     dependencies:
       async-validator: 1.8.5
       babel-helper-vue-jsx-merge-props: 2.0.3
@@ -2941,7 +2945,7 @@ packages:
   /element-ui@2.15.13(vue@3.2.40):
     resolution: {integrity: sha512-LJoatEYX6WV74FqXBss8Xfho9fh9rjDSzrDrTyREdGb1h1R3uRvmLh5jqp2JU137aj4/BgqA3K06RQpQBX33Bg==}
     peerDependencies:
-      vue: ^2.5.17
+      vue: 3.2.40
     dependencies:
       async-validator: 1.8.5
       babel-helper-vue-jsx-merge-props: 2.0.3
@@ -5001,7 +5005,7 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
-      vite: '*'
+      vite: 4.3.2
     peerDependenciesMeta:
       vite:
         optional: true
@@ -5023,7 +5027,7 @@ packages:
   /vite-plugin-html@3.2.0(vite@4.3.2):
     resolution: {integrity: sha512-2VLCeDiHmV/BqqNn5h2V+4280KRgQzCFN47cst3WiNK848klESPQnzuC3okH5XHtgwHH/6s1Ho/YV6yIO0pgoQ==}
     peerDependencies:
-      vite: '>=2.0.0'
+      vite: 4.3.2
     dependencies:
       '@rollup/pluginutils': 4.2.1
       colorette: 2.0.20
@@ -5054,7 +5058,7 @@ packages:
   /vite-plugin-vue2@2.0.0(lodash@4.17.21)(vite@4.3.2)(vue-template-compiler@2.7.14)(vue@3.2.40):
     resolution: {integrity: sha512-6+CfhsPgQoZnkBbMMb/pxX3gYLD3k10QljjVlUa2lL8160UmVotLuEaN+U2eSyCEnn+uBj7YMSmBPWXqqTEpsw==}
     peerDependencies:
-      vite: ^2.0.0
+      vite: 4.3.2
       vue-template-compiler: ^2.2.0
     dependencies:
       '@babel/core': 7.22.1
@@ -5185,7 +5189,7 @@ packages:
     requiresBuild: true
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
+      vue: 3.2.40
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
@@ -5201,7 +5205,7 @@ packages:
     requiresBuild: true
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1
-      vue: ^3.0.0-0 || ^2.6.0
+      vue: 3.2.40
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
@@ -5443,7 +5447,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
