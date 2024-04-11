@@ -1,5 +1,14 @@
 # @xiaohaih/condition-el-plus
 
+## 0.3.1
+
+### Patch Changes
+
+- 1. 修复 wrapper props 无法响应动态数据
+- 2. 修复 hide 属性不生效
+- Updated dependencies
+  - @xiaohaih/condition-core@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes
