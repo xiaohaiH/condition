@@ -94,7 +94,7 @@ export default defineComponent({
         const search = context.emit.bind(context, 'search');
         // // @ts-expect-error bind重载错误
         const reset = context.emit.bind(context, 'reset');
-        const wrapper = useWrapper({ ...props, search, reset });
+        const wrapper = useWrapper(props, { search, reset });
         function resetAndSearch() {
             wrapper.reset();
             wrapper.search();

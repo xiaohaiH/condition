@@ -3,7 +3,9 @@ import { IS_COMPOSITION_VERSION, provideKey, ProvideValue, CommonMethod, defineP
 import { wrapperProps } from './props';
 
 /** 外部需传递的 props */
-export type WrapperProps = ExtractPropTypes<typeof wrapperProps> & {
+export type WrapperProps = ExtractPropTypes<typeof wrapperProps>;
+/** 外部传递的方法 */
+export type WrapperOption = {
     /** 触发搜索事件 */
     search?: (params: Record<string, any>) => void;
     /** 触发重置事件 */
@@ -11,7 +13,7 @@ export type WrapperProps = ExtractPropTypes<typeof wrapperProps> & {
 };
 
 /** 封装 wrapper 组件必备的信息 */
-export function useWrapper(props: WrapperProps) {
+export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     const child: CommonMethod[] = [];
     onBeforeUnmount(() => child.splice(0));
 
@@ -86,7 +88,7 @@ export function useWrapper(props: WrapperProps) {
 
     async function search() {
         const msg = await validate();
-        msg ? props.toast?.(msg) : props.search?.(getQuery());
+        msg ? props.toast?.(msg) : option?.search?.(getQuery());
     }
     /** 重置所有条件的值 */
     function reset() {
@@ -94,7 +96,7 @@ export function useWrapper(props: WrapperProps) {
             v.reset();
             v.updateWrapperQuery();
         });
-        props.reset?.(getQuery());
+        option?.reset?.(getQuery());
     }
     /** 自定义校验条件的值 */
     async function validate() {
