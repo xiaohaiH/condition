@@ -1,5 +1,6 @@
 <template>
     <ElFormItem
+        v-if="!insetHide"
         :class="`condition-item condition-item--select condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"

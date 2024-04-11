@@ -1,5 +1,6 @@
 <template>
     <ElFormItem
+        v-if="!insetHide"
         :class="`condition-item condition-item--datepicker ${
             isMultiple && 'condition-item--datepicker-range'
         } condition-item--${field} condition-item--${!!postfix}`"

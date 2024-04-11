@@ -1,5 +1,6 @@
 <template>
     <ElFormItem
+        v-if="!insetHide"
         :class="`condition-item condition-item--select condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
@@ -43,8 +44,6 @@ import { selectProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
 const selectPropKeys = Object.keys(ElSelect.props);
-
-// TODO 未给 hide 属性未实现隐藏
 
 /**
  * @file 下拉框

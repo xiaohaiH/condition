@@ -1,9 +1,10 @@
 <template>
     <ElFormItem
+        v-if="!insetHide"
         :class="`condition-item condition-item--radio condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
-    >
+        >
         <ElRadioGroup
             ref="radioGroupRef"
             v-bind="radioProps"
@@ -16,6 +17,7 @@
                 <component
                     :is="radioType"
                     :label="item[valueKey]"
+                    :value="item[valueKey]"
                     v-on:[eventName].prevent="customChange(item[valueKey], checked as string, change)"
                 >
                     {{ item[labelKey] }}

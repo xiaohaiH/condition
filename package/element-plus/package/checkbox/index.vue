@@ -1,5 +1,6 @@
 <template>
     <ElFormItem
+        v-if="!insetHide"
         :class="`condition-item condition-item--checkbox condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
@@ -13,7 +14,7 @@
             @update:modelValue="(change as () => void)"
         >
             <template v-for="item of finalOption" :key="item[valueKey]">
-                <component :is="checkboxType" :label="item[valueKey]">{{ item[labelKey] }}</component>
+                <component :is="checkboxType" :label="item[valueKey]" :value="item[valueKey]">{{ item[labelKey] }}</component>
             </template>
         </ElCheckboxGroup>
         <div v-if="postfix" class="condition-item__postfix">
