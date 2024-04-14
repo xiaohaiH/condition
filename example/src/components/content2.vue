@@ -49,8 +49,8 @@ export default defineComponent({
             //     label: '上传',
             //     style: { width: '160px' },
             //     placeholder: '上传',
-            //     // slotDefault: () => <div>sss</div>,
-            //     // slotTrigger: () => <div>点我</div>,
+            //     slotDefault: () => <div>sss</div>,
+            //     slotTrigger: () => <div>点我</div>,
             //     autoUpload: false,
             //     getUploadInstance(upload) {
             //         console.log(upload);
