@@ -15,23 +15,25 @@ import HTimeSelect from '../time-select/index.vue';
 import HUpload from '../upload/index.vue';
 import HSelectV2 from '../select-v2/index.vue';
 
+// 不重新 as 一下会发生👇下方的错误
+// https://stackoverflow.com/questions/43900035/ts4023-exported-variable-x-has-or-is-using-name-y-from-external-module-but
 const compMap = {
-    select: markRaw(HSelect),
-    input: markRaw(HInput),
-    datepicker: markRaw(HDatepicker),
-    'date-picker': markRaw(HDatepicker),
-    cascader: markRaw(HCascader),
-    radio: markRaw(HRadio),
-    checkbox: markRaw(HCheckbox),
-    'color-picker': markRaw(HColorPicker),
-    'input-number': markRaw(HInputNumber),
-    rate: markRaw(HRate),
-    slider: markRaw(HSlider),
-    switch: markRaw(HSwitch),
-    'time-picker': markRaw(HTimePicker),
-    'time-select': markRaw(HTimeSelect),
-    upload: markRaw(HUpload),
-    'select-v2': markRaw(HSelectV2),
+    select: markRaw(HSelect) as typeof HSelect,
+    input: markRaw(HInput) as typeof HInput,
+    datepicker: markRaw(HDatepicker) as typeof HDatepicker,
+    'date-picker': markRaw(HDatepicker) as typeof HDatepicker,
+    cascader: markRaw(HCascader) as typeof HCascader,
+    radio: markRaw(HRadio) as typeof HRadio,
+    checkbox: markRaw(HCheckbox) as typeof HCheckbox,
+    'color-picker': markRaw(HColorPicker) as typeof HColorPicker,
+    'input-number': markRaw(HInputNumber) as typeof HInputNumber,
+    rate: markRaw(HRate) as typeof HRate,
+    slider: markRaw(HSlider) as typeof HSlider,
+    switch: markRaw(HSwitch) as typeof HSwitch,
+    'time-picker': markRaw(HTimePicker) as typeof HTimePicker,
+    'time-select': markRaw(HTimeSelect) as typeof HTimeSelect,
+    upload: markRaw(HUpload) as typeof HUpload,
+    'select-v2': markRaw(HSelectV2) as typeof HSelectV2,
 };
 const userCompMap: Record<string, any> = {};
 

@@ -47,6 +47,7 @@ export function getChained<T extends Record<string, any>>(
  * @param {string | Object | Function} node 需渲染元素
  */
 export function getNode(node: string | ((...args: any[]) => VNode) | VNode | undefined | null, ...args: any[]) {
-    if (!node) return;
+    // 直接抛出 null, template 中会报错
+    if (!node) return null as unknown as {};
     return typeof node === 'function' ? node(...args) : typeof node === 'string' ? node : markRaw(node);
 }
