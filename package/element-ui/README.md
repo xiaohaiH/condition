@@ -306,6 +306,10 @@ export default {
 
 </details>
 
+> -   TODO
+>     -   文件上传
+>     -   虚拟列表下拉框
+
 <details>
 <summary><strong><a id="wrapper-attrs" href="#wrapper-attrs">容器Props</a></strong></summary>
 
@@ -350,17 +354,21 @@ export default {
 
 </details>
 
-## <span id="api-input">`input`</span>
+## <span id="api-input">`input.props`</span>
 
 > `tips: ` 支持 [`element-ui.input`](https://element.eleme.cn/#/zh-CN/component/input#input-attributes) 所有 `props`
 >
-> | 属性名    | 是否必填 | 类型    | 描述                                                                                          | 默认值 |
-> | --------- | -------- | ------- | --------------------------------------------------------------------------------------------- | ------ |
-> | realtime  | 否       | boolean | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
-> | waitTime  | 否       | number  | 实时触发事件的防抖动时长                                                                      | 300    |
-> | clearable | 否       | boolean | 是否可清空                                                                                    | true   |
+> | 属性名      | 是否必填 | 类型                                                                  | 描述                                                                                          | 默认值 |
+> | ----------- | -------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------ |
+> | realtime    | 否       | boolean                                                               | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
+> | waitTime    | 否       | number                                                                | 实时触发事件的防抖动时长                                                                      | 300    |
+> | clearable   | 否       | boolean                                                               | 是否可清空                                                                                    | true   |
+> | slotPrefix  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.prefix`插槽(search 触发外部搜索, insideSearch 触发内部搜索)                            | -      |
+> | slotSuffix  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.suffix`插槽                                                                            | -      |
+> | slotPrepend | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.prepend`插槽                                                                           | -      |
+> | slotAppend  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.append`插槽                                                                            | -      |
 
-## <span id="api-select">`select`</span>
+## <span id="api-select">`select.props`</span>
 
 > `tips: ` 支持 [`element-ui.select`](https://element.eleme.cn/#/zh-CN/component/select#select-attributes) 所有 `props`
 >
@@ -374,7 +382,7 @@ export default {
 > | filterMethod | 否       | (val: string, item: 选项值) =boolean           | 自定义筛选逻辑 | -      |
 > | clearable    | 否       | boolean                                        | 是否可清空     | true   |
 
-## <span id="api-date-picker">`datepicker`</span>
+## <span id="api-date-picker">`datepicker.props`</span>
 
 > `tips: ` 支持 [`element-ui.datePicker`](https://element.eleme.cn/#/zh-CN/component/date-picker#attributes) 所有 `props`
 >
@@ -384,7 +392,7 @@ export default {
 > | fields      | 否       | string[] \| [begin: number, end: number] | 日期范围选择时对应多个字段时使用 | -          |
 > | clearable   | 否       | boolean                                  | 是否可清空                       | true       |
 
-## <span id="api-cascader">`cascader`</span>
+## <span id="api-cascader">`cascader.props`</span>
 
 > `tips: ` 支持 [`element-ui.cascader`](https://element.eleme.cn/#/zh-CN/component/cascader#cascader-attributes) 所有 `props`
 >
@@ -400,7 +408,7 @@ export default {
 > | filterMethod | 否       | (val: string, item: 选项值) =boolean           | 自定义筛选逻辑         | -        |
 > | clearable    | 否       | boolean                                        | 是否可清空             | true     |
 
-## <span id="api-radio">`radio`</span>
+## <span id="api-radio">`radio.props`</span>
 
 > `tips: ` 支持 [`element-ui.radioGroup`](https://element.eleme.cn/#/zh-CN/component/radio#radio-group-attributes) 所有 `props`
 >
@@ -413,7 +421,7 @@ export default {
 > | options    | 是       | any[]                                          | 数据源         | -      |
 > | getOptions | 否       | (cb: (data: any[], query: object) =void) =void | 异步设置数据源 | -      |
 
-## <span id="api-checkbox">`checkbox`</span>
+## <span id="api-checkbox">`checkbox.props`</span>
 
 > `tips: ` 支持 [`element-ui.checkbox`](https://element.eleme.cn/#/zh-CN/component/checkbox#checkbox-attributes) 所有 `props`
 >
@@ -425,3 +433,37 @@ export default {
 > | options    | 是       | any[]                                          | 数据源                 | -        |
 > | getOptions | 否       | (cb: (data: any[], query: object) =void) =void | 异步设置数据源         | -        |
 > | fields     | 否       | string[]                                       | 不同层级对应不同的字段 | -        |
+
+## <span id="api-color-picker">`color-picker.props`</span>
+
+> `tips: ` 支持 [`element-ui.color-picker`](https://element.eleme.cn/#/zh-CN/component/color-picker#attributes) 所有 `props`
+
+## <span id="api-input-number">`input-number.props`</span>
+
+> `tips: ` 支持 [`element-ui.input-number`](https://element.eleme.cn/#/zh-CN/component/input-number#attributes) 所有 `props`
+>
+> | 属性名   | 是否必填 | 类型    | 描述                                                                                          | 默认值 |
+> | -------- | -------- | ------- | --------------------------------------------------------------------------------------------- | ------ |
+> | realtime | 否       | boolean | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
+> | waitTime | 否       | number  | 实时触发事件的防抖动时长                                                                      | 300    |
+
+## <span id="api-rate">`rate.props`</span>
+
+> `tips: ` 支持 [`element-ui.rate`](https://element.eleme.cn/#/zh-CN/component/rate#attributes) 所有 `props`
+
+## <span id="api-slider">`slider.props`</span>
+
+> `tips: ` 支持 [`element-ui.slider`](https://element.eleme.cn/#/zh-CN/component/slider#attributes) 所有 `props`
+
+## <span id="api-switch">`switch.props`</span>
+
+> `tips: ` 支持 [`element-ui.switch`](https://element.eleme.cn/#/zh-CN/component/switch#attributes) 所有 `props`
+
+## <span id="api-time-picker">`time-picker.props`</span>
+
+> `tips: ` 支持 [`element-ui.time-picker`](https://element.eleme.cn/#/zh-CN/component/time-picker#attributes) 所有 `props`
+>
+> | 属性名      | 是否必填 | 类型     | 描述                   | 默认值   |
+> | ----------- | -------- | -------- | ---------------------- | -------- |
+> | fields      | 否       | string[] | 不同下标对应不同的字段 | -        |
+> | valueFormat | 否       | string   | 时间格式               | HH:mm:ss |

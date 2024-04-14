@@ -7,7 +7,7 @@
     >
         <ElCheckboxGroup
             ref="checkboxGroupRef"
-            v-bind="checkboxProps"
+            v-bind="contentProps"
             v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
@@ -35,12 +35,12 @@ import {
     CheckboxButton as ElCheckboxButton,
     Checkbox as ElCheckbox,
 } from 'element-ui';
-import { pick } from 'lodash-es';
+import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { checkboxProps as props, elCheckboxProps } from './props';
 import { formItemPropKeys } from '../share';
 
-const checkboxPropKeys = Object.keys(elCheckboxProps);
+const contentPropsKeys = Object.keys(elCheckboxProps);
 
 /**
  * @file 复选框
@@ -60,12 +60,12 @@ export default defineComponent({
         const checkboxType = computed(() => (props.type === 'button' ? 'ElCheckboxButton' : 'ElCheckbox'));
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const checkboxProps = computed(() => pick(props, checkboxPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         return {
             ...plain,
             formItemProps,
-            checkboxProps,
+            contentProps,
             checkboxGroupRef,
             checkboxType,
             getNode,

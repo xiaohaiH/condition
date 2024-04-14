@@ -1,57 +1,55 @@
 <template>
     <ElFormItem
         v-if="!insetHide"
-        :class="`condition-item condition-item--datepicker ${
-            isMultiple && 'condition-item--datepicker-range'
+        :class="`condition-item condition-item--time-picker ${
+            isMultiple && 'condition-item--time-picker-range'
         } condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElDatePicker
+        <ElTimePicker
             v-bind="contentProps"
-            v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
             class="condition-item__content"
             @input="change"
-        ></ElDatePicker>
+        ></ElTimePicker>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)"></component>
+            </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
-import { FormItem as ElFormItem, DatePicker as ElDatePicker } from 'element-ui';
+import { FormItem as ElFormItem, TimePicker as ElTimePicker } from 'element-ui';
 import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { datepickerProps as props, elDatepickerProps } from './props';
+import { timepickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const reg = /range$/;
-function isRange(str: string | undefined) {
-    return str ? reg.test(str) : false;
-}
-const contentPropsKeys = Object.keys(elDatepickerProps);
+// @ts-expect-error UI.props报错
+const contentPropKeys = Object.keys(ElTimePicker.props);
 
 /**
- * @file 日期选择
+ * @file 时间选择器
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'HDatepicker',
+    name: 'HTimePicker',
     components: {
         ElFormItem,
-        ElDatePicker,
+        ElTimePicker,
     },
     props,
     setup(props, ctx) {
         const { multiple, fields, ..._props } = toRefs(props);
         const isMultiple = computed(() =>
             // @ts-ignore
-            props.multiple !== undefined ? props.multiple : isRange(props.type as string),
+            props.multiple !== undefined ? props.multiple : props.isRange,
         );
         const insetFields = computed(
             () =>
@@ -60,10 +58,9 @@ export default defineComponent({
                     ? [props.beginField, props.endField]
                     : undefined),
         );
-
         const plain = usePlain(reactive({ ..._props, multiple: isMultiple, fields: insetFields }));
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropsKeys));
+        const contentProps = computed(() => pick(props, contentPropKeys));
 
         return {
             ...plain,

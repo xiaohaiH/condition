@@ -7,7 +7,7 @@
     >
         <ElRadioGroup
             ref="radioGroupRef"
-            v-bind="radioProps"
+            v-bind="contentProps"
             v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
@@ -40,13 +40,13 @@ import {
     RadioButton as ElRadioButton,
     Radio as ElRadio,
 } from 'element-ui';
-import { pick } from 'lodash-es';
+import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { radioProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
 // @ts-expect-error UI.props报错
-const radioPropKeys = Object.keys(ElRadioGroup.props);
+const contentPropKeys = Object.keys(ElRadioGroup.props);
 
 /**
  * @file 单选框
@@ -64,7 +64,7 @@ export default defineComponent({
     setup(props, context) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const radioProps = computed(() => pick(props, radioPropKeys));
+        const contentProps = computed(() => pick(props, contentPropKeys));
 
         const radioGroupRef = ref<ElRadioGroup | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));
@@ -76,15 +76,16 @@ export default defineComponent({
          * @param {string} currentVal 当前值
          * @param {Function} cb 值更改的回调
          */
-        function customChange(newVal: string, currentVal: string, cb: (value?: string) => void) {
+        function customChange(newVal: string, currentVal: string | string[], cb: (value: string | string[]) => void) {
             cb(newVal === currentVal ? '' : newVal);
+            // @ts-ignore 忽视 VNode 的报错
             radioGroupRef.value?.$children.forEach((o) => (o.$el as HTMLElement).blur());
         }
 
         return {
             ...plain,
             formItemProps,
-            radioProps,
+            contentProps,
             radioGroupRef,
             radioType,
             eventName,

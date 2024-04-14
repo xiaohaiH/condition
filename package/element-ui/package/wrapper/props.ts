@@ -1,5 +1,5 @@
 import { PropType } from 'vue-demi';
-import { Form as ElForm } from 'element-ui';
+import { Form as ElForm, ComponentSize } from 'element-ui';
 import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core';
 
 // @ts-expect-error Form.props 报错
@@ -7,6 +7,7 @@ export const formPropKeys = Object.keys(ElForm.props);
 
 /** 条件容器属性 */
 export const wrapperProps = {
+    size: { type: String as PropType<ComponentSize> },
     // @ts-expect-error Form.props 报错
     ...(ElForm.props as {}),
     ...CoreWrapperProps,
@@ -27,10 +28,10 @@ export const wrapperProps = {
 } as const;
 
 export const wrapperEmits = {
-    /** 搜索事件 - 触发内部 query 对象更新 */
-    search: (query: Record<string, any>) => true,
     /** query 已初始化 */
     ready: (query: Record<string, any>) => true,
+    /** 搜索事件 - 触发内部 query 对象更新 */
+    search: (query: Record<string, any>) => true,
     /** 重置事件 */
     reset: (query: Record<string, any>) => true,
 };
