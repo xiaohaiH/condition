@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el
 
+## 0.3.2
+
+### Patch Changes
+
+- 增加新的条件项(element-plus 表单支持的组件)(element-ui 的新组件还存在一些 bug)
+- Updated dependencies
+  - @xiaohaih/condition-core@0.3.2
+
 ## 0.3.1
 
 ### Patch Changes
