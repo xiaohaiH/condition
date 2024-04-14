@@ -1,18 +1,17 @@
 <template>
     <ElFormItem
         v-if="!insetHide"
-        :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
+        :class="`condition-item condition-item--time-select condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElCascader
+        <ElTimeSelect
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :options="finalOption"
-            :model-value="(checked as string[])"
+            :model-value="(checked as string)"
             class="condition-item__content"
-            @update:modelValue="(change as () => void)"
-        ></ElCascader>
+            @update:model-value="change"
+        ></ElTimeSelect>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -23,30 +22,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { ElFormItem, ElCascader } from 'element-plus';
+import { computed, defineComponent, ref } from 'vue';
+import { ElFormItem, ElTimeSelect } from 'element-plus';
 import { pick } from '../../utils';
-import { useTree, getNode } from '@xiaohaih/condition-core';
-import { cascaderProps as props } from './props';
+import { usePlain, getNode } from '@xiaohaih/condition-core';
+import { timeSelectProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElCascader.props);
+const contentPropKeys = Object.keys(ElTimeSelect.props);
 
 /**
- * @file 级联选择
+ * @file 时间选择
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'HCascader',
+    name: 'HTimeSelect',
     components: {
         ElFormItem,
-        ElCascader,
+        ElTimeSelect,
     },
     props,
     setup(props, ctx) {
-        const plain = useTree(props);
+        const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropsKeys));
+        const contentProps = computed(() => pick(props, contentPropKeys));
 
         return {
             ...plain,

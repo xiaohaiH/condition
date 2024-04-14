@@ -1,18 +1,17 @@
 <template>
     <ElFormItem
         v-if="!insetHide"
-        :class="`condition-item condition-item--cascader condition-item--${field} condition-item--${!!postfix}`"
+        :class="`condition-item condition-item--slider condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElCascader
+        <ElSlider
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :options="finalOption"
-            :model-value="(checked as string[])"
+            :model-value="toNumber(checked)"
             class="condition-item__content"
-            @update:modelValue="(change as () => void)"
-        ></ElCascader>
+            @update:model-value="(change as () => void)"
+        ></ElSlider>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -23,36 +22,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { ElFormItem, ElCascader } from 'element-plus';
+import { computed, defineComponent, ref, toRefs, reactive } from 'vue';
+import { ElFormItem, ElSlider } from 'element-plus';
 import { pick } from '../../utils';
-import { useTree, getNode } from '@xiaohaih/condition-core';
-import { cascaderProps as props } from './props';
+import { usePlain, getNode } from '@xiaohaih/condition-core';
+import { sliderProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElCascader.props);
+const contentPropsKeys = Object.keys(ElSlider.props);
 
 /**
- * @file 级联选择
+ * @file 滑块
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'HCascader',
+    name: 'HSlider',
     components: {
         ElFormItem,
-        ElCascader,
+        ElSlider,
     },
     props,
     setup(props, ctx) {
-        const plain = useTree(props);
+        const { range, defaultValue, ...args } = toRefs(props);
+        const _props = reactive({ ...args, multiple: range });
+        // @ts-expect-error 缺少默认值字段
+        range.value && !defaultValue.value && (_props.defaultValue = [0, 0] as any);
+        const plain = usePlain(_props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
         const contentProps = computed(() => pick(props, contentPropsKeys));
+
+        function toNumber(val: any): number {
+            return typeof val === 'string' ? Number(val) : val;
+        }
 
         return {
             ...plain,
             formItemProps,
             contentProps,
             getNode,
+            toNumber,
         };
     },
 });

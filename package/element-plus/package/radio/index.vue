@@ -4,10 +4,10 @@
         :class="`condition-item condition-item--radio condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
-        >
+    >
         <ElRadioGroup
             ref="radioGroupRef"
-            v-bind="radioProps"
+            v-bind="contentProp"
             :disabled="insetDisabled"
             :model-value="(checked as any)"
             class="condition-item__content"
@@ -34,12 +34,12 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from 'vue';
 import { ElFormItem, ElRadioGroup, ElRadioButton, ElRadio } from 'element-plus';
-import { pick } from 'lodash-es';
+import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { radioProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const radioPropKeys = Object.keys(ElRadioGroup.props);
+const contentPropKeys = Object.keys(ElRadioGroup.props);
 
 /**
  * @file 单选框
@@ -57,7 +57,7 @@ export default defineComponent({
     setup(props, context) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const radioProps = computed(() => pick(props, radioPropKeys));
+        const contentProp = computed(() => pick(props, contentPropKeys));
 
         const radioGroupRef = ref<InstanceType<typeof ElRadioGroup> | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));
@@ -76,7 +76,7 @@ export default defineComponent({
         return {
             ...plain,
             formItemProps,
-            radioProps,
+            contentProp,
             radioGroupRef,
             radioType,
             eventName,

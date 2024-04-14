@@ -1,19 +1,19 @@
 <template>
     <ElFormItem
         v-if="!insetHide"
-        :class="`condition-item condition-item--datepicker ${
-            isMultiple && 'condition-item--datepicker-range'
+        :class="`condition-item condition-item--time-picker ${
+            isMultiple && 'condition-item--time-picker-range'
         } condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElDatePicker
-            v-bind="(contentProps as any)"
+        <ElTimePicker
+            v-bind="contentProps"
             :disabled="insetDisabled"
             :model-value="(checked as string)"
             class="condition-item__content"
             @update:modelValue="change"
-        ></ElDatePicker>
+        ></ElTimePicker>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -25,34 +25,30 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue';
-import { ElFormItem, ElDatePicker } from 'element-plus';
+import { ElFormItem, ElTimePicker } from 'element-plus';
 import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { datepickerProps as props } from './props';
+import { timepickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const reg = /range$/;
-function isRange(str: string | undefined) {
-    return str ? reg.test(str) : false;
-}
-const contentPropsKeys = Object.keys(ElDatePicker.props);
+const contentPropKeys = Object.keys(ElTimePicker.props);
 
 /**
- * @file 日期选择
+ * @file 时间选择器
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'HDatepicker',
+    name: 'HTimePicker',
     components: {
         ElFormItem,
-        ElDatePicker,
+        ElTimePicker,
     },
     props,
     setup(props, ctx) {
         const { multiple, fields, ..._props } = toRefs(props);
         const isMultiple = computed(() =>
             // @ts-ignore
-            props.multiple !== undefined ? props.multiple : isRange(props.type as string),
+            props.multiple !== undefined ? props.multiple : props.isRange,
         );
         const insetFields = computed(
             () =>
@@ -63,7 +59,7 @@ export default defineComponent({
         );
         const plain = usePlain(reactive({ ..._props, multiple: isMultiple, fields: insetFields }));
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropsKeys));
+        const contentProps = computed(() => pick(props, contentPropKeys));
 
         return {
             ...plain,

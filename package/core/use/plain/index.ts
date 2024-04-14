@@ -1,5 +1,15 @@
-import { ExtractPropTypes, computed, inject, onBeforeUnmount, PropType, ref, watch, watchEffect } from 'vue-demi';
-import { emptyToValue } from '../../utils/index';
+import {
+    ExtractPropTypes,
+    computed,
+    inject,
+    onBeforeUnmount,
+    PropType,
+    ref,
+    watch,
+    watchEffect,
+    toRaw,
+} from 'vue-demi';
+import { emptyToValue, shallowDeep } from '../../utils/index';
 import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../constant';
 import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
 import { plainProps } from './props';
@@ -28,9 +38,8 @@ export function usePlain(props: PlainProps) {
     /** 当前选中值 */
     const checked = ref<string | string[]>(
         initialBackfillValue ||
-            (props.defaultValue !== undefined ? initialValue.value : props.multiple ? [] : '')
-                // 防止数组引用导致默认值发生改变
-                .slice(),
+            // 防止数组引用导致默认值发生改变
+            shallowDeep(props.defaultValue !== undefined ? initialValue.value : props.multiple ? [] : ''),
     );
     /** 远程获取的数据源 */
     const remoteOption = ref<Record<string, any>[]>([]);
@@ -43,7 +52,7 @@ export function usePlain(props: PlainProps) {
                   (p, k, i) => ((p[k] = emptyToValue(checked.value?.[i], props.emptyValue)), p),
                   {} as Record<string, any>,
               )
-            : { [props.field]: emptyToValue(checked.value, props.emptyValue) };
+            : { [props.field]: emptyToValue(shallowDeep(toRaw(checked.value)), props.emptyValue) };
     };
     // 防止触发搜索时, query 产生变化内部重复赋值
     const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
@@ -102,7 +111,7 @@ export function usePlain(props: PlainProps) {
                 if (_field.toString() !== __field.toString() || emptyValue2Str(_val) === emptyValue2Str(checked.value))
                     return;
                 if (!realtimeFlag.value) return;
-                checked.value = _val;
+                updateCheckedValue(_val);
             },
         ),
     );

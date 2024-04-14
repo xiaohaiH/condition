@@ -1,5 +1,5 @@
-<script lang="ts">
-const { defineComponent, nextTick, onMounted, ref, set, version } = window.Vue;
+<script lang="tsx">
+const { defineComponent, nextTick, onMounted, ref, set, markRaw, version } = window.Vue;
 const { HWrapper, defineCondition } = window.HCondition;
 
 /**
@@ -44,10 +44,87 @@ export default defineComponent({
             // radio2: 'rad1',
         });
         const formCondition = defineCondition({
+            // upload: {
+            //     t: 'upload',
+            //     label: '上传',
+            //     style: { width: '160px' },
+            //     placeholder: '上传',
+            //     // slotDefault: () => <div>sss</div>,
+            //     // slotTrigger: () => <div>点我</div>,
+            //     autoUpload: false,
+            //     getUploadInstance(upload) {
+            //         console.log(upload);
+            //     },
+            // },
+            selectV2: {
+                t: 'select-v2',
+                label: '虚下拉框',
+                style: { width: '240px' },
+                placeholder: '虚拟列表下拉框',
+                options: [
+                    { label: '第一', value: '1' },
+                    { label: '第二', value: '2' },
+                    { label: '第三', value: '3' },
+                ],
+            },
+            color: {
+                t: 'color-picker',
+                label: '颜色',
+                showAlpha: true,
+                colorFormat: 'hsl',
+            },
+            num: {
+                t: 'input-number',
+                label: 'input-num',
+                placeholder: 'gs',
+                // stepStrictly: true,
+                controlsPosition: 'right',
+                // decreaseIcon: <div>123</div>,
+                // increaseIcon: <div>456</div>,
+            },
+            rate: {
+                t: 'rate',
+                label: 'rate',
+                colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+                allowHalf: true,
+                showScore: true,
+                scoreTemplate: '{value} 分',
+            },
+            slider: {
+                t: 'slider',
+                style: { width: '400px' },
+                label: 'slider',
+                showInput: true,
+                // range: true,
+            },
+            switch: {
+                t: 'switch',
+                label: '切换器',
+                activeValue: '1',
+                inactiveValue: '0',
+            },
+            time: {
+                t: 'time-picker',
+                label: '时间',
+                placeholder: '快选择时间',
+            },
+            timeSelect: {
+                t: 'time-select',
+                label: '时2',
+                placeholder: '时间二',
+                style: { width: '160px' },
+            },
             input1: {
                 t: 'input',
                 label: 'input1',
                 placeholder: '哈哈哈',
+                // slotAppend: ({ query, insideSearch }) => {
+                //     return (
+                //         <div style="cursor: pointer;" onClick={() => ((query.input1 = '234'), insideSearch())}>
+                //             点我
+                //         </div>
+                //     );
+                // },
             },
             input2: {
                 t: 'input',
@@ -233,6 +310,7 @@ export default defineComponent({
         }
 
         return {
+            log: console.log,
             formRef,
             query,
             formCondition,

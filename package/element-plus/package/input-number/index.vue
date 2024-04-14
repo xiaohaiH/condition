@@ -1,35 +1,28 @@
 <template>
     <ElFormItem
         v-if="!insetHide"
-        :class="`condition-item condition-item--input condition-item--${field} condition-item--${!!postfix}`"
+        :class="`condition-item condition-item--input-number condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElInput
+        <!-- 不监听回车事件, 防止实际值与组件内部的值(会根据提供的精度等配置项而主动改变)不匹配 -->
+        <!-- @keydown.enter="enterHandle" -->
+        <ElInputNumber
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as string)"
+            :model-value="((checked ? Number(checked) : null) as number)"
             class="condition-item__content"
             @update:model-value="debounceChange"
-            @keydown.enter="enterHandle"
         >
-            <template v-if="slotPrefix || $slots.prefix" #prefix>
-                <slot v-if="$slots.prefix" name="prefix"></slot>
-                <component v-else :is="getNode(slotPrefix!, { backfill, query, search, insideSearch })"></component>
+            <template v-if="slotDecreaseIcon || $slots.decreaseIcon" #decrease-icon>
+                <slot v-if="$slots.decreaseIcon" name="decrease-icon"></slot>
+                <component v-else :is="slotDecreaseIcon!"></component>
             </template>
-            <template v-if="slotSuffix || $slots.suffix" #suffix>
-                <slot v-if="$slots.suffix" name="suffix"></slot>
-                <component v-else :is="getNode(slotSuffix!, { backfill, query, search, insideSearch })"></component>
+            <template v-if="slotIncreaseIcon || $slots.increaseIcon" #increase-icon>
+                <slot v-if="$slots.increaseIcon" name="increase-icon"></slot>
+                <component v-else :is="slotIncreaseIcon!"></component>
             </template>
-            <template v-if="slotPrepend || $slots.prepend" #prepend>
-                <slot v-if="$slots.prepend" name="prepend"></slot>
-                <component v-else :is="getNode(slotPrepend!, { backfill, query, search, insideSearch })"></component>
-            </template>
-            <template v-if="slotAppend || $slots.append" #append>
-                <slot v-if="$slots.append" name="append"></slot>
-                <component v-else :is="getNode(slotAppend!, { backfill, query, search, insideSearch })"></component>
-            </template>
-        </ElInput>
+        </ElInputNumber>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -41,23 +34,23 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import { ElFormItem, ElInput } from 'element-plus';
+import { ElFormItem, ElInputNumber } from 'element-plus';
 import { pick } from '../../utils';
 import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { inputProps as props } from './props';
+import { inputNumberProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElInput.props);
+const contentPropsKeys = Object.keys(ElInputNumber.props);
 
 /**
- * @file 输入框
+ * @file 数字输入框
  */
 export default defineComponent({
     inheritAttrs: false,
-    name: 'HInput',
+    name: 'HInputNumber',
     components: {
         ElFormItem,
-        ElInput,
+        ElInputNumber,
     },
     props,
     setup(props, ctx) {
@@ -67,16 +60,16 @@ export default defineComponent({
 
         /**
          * 节流
-         * @param {string} value: 输入值
+         * @param {number} value: 输入值
          */
         let timer = 0;
-        function debounceChange(value: string) {
+        function debounceChange(value: number | null | undefined) {
             const { realtime, waitTime } = props;
             timer && clearTimeout(timer);
             if (realtime) {
-                plain.change(value);
+                plain.change(value?.toString() || '');
             } else {
-                plain.updateCheckedValue(value);
+                plain.updateCheckedValue(value?.toString() || '');
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
             }
@@ -88,14 +81,6 @@ export default defineComponent({
             plain.option.updateWrapperQuery();
             plain.wrapper?.search();
         }
-        /** 触发外部搜索事件 */
-        function search() {
-            plain.wrapper?.search();
-        }
-        /** 仅触发内部搜索事件 */
-        function insideSearch() {
-            plain.wrapper?.insetSearch();
-        }
 
         return {
             ...plain,
@@ -103,8 +88,6 @@ export default defineComponent({
             contentProps,
             debounceChange,
             enterHandle,
-            search,
-            insideSearch,
             getNode,
         };
     },

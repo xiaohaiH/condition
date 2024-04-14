@@ -11,6 +11,14 @@ export function emptyToValue<T extends unknown>(val: any, defaultVal: T) {
 }
 
 /**
+ * 对值进行浅拷贝
+ * @param {*} val
+ */
+export function shallowDeep<T extends unknown>(val: T): T {
+    return Array.isArray(val) ? ([...val] as T) : val;
+}
+
+/**
  * 获取指定层级的父级(包括自身)
  * @param {Record<string, any>[]} data 数据源
  * @param {(item) => boolean} cb 当前数据项是否匹配
@@ -38,6 +46,7 @@ export function getChained<T extends Record<string, any>>(
  * 获取渲染节点
  * @param {string | Object | Function} node 需渲染元素
  */
-export function getNode(node: string | ((...args: any[]) => VNode) | VNode, ...args: any[]) {
+export function getNode(node: string | ((...args: any[]) => VNode) | VNode | undefined | null, ...args: any[]) {
+    if (!node) return;
     return typeof node === 'function' ? node(...args) : typeof node === 'string' ? node : markRaw(node);
 }

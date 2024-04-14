@@ -1,11 +1,12 @@
 import { PropType } from 'vue';
-import { ElForm } from 'element-plus';
+import { ElForm, componentSizes } from 'element-plus';
 import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core';
 
 export const formPropKeys = Object.keys(ElForm.props).concat('class', 'style');
 
 /** 条件容器属性 */
 export const wrapperProps = {
+    size: { type: String as PropType<(typeof componentSizes)[number]> },
     ...(ElForm.props as {}),
     ...CoreWrapperProps,
     class: { type: [Object, Array, String] as PropType<string | Record<string, any> | any[]> },
@@ -27,10 +28,10 @@ export const wrapperProps = {
 } as const;
 
 export const wrapperEmits = {
-    /** 搜索事件 - 触发内部 query 对象更新 */
-    search: (query: Record<string, any>) => true,
     /** query 已初始化 */
     ready: (query: Record<string, any>) => true,
+    /** 搜索事件 - 触发内部 query 对象更新 */
+    search: (query: Record<string, any>) => true,
     /** 重置事件 */
     reset: (query: Record<string, any>) => true,
 };

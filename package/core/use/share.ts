@@ -27,7 +27,7 @@ export interface GetOptions {
 }
 
 /** 条件值可能的类型 */
-export type ValueType = string | string[];
+export type ValueType = number | string | string[];
 
 /** 改变当前条件值触发方式 */
 export interface TriggerOption {
@@ -76,7 +76,10 @@ export const commonProps = {
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: [Boolean] as PropType<boolean> },
     /** 空置时提交的值 - 默认置为 undefined */
-    emptyValue: { type: [String, Number, null, undefined] as PropType<undefined | null | string | number> },
+    emptyValue: {
+        type: [String, Number, Boolean, null, undefined] as PropType<undefined | null | boolean | string | number>,
+        default: undefined,
+    },
     /** 校验函数, 返回字符串不通过, 会触发提示 - 提交时触发 */
     validator: {
         type: [Function] as PropType<
@@ -87,7 +90,7 @@ export const commonProps = {
     customGetQuery: { type: Function as PropType<GetQuery> },
     /** 设置默认值 */
     defaultValue: {
-        type: [String, Array, Function] as PropType<
+        type: [String, Number, Array, Function] as PropType<
             ValueType | ((query: Record<string, any>, backfill?: Record<string, any>) => ValueType)
         >,
     },

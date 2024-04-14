@@ -306,6 +306,10 @@ export default {
 
 </details>
 
+> -   TODO
+>     -   文件上传
+>     -   虚拟列表下拉框
+
 <details>
 <summary><strong><a id="wrapper-attrs" href="#wrapper-attrs">容器Props</a></strong></summary>
 
@@ -350,17 +354,21 @@ export default {
 
 </details>
 
-## <span id="api-input">`input`</span>
+## <span id="api-input">`input.props`</span>
 
 > `tips: ` 支持 [`element-plus.input`](https://element-plus.gitee.io/zh-CN/component/input.html#api) 所有 `props`
 >
-> | 属性名    | 是否必填 | 类型    | 描述                                                                                          | 默认值 |
-> | --------- | -------- | ------- | --------------------------------------------------------------------------------------------- | ------ |
-> | realtime  | 否       | boolean | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
-> | waitTime  | 否       | number  | 实时触发事件的防抖动时长                                                                      | 300    |
-> | clearable | 否       | boolean | 是否可清空                                                                                    | true   |
+> | 属性名      | 是否必填 | 类型                                                                  | 描述                                                                                          | 默认值 |
+> | ----------- | -------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------ |
+> | realtime    | 否       | boolean                                                               | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
+> | waitTime    | 否       | number                                                                | 实时触发事件的防抖动时长                                                                      | 300    |
+> | clearable   | 否       | boolean                                                               | 是否可清空                                                                                    | true   |
+> | slotPrefix  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.prefix`插槽(search 触发外部搜索, insideSearch 触发内部搜索)                            | -      |
+> | slotSuffix  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.suffix`插槽                                                                            | -      |
+> | slotPrepend | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.prepend`插槽                                                                           | -      |
+> | slotAppend  | 否       | VNode \| (option: { query, backfill, search, insideSearch }) => VNode | `input.append`插槽                                                                            | -      |
 
-## <span id="api-select">`select`</span>
+## <span id="api-select">`select.props`</span>
 
 > `tips: ` 支持 [`element-plus.select`](https://element-plus.gitee.io/zh-CN/component/select.html#select-api) 所有 `props`
 >
@@ -374,7 +382,7 @@ export default {
 > | filterMethod | 否       | (val: string, item: 选项值) =boolean           | 自定义筛选逻辑 | -      |
 > | clearable    | 否       | boolean                                        | 是否可清空     | true   |
 
-## <span id="api-date-picker">`datepicker`</span>
+## <span id="api-date-picker">`datepicker.props`</span>
 
 > `tips: ` 支持 [`element-plus.datePicker`](https://element-plus.gitee.io/zh-CN/component/date-picker.html#api) 所有 `props`
 >
@@ -384,7 +392,7 @@ export default {
 > | fields      | 否       | string[] \| [begin: number, end: number] | 日期范围选择时对应多个字段时使用 | -          |
 > | clearable   | 否       | boolean                                  | 是否可清空                       | true       |
 
-## <span id="api-cascader">`cascader`</span>
+## <span id="api-cascader">`cascader.props`</span>
 
 > `tips: ` 支持 [`element-plus.cascader`](https://element-plus.gitee.io/zh-CN/component/cascader.html#cascader-api) 所有 `props`
 >
@@ -400,7 +408,7 @@ export default {
 > | filterMethod | 否       | (val: string, item: 选项值) =boolean           | 自定义筛选逻辑         | -        |
 > | clearable    | 否       | boolean                                        | 是否可清空             | true     |
 
-## <span id="api-radio">`radio`</span>
+## <span id="api-radio">`radio.props`</span>
 
 > `tips: ` 支持 [`element-plus.radioGroup`](https://element-plus.gitee.io/zh-CN/component/radio.html#radiogroup-api) 所有 `props`
 >
@@ -413,9 +421,9 @@ export default {
 > | options    | 是       | any[]                                          | 数据源         | -      |
 > | getOptions | 否       | (cb: (data: any[], query: object) =void) =void | 异步设置数据源 | -      |
 
-## <span id="api-checkbox">`checkbox`</span>
+## <span id="api-checkbox">`checkbox.props`</span>
 
-> `tips: ` 支持 [`element-plus.checkbox`](https://element-plus.gitee.io/zh-CN/component/radio.html#checkbox-api) 所有 `props`
+> `tips: ` 支持 [`element-plus.checkbox`](https://element-plus.gitee.io/zh-CN/component/checkbox.html#checkbox-api) 所有 `props`
 >
 > | 属性名     | 是否必填 | 类型                                           | 描述                   | 默认值   |
 > | ---------- | -------- | ---------------------------------------------- | ---------------------- | -------- |
@@ -425,3 +433,43 @@ export default {
 > | options    | 是       | any[]                                          | 数据源                 | -        |
 > | getOptions | 否       | (cb: (data: any[], query: object) =void) =void | 异步设置数据源         | -        |
 > | fields     | 否       | string[]                                       | 不同层级对应不同的字段 | -        |
+
+## <span id="api-color-picker">`color-picker.props`</span>
+
+> `tips: ` 支持 [`element-plus.color-picker`](https://element-plus.gitee.io/zh-CN/component/color-picker.html#api) 所有 `props`
+
+## <span id="api-input-number">`input-number.props`</span>
+
+> `tips: ` 支持 [`element-plus.input-number`](https://element-plus.gitee.io/zh-CN/component/input-number.html#api) 所有 `props`
+>
+> | 属性名           | 是否必填 | 类型    | 描述                                                                                          | 默认值 |
+> | ---------------- | -------- | ------- | --------------------------------------------------------------------------------------------- | ------ |
+> | realtime         | 否       | boolean | 是否实时触发搜索事件(当 `wrapper.realtime` 为 `true` 时, 可将该值设为 `false` 并设置抖动时间) | true   |
+> | waitTime         | 否       | number  | 实时触发事件的防抖动时长                                                                      | 300    |
+> | slotIncreaseIcon | 否       | VNode   | `input-number.increase-icon`插槽                                                              | -      |
+> | slotDecreaseIcon | 否       | VNode   | `input-number.decrease-icon`插槽                                                              | -      |
+
+## <span id="api-rate">`rate.props`</span>
+
+> `tips: ` 支持 [`element-plus.rate`](https://element-plus.gitee.io/zh-CN/component/rate.html#api) 所有 `props`
+
+## <span id="api-slider">`slider.props`</span>
+
+> `tips: ` 支持 [`element-plus.slider`](https://element-plus.gitee.io/zh-CN/component/slider.html#api) 所有 `props`
+
+## <span id="api-switch">`switch.props`</span>
+
+> `tips: ` 支持 [`element-plus.switch`](https://element-plus.gitee.io/zh-CN/component/switch.html#api) 所有 `props`
+
+## <span id="api-time-picker">`time-picker.props`</span>
+
+> `tips: ` 支持 [`element-plus.time-picker`](https://element-plus.gitee.io/zh-CN/component/time-picker.html#api) 所有 `props`
+>
+> | 属性名      | 是否必填 | 类型     | 描述                   | 默认值   |
+> | ----------- | -------- | -------- | ---------------------- | -------- |
+> | fields      | 否       | string[] | 不同下标对应不同的字段 | -        |
+> | valueFormat | 否       | string   | 时间格式               | HH:mm:ss |
+
+## <span id="api-time-select">`time-select.props`</span>
+
+> `tips: ` 支持 [`element-plus.time-select`](https://element-plus.gitee.io/zh-CN/component/time-select.html#api) 所有 `props`
