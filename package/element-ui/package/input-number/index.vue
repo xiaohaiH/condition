@@ -10,7 +10,7 @@
         <ElInputNumber
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :value="checked ? Number(checked) : undefined"
+            :value="checked || null"
             class="condition-item__content"
             @input="debounceChange"
         ></ElInputNumber>
@@ -59,9 +59,9 @@ export default defineComponent({
             const { realtime, waitTime } = props;
             timer && clearTimeout(timer);
             if (realtime) {
-                plain.change(value?.toString() || '');
+                plain.change(value);
             } else {
-                plain.updateCheckedValue(value?.toString() || '');
+                plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
             }

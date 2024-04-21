@@ -8,7 +8,7 @@
         <ElSlider
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :value="toNumber(checked)"
+            :value="checked"
             class="condition-item__content"
             @input="change"
         ></ElSlider>
@@ -52,16 +52,11 @@ export default defineComponent({
         const formItemProps = computed(() => pick(props, formItemPropKeys));
         const contentProps = computed(() => pick(props, contentPropsKeys));
 
-        function toNumber(val: any): number {
-            return typeof val === 'string' ? Number(val) : val;
-        }
-
         return {
             ...plain,
             formItemProps,
             contentProps,
             getNode,
-            toNumber,
         };
     },
 });

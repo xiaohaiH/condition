@@ -8,7 +8,7 @@
         <ElSelect
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="checked"
+            :model-value="(checked as string[])"
             :filter-method="filterMethod && customFilterMethod"
             class="condition-item__content"
             @update:modelValue="change"

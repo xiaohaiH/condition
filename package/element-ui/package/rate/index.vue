@@ -8,9 +8,9 @@
         <ElRate
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :value="Number(checked) || 0"
+            :value="checked"
             class="condition-item__content"
-            @change="change($event?.toString() || '')"
+            @change="change"
         ></ElRate>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>

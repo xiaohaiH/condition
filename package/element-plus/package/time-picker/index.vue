@@ -8,7 +8,7 @@
         :prop="formItemProps.prop || field"
     >
         <ElTimePicker
-            v-bind="contentProps"
+            v-bind="(contentProps as any)"
             :disabled="insetDisabled"
             :model-value="(checked as string)"
             class="condition-item__content"

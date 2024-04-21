@@ -179,18 +179,18 @@ export function usePlain(props: PlainProps) {
     }
     /**
      * 更新选中值(父级也同步更改)
-     * @param {string | string[]} value 待更改的值
+     * @param {*} value 待更改的值
      */
-    function updateCheckedValue(value: string | string[]) {
+    function updateCheckedValue(value: ValueType | ValueType[]) {
         if (value === checked.value) return;
         checked.value = value;
         option.updateWrapperQuery();
     }
     /**
      * 更新选中值并触发内部搜索事件
-     * @param {string | string[]} value 待更改的值
+     * @param {*} value 待更改的值
      */
-    function change(value: string | string[]) {
+    function change(value: ValueType | ValueType[]) {
         updateCheckedValue(value);
         wrapper?.insetSearch();
     }

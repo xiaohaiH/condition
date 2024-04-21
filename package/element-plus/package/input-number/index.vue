@@ -7,10 +7,11 @@
     >
         <!-- 不监听回车事件, 防止实际值与组件内部的值(会根据提供的精度等配置项而主动改变)不匹配 -->
         <!-- @keydown.enter="enterHandle" -->
+        <!-- :model-value="((checked ? Number(checked) : null) as number)" -->
         <ElInputNumber
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="((checked ? Number(checked) : null) as number)"
+            :model-value="((checked || null) as number)"
             class="condition-item__content"
             @update:model-value="debounceChange"
         >
@@ -67,9 +68,9 @@ export default defineComponent({
             const { realtime, waitTime } = props;
             timer && clearTimeout(timer);
             if (realtime) {
-                plain.change(value?.toString() || '');
+                plain.change(value);
             } else {
-                plain.updateCheckedValue(value?.toString() || '');
+                plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
             }

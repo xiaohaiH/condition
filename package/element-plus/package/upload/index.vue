@@ -66,7 +66,7 @@ export default defineComponent({
         const plain = usePlain(_props.value);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
         const contentProps = computed(() => pick(props, contentPropKeys));
-        function customChange(fileList: UploadFile[]) {
+        function customChange(fileList: any[]) {
             plain.change(fileList as any[]);
         }
         props.getUploadInstance && onMounted(() => uploadRef.value && props.getUploadInstance!(uploadRef.value));
