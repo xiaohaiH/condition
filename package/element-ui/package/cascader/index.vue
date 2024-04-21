@@ -8,6 +8,7 @@
         <ElCascader
             v-bind="contentProps"
             v-on="$listeners"
+            :props="customProps"
             :disabled="insetDisabled"
             :options="finalOption"
             :value="checked"
@@ -22,10 +23,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue-demi';
+import { defineComponent, computed, reactive, toRefs } from 'vue-demi';
 import { FormItem as ElFormItem, Cascader as ElCascader } from 'element-ui';
 import { pick } from '../../utils';
-import { useTree, getNode } from '@xiaohaih/condition-core';
+import { useTree, getNode, usePlain } from '@xiaohaih/condition-core';
 import { cascaderProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
@@ -44,7 +45,19 @@ export default defineComponent({
     },
     props,
     setup(props, ctx) {
-        const plain = useTree(props);
+        const { multiple: a, ...args } = toRefs(props);
+        const emitPath = computed(() =>
+            props.props?.multiple || props.props?.emitPath !== undefined
+                ? props.props?.emitPath
+                : (props.fields && props.fields?.length > 1) || false,
+        );
+        const multiple = computed(() => props.props?.multiple || emitPath.value);
+        const customProps = computed(() => {
+            const r = { ...props.props, emitPath: emitPath.value };
+            if (r.emitPath === undefined) delete r.emitPath;
+            return r;
+        });
+        const plain = usePlain(reactive({ ...args, multiple }));
         const formItemProps = computed(() => pick(props, formItemPropKeys));
         const contentProps = computed(() => pick(props, contentPropsKeys));
 
@@ -52,6 +65,7 @@ export default defineComponent({
             ...plain,
             formItemProps,
             contentProps,
+            customProps,
             getNode,
         };
     },

@@ -61,6 +61,8 @@ export type GetQuery = (
 export const commonProps = {
     /** 提交的字段 */
     field: { type: String as PropType<string>, required: true },
+    /** 是否多选 */
+    multiple: { type: Boolean as PropType<boolean>, default: undefined },
     /** 当前条件对象 - 实时变化 */
     query: { type: Object as PropType<Record<string, any>>, required: true },
     /** 回填值的对象 - 非实时变化 */

@@ -96,7 +96,7 @@ export declare namespace HCondition {
         t: 'checkbox';
     }
     interface CascaderProps
-        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField>,
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof cascaderProps>>, BuiltInField | 'props'>,
             Omit<Props<InstanceType<typeof ElCascader>>, keyof typeof cascaderProps>,
             Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
         t: 'cascader';

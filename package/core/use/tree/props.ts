@@ -10,7 +10,7 @@ export const treeProps = {
     valueKey: { type: String as PropType<string>, required: true },
     /** 子级键名 - 默认 children */
     childrenKey: { type: String as PropType<string> },
-    /** 是否返回选中项中所有的值(数组形式), 否只返回最后一项(基础类型) */
+    /** 是否返回全路径 */
     emitPath: { type: [Boolean] as PropType<boolean>, default: false },
     /** 下拉选项的数据源 */
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },

@@ -8,8 +8,9 @@ import {
     watch,
     watchEffect,
     toRaw,
+    shallowRef,
 } from 'vue-demi';
-import { emptyToValue, shallowDeep } from '../../utils/index';
+import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained } from '../../utils/index';
 import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../constant';
 import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
 import { plainProps } from './props';
@@ -17,10 +18,7 @@ import { plainProps } from './props';
 /** 外部需传递的 props */
 export type PlainProps = ExtractPropTypes<typeof plainProps>;
 
-/** 空值转字符串(去除空值不一致导致 formItem.rules 校验) */
-function emptyValue2Str(val?: string | number | undefined | null | any[]) {
-    return val?.toString() ?? '';
-}
+type ValueType = string | number | boolean | null | undefined | Record<string, any>;
 
 /** 封装扁平组件必备的信息 */
 export function usePlain(props: PlainProps) {
@@ -36,10 +34,8 @@ export function usePlain(props: PlainProps) {
               props.fields.map((key) => props.backfill![key]).filter(Boolean)
             : props.backfill[props.field]);
     /** 当前选中值 */
-    const checked = ref<string | string[]>(
-        initialBackfillValue ||
-            // 防止数组引用导致默认值发生改变
-            shallowDeep(props.defaultValue !== undefined ? initialValue.value : props.multiple ? [] : ''),
+    const checked = shallowRef<ValueType | ValueType[]>(
+        initialBackfillValue || props.defaultValue !== undefined ? clone(initialValue.value) : undefined,
     );
     /** 远程获取的数据源 */
     const remoteOption = ref<Record<string, any>[]>([]);
@@ -47,12 +43,13 @@ export function usePlain(props: PlainProps) {
     const finalOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
     const getQuery = () => {
         if (props.customGetQuery) return props.customGetQuery(checked.value, emptyToValue, props);
+        const _checked = clone(checked.value);
         return props.multiple && props.fields
             ? props.fields.reduce(
-                  (p, k, i) => ((p[k] = emptyToValue(checked.value?.[i], props.emptyValue)), p),
+                  (p, k, i) => ((p[k] = emptyToValue((_checked as ValueType[])?.[i], props.emptyValue)), p),
                   {} as Record<string, any>,
               )
-            : { [props.field]: emptyToValue(shallowDeep(toRaw(checked.value)), props.emptyValue) };
+            : { [props.field]: emptyToValue(_checked, props.emptyValue) };
     };
     // 防止触发搜索时, query 产生变化内部重复赋值
     const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
@@ -106,11 +103,10 @@ export function usePlain(props: PlainProps) {
                 ] as const,
             // [props.field, props.query[props.field]] as const,
             ([_field, val], [__field]) => {
-                const _val = props.backfillToValue(val, _field, props.query);
                 // 仅在值发生变化时同步 忽视空值不一致的问题
-                if (_field.toString() !== __field.toString() || emptyValue2Str(_val) === emptyValue2Str(checked.value))
-                    return;
                 if (!realtimeFlag.value) return;
+                const _val = props.backfillToValue(val, _field, props.query);
+                if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
                 updateCheckedValue(_val);
             },
         ),
@@ -128,8 +124,7 @@ export function usePlain(props: PlainProps) {
             ([_field, val], [__field]) => {
                 // 存在回填值时回填, 不存在时不做改动
                 const _val = props.backfillToValue(val, _field, props.backfill);
-                if (_field.toString() !== __field.toString() || emptyValue2Str(_val) === emptyValue2Str(checked.value))
-                    return;
+                if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
                 updateBackfillFlag();
                 updateCheckedValue(_val);
             },
@@ -142,20 +137,15 @@ export function usePlain(props: PlainProps) {
                 [
                     props.depend,
                     props.dependFields,
-                    (props.dependFields &&
-                        ([] as string[])
-                            .concat(props.dependFields)
-                            .map((k) => props.query?.[k])
-                            .join(',')) ||
-                        '',
+                    props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => props.query?.[k]),
                 ] as const,
             ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
                 if (!backfillFlag.value) return;
                 if (val === oldVal) return;
                 getOption('depend');
                 // 更新依赖条件时不做改动
-                if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
-                if (checked.value === undefined || checked.value.toString() === '') return;
+                if (_depend !== __depend || !isEqualExcludeEmptyValue(_dependFields, __dependFields)) return;
+                if (isEmptyValue(checked.value)) return;
                 updateCheckedValue(props.multiple ? [] : '');
             },
         ),

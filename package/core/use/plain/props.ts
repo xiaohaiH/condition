@@ -13,8 +13,6 @@ export const plainProps = {
         >,
         default: (v: any) => v,
     },
-    /** 是否多选 */
-    multiple: { type: Boolean as PropType<boolean>, default: undefined },
     /** 数据源 */
     options: { type: Array as PropType<Record<string, any>[]>, default: () => [] },
     /** 动态获取数据源 */

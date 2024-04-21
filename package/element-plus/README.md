@@ -396,6 +396,8 @@ export default {
 
 > `tips: ` 支持 [`element-plus.cascader`](https://element-plus.gitee.io/zh-CN/component/cascader.html#cascader-api) 所有 `props`
 >
+> **注意: 当 `cascader` 是单选时 `cascader.props.emitPath` 默认为 `false`, 此处与官方文档表现不一致**
+>
 > | 属性名       | 是否必填 | 类型                                           | 描述                   | 默认值   |
 > | ------------ | -------- | ---------------------------------------------- | ---------------------- | -------- |
 > | valueKey     | 否       | string                                         | 选项的值               | value    |

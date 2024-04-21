@@ -173,7 +173,7 @@ export const conditionFactory = () => ({
             fields: ['level1', 'level2', 'level3'],
             resetToInitialValue: true,
             valueKey: 'value',
-            emitPath: true,
+            // emitPath: true,
             // disabled: ({ query }) => !query.ac?.length,
             // hide: ({query}) => !query.ac?.length,
             options: [
