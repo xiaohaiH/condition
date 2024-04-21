@@ -36,19 +36,20 @@ function getVersionSuffix(version: string) {
 }
 
 // 监听输入信息
-process.stdin.isTTY && process.stdin.setRawMode(true);
 const childProcess: ChildProcess[] = [];
-process.stdin
-    .on('data', (chunk: string) => {
-        childProcess.forEach((v) => v.stdin?.write(chunk));
-        if (chunk === '\x03' || chunk === '\x04' || chunk === 'q') {
-            process.exit();
-            // cp ? exec(`taskkill /PID ${cp.pid} /T /F`, () => process.exit(0)) : process.exit(0);
-            // exec(`taskkill /PID ${process.pid} /T /F`, (error, stdout, stderr) => {});
-        }
-    })
-    .setEncoding('utf-8')
-    .resume();
+// vite upgrade 5.1.4 取消监听退出按键(vite 内部已实现)
+// process.stdin.isTTY && process.stdin.setRawMode(true);
+// process.stdin
+//     .on('data', (chunk: string) => {
+//         childProcess.forEach((v) => v.stdin?.write(chunk));
+//         if (chunk === '\x03' || chunk === '\x04' || chunk === 'q') {
+//             process.exit();
+//             // cp ? exec(`taskkill /PID ${cp.pid} /T /F`, () => process.exit(0)) : process.exit(0);
+//             // exec(`taskkill /PID ${process.pid} /T /F`, (error, stdout, stderr) => {});
+//         }
+//     })
+//     .setEncoding('utf-8')
+//     .resume();
 
 main();
 async function main() {
@@ -97,7 +98,9 @@ function execPromise(command: string, args: string[]) {
             };
         }
         const cli = spawn(command, args, {
-            stdio: ['pipe', 'inherit', 'inherit'],
+            stdio: ['inherit', 'inherit', 'inherit'],
+            // vite upgrade 5.1.4 改用上面👆的配置
+            // stdio: ['pipe', 'inherit', 'inherit'],
         });
         childProcess.push((result.command = cli));
         cli.on('exit', exit(resolve));

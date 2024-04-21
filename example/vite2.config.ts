@@ -36,10 +36,10 @@ export default defineConfig({
             name: 'Content',
             formats: ['es', 'cjs', 'umd', 'iife'],
         },
-        watch: {
-            buildDelay: 2000,
-            clearScreen: true,
-        },
+        // watch: {
+        //     buildDelay: 2000,
+        //     clearScreen: true,
+        // },
         outDir: 'dist',
         rollupOptions: {
             external: /^(chalk|vue-demi|monaco-editor)/,

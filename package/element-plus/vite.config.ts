@@ -43,41 +43,37 @@ export default defineConfig({
             fileName: 'index',
         },
         outDir: 'dist',
+        sourcemap: true,
         rollupOptions: {
             external,
             output: [
-                { entryFileNames: retainMinSuffix(pkg.module, false), format: 'es', sourcemap: true },
+                { entryFileNames: retainMinSuffix(pkg.module, false), format: 'es' },
                 {
                     entryFileNames: retainMinSuffix(pkg.module, true),
                     format: 'es',
-                    sourcemap: true,
                     plugins: [terser({ format: { comments: false } })],
                 },
                 {
                     entryFileNames: retainMinSuffix(pkg.main, false),
                     format: 'cjs',
                     exports: 'named',
-                    sourcemap: true,
                 },
                 {
                     entryFileNames: retainMinSuffix(pkg.main, true),
                     format: 'cjs',
                     exports: 'named',
-                    sourcemap: true,
                     plugins: [terser({ format: { comments: false } })],
                 },
                 {
                     entryFileNames: retainMinSuffix(pkg.unpkg, false),
                     format: 'umd',
                     name: 'HCondition',
-                    sourcemap: true,
                     globals,
                 },
                 {
                     entryFileNames: retainMinSuffix(pkg.unpkg, true),
                     format: 'umd',
                     name: 'HCondition',
-                    sourcemap: true,
                     globals: globals,
                     plugins: [terser({ format: { comments: false } })],
                 },

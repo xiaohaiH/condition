@@ -463,12 +463,12 @@ export default defineComponent({
 }
 
 .gutter.gutter-horizontal {
-    background-image: url('grips/vertical.png');
+    /* background-image: url('grips/vertical.png'); */
     cursor: col-resize;
 }
 
 .gutter.gutter-vertical {
-    background-image: url('grips/horizontal.png');
+    /* background-image: url('grips/horizontal.png'); */
     cursor: row-resize;
 }
 .gutter.gutter-vertical {
