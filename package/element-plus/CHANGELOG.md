@@ -1,5 +1,16 @@
 # @xiaohaih/condition-el-plus
 
+## 0.4.0
+
+### Minor Changes
+
+- core 支持所有数据类型, 修复重置报错, 去除 cascader 内置的 emitPath, 修复 ts 声明报层级过深
+
+### Patch Changes
+
+- Updated dependencies
+  - @xiaohaih/condition-core@0.4.0
+
 ## 0.3.2
 
 ### Patch Changes
