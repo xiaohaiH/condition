@@ -67,9 +67,11 @@ export declare namespace HCondition {
 
     interface InputProps
         extends Omit<ExtractPropTypes<OmitDefaultKey<typeof inputProps>>, BuiltInField>,
-            Omit<Props<InstanceType<typeof ElInput>>, keyof typeof inputProps>,
+            Omit<Props<InstanceType<typeof ElInput>>, keyof typeof inputProps | 'inputStyle'>,
             Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
         t: 'input';
+        // 需要重新声明, 否则 ts 会报层级过深
+        inputStyle?: string | string[] | Record<string, any>;
     }
     interface SelectProps
         extends Omit<ExtractPropTypes<OmitDefaultKey<typeof selectProps>>, BuiltInField>,
