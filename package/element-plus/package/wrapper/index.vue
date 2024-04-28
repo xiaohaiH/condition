@@ -1,15 +1,19 @@
 <template>
     <ElForm v-bind="rootProps" ref="formRef" :model="query">
-        <template v-for="(item, key) of datum" :key="key">
-            <component
-                :is="getComponent(item.t)!"
-                v-bind="item"
-                :field="item.as || key"
-                :resetToInitialValue="resetToInitialValue"
-                :backfill="backfill"
-                :query="query"
-            />
-        </template>
+        <SortComponent :disabled="!sortable">
+            <slot name="prepend"></slot>
+            <template v-for="(item, key) of datum" :key="key">
+                <component
+                    :is="getComponent(item.t)!"
+                    v-bind="item"
+                    :field="item.as || key"
+                    :resetToInitialValue="resetToInitialValue"
+                    :backfill="backfill"
+                    :query="query"
+                />
+            </template>
+            <slot></slot>
+        </SortComponent>
         <slot name="btn" :search="search" :reset="reset" :resetAndSearch="resetAndSearch">
             <template v-if="renderBtn">
                 <ElButton :size="size" @click="search">{{ searchText }}</ElButton>
@@ -22,12 +26,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, PropType, ref, computed, onMounted } from 'vue';
+import { defineComponent, markRaw, PropType, ref, computed, onMounted, FunctionalComponent } from 'vue';
 import { ElForm, ElButton } from 'element-plus';
 import { useWrapper } from '@xiaohaih/condition-core';
 import { pick } from '../../utils';
 import { wrapperProps as props, wrapperEmits as emits, formPropKeys } from './props';
 import { getComponent } from './components';
+import { SortComponent } from './sortable';
 
 /**
  * @file 条件容器
@@ -36,6 +41,7 @@ export default defineComponent({
     name: 'HWrapper',
     inheritAttrs: false,
     components: {
+        SortComponent,
         ElForm,
         ElButton,
     },

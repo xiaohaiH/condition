@@ -1,4 +1,15 @@
-import { del, getCurrentInstance, onBeforeUnmount, provide, ExtractPropTypes, ref, set, watch, toRefs } from 'vue-demi';
+import {
+    del,
+    getCurrentInstance,
+    onBeforeUnmount,
+    provide,
+    ExtractPropTypes,
+    ref,
+    set,
+    watch,
+    toRefs,
+    nextTick,
+} from 'vue-demi';
 import { IS_COMPOSITION_VERSION, provideKey, ProvideValue, CommonMethod, defineProvideValue } from '../constant';
 import { wrapperProps } from './props';
 
@@ -33,6 +44,7 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     /** 提供给子条件组件的方法 */
     const wrapperInstance = defineProvideValue({
         realtime: ref(props.realtime),
+        queryChangedInWrapper: ref(props.realtime),
         register(compOption) {
             child.push(compOption);
             const unregister = () => {
@@ -85,6 +97,17 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     /** 内部条件最新的值, 在没触发搜索按钮前, 不会同步到外部 */
     const query = ref<Record<string, string>>({ ...props.backfill });
     const getQuery = () => ({ ...query.value, ...props.backfill, ...changedQueryObj });
+    watch(
+        () => props.backfill,
+        (val) => {
+            wrapperInstance.queryChangedInWrapper.value = true;
+            query.value = { ...val };
+            nextTick(() => {
+                wrapperInstance.queryChangedInWrapper.value = false;
+            });
+        },
+        { deep: true },
+    );
 
     async function search() {
         const msg = await validate();

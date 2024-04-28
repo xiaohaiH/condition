@@ -13,6 +13,8 @@ export const wrapperProps = {
     ...CoreWrapperProps,
     /** 数据源 */
     datum: { type: Object as PropType<Record<string, any>>, default: () => ({}) },
+    /** 是否启用排序 */
+    sortable: { type: Boolean as PropType<boolean> },
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: Boolean as PropType<boolean> },
     /** 初始是否触发一次事件来返回当前的 query */

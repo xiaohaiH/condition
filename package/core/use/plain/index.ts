@@ -28,11 +28,11 @@ export function usePlain(props: PlainProps) {
     const initialValue = useInitialValue(props);
     /** 初始是否存在回填值 */
     const initialBackfillValue =
-        props.backfill &&
+        props.query &&
         (props.fields?.length
             ? // 防止回填值不存在时产生一个空数组(undefined[])
-              props.fields.map((key) => props.backfill![key]).filter(Boolean)
-            : props.backfill[props.field]);
+              props.fields.map((key) => props.query[key]).filter(Boolean)
+            : props.query[props.field]);
     /** 当前选中值 */
     const checked = shallowRef<ValueType | ValueType[]>(
         initialBackfillValue || props.defaultValue !== undefined ? clone(initialValue.value) : undefined,
@@ -108,28 +108,29 @@ export function usePlain(props: PlainProps) {
                 const _val = props.backfillToValue(val, _field, props.query);
                 if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
                 updateCheckedValue(_val);
+                wrapper?.queryChangedInWrapper.value || wrapper?.insetSearch();
             },
         ),
     );
-    // 回填值发生变化时触发更新
-    unwatchs.push(
-        watch(
-            () =>
-                [
-                    props.fields || props.field,
-                    props.fields
-                        ? props.fields.map((k) => props.backfill?.[k]).filter(Boolean)
-                        : props.backfill?.[props.field],
-                ] as const,
-            ([_field, val], [__field]) => {
-                // 存在回填值时回填, 不存在时不做改动
-                const _val = props.backfillToValue(val, _field, props.backfill);
-                if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
-                updateBackfillFlag();
-                updateCheckedValue(_val);
-            },
-        ),
-    );
+    // // 回填值发生变化时触发更新
+    // unwatchs.push(
+    //     watch(
+    //         () =>
+    //             [
+    //                 props.fields || props.field,
+    //                 props.fields
+    //                     ? props.fields.map((k) => props.backfill?.[k]).filter(Boolean)
+    //                     : props.backfill?.[props.field],
+    //             ] as const,
+    //         ([_field, val], [__field]) => {
+    //             // 存在回填值时回填, 不存在时不做改动
+    //             const _val = props.backfillToValue(val, _field, props.backfill);
+    //             if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
+    //             updateBackfillFlag();
+    //             updateCheckedValue(_val);
+    //         },
+    //     ),
+    // );
     // 存在依赖项
     unwatchs.push(
         watch(
@@ -140,7 +141,7 @@ export function usePlain(props: PlainProps) {
                     props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => props.query?.[k]),
                 ] as const,
             ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
-                if (!backfillFlag.value) return;
+                if (!realtimeFlag.value) return;
                 if (val === oldVal) return;
                 getOption('depend');
                 // 更新依赖条件时不做改动

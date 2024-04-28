@@ -10,7 +10,7 @@
         <ElInputNumber
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :value="checked || null"
+            :value="checked === 0 ? 0 : checked || undefined"
             class="condition-item__content"
             @input="debounceChange"
         ></ElInputNumber>

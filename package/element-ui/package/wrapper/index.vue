@@ -1,16 +1,20 @@
 <template>
     <ElForm v-bind="rootProps" v-on="$listeners" ref="formRef" :model="query">
-        <template v-for="(item, key) of datum">
-            <component
-                :is="getComponent(item.t)"
-                :key="key"
-                v-bind="item"
-                :field="item.as || key"
-                :resetToInitialValue="resetToInitialValue"
-                :backfill="backfill"
-                :query="query"
-            />
-        </template>
+        <SortComponent :disabled="!sortable">
+            <slot name="prepend"></slot>
+            <template v-for="(item, key) of datum">
+                <component
+                    :is="getComponent(item.t)"
+                    :key="key"
+                    v-bind="item"
+                    :field="item.as || key"
+                    :resetToInitialValue="resetToInitialValue"
+                    :backfill="backfill"
+                    :query="query"
+                />
+            </template>
+            <slot></slot>
+        </SortComponent>
         <slot name="btn" :search="search" :reset="reset" :resetAndSearch="resetAndSearch">
             <template v-if="renderBtn">
                 <ElButton :size="size" @click="search">{{ searchText }}</ElButton>
@@ -29,6 +33,7 @@ import { useWrapper } from '@xiaohaih/condition-core';
 import { pick } from '../../utils';
 import { wrapperProps as props, wrapperEmits as emits, formPropKeys } from './props';
 import { getComponent } from './components';
+import { SortComponent } from './sortable';
 
 /**
  * @file 条件容器
@@ -37,6 +42,7 @@ export default defineComponent({
     name: 'HWrapper',
     inheritAttrs: false,
     components: {
+        SortComponent,
         ElForm,
         ElButton,
     },

@@ -317,6 +317,7 @@ export default {
 | 属性名 | 是否必填 | 类型 | 描述 | 默认值 |
 | --------- | -------- | ------- | ------------------------ | ------ |
 | datum | 是 | object | 条件数据源 | - |
+| sortable | 否 | boolean | 是否开启排序 | false |
 | realtime | 否 | boolean | 是否实时触发搜索事件(值发生改变时) | - |
 | backfill | 否 | object | 回填信息(使条件内部值与该对象的值保持一致) | - |
 | toast | 否 | (msg: string) => void | 校验失败时产生的提示(与属性 `validator` 配合使用) | - |
@@ -351,6 +352,7 @@ export default {
 > | defaultValue        | 否       | string \| string[] \| (query: object, backfill?: object) =string \| string[] | 默认值                                 | -         |
 > | depend              | 否       | boolean                                                                      | 是否依赖其它字段                       | -         |
 > | dependFields        | 否       | string \| string[]                                                           | 依赖的字段集合                         | -         |
+> | conditionSortIndex  | 否       | boolean                                                                      | 当前条件排序下标                       | -         |
 
 </details>
 

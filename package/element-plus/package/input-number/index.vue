@@ -11,7 +11,7 @@
         <ElInputNumber
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="((checked || null) as number)"
+            :model-value="checked === 0 ? 0 : (checked as number) || undefined"
             class="condition-item__content"
             @update:model-value="debounceChange"
         >

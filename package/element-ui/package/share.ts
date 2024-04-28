@@ -7,6 +7,8 @@ export const commonProps = {
     postfix: { type: [String, Object, Function] as PropType<string | VNode | ((...args: any[]) => VNode)> },
     /** 字段别名(优先级高于条件对象的 key) */
     as: { type: String as PropType<string> },
+    /** 开启排序时, 排序下标 @default 0 */
+    conditionSortIndex: { type: Number as PropType<number> },
 };
 
 export const formItemProps = {

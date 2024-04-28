@@ -13,6 +13,10 @@ export interface ProvideValue {
      */
     realtime: Ref<boolean | undefined>;
     /**
+     * 当 query 变化是, 是否在 wrapper 处触发的
+     */
+    queryChangedInWrapper: Ref<boolean | undefined>;
+    /**
      * 子组件需主动注册组件, 否则不会生效
      * @param {CommonMethod} config 提供父组件校验, 重置等方法
      *
