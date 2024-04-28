@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.4.1
+
+### Patch Changes
+
+- 条件组件增加插槽, 支持条件项排序(包括 VNode)
+- Updated dependencies
+  - @xiaohaih/condition-core@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes
