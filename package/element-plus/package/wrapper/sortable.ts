@@ -1,4 +1,5 @@
-import type { SetupContext, VNode, VNodeNormalizedChildren, VNodeChild, FunctionalComponent } from 'vue';
+import { Fragment } from 'vue';
+import type { SetupContext, VNode } from 'vue';
 
 type SortComponentProps = {
     /** 禁用排序 */
@@ -8,18 +9,20 @@ type SortComponentProps = {
 /** VNode 排序组件 */
 function SortComponent(props: SortComponentProps, context: Omit<SetupContext<{}>, 'expose'>) {
     if (props.disabled) return context.slots.default?.();
-    const vNodes: (VNodeNormalizedChildren | VNodeChild)[] = [];
-    context.slots.default?.().forEach((o) => {
-        if (!o.children) return;
-        Array.isArray(o.children)
-            ? o.children.forEach((v) => {
-                  vNodes.push(v);
-              })
-            : vNodes.push(o.children);
-    });
+    const vNodes: VNode[] = [];
+    context.slots.default && getRealNode(context.slots.default(), vNodes);
     return vNodes.sort((a, b) => getSortValue(a) - getSortValue(b));
 }
-
+/** 获取真实 VNode(排除 Fragment 节点) */
+function getRealNode(nodes: VNode[], arr: VNode[]) {
+    nodes.forEach((o) => {
+        if (o.type === Fragment) {
+            o.children && getRealNode(o.children as any, arr);
+        } else {
+            arr.push(o);
+        }
+    });
+}
 /** 获取排序的值 */
 function getSortValue(vnode: any) {
     if (!vnode?.props) return 0;
