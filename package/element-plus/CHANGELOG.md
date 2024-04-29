@@ -1,5 +1,12 @@
 # @xiaohaih/condition-el-plus
 
+## 0.4.2
+
+### Patch Changes
+
+- 修复 Fragment 嵌套时, 未抛出内部的元素
+  - @xiaohaih/condition-core@0.4.2
+
 ## 0.4.1
 
 ### Patch Changes
