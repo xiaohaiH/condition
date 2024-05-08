@@ -35,7 +35,7 @@ export function usePlain(props: PlainProps) {
             : props.query[props.field]);
     /** 当前选中值 */
     const checked = shallowRef<ValueType | ValueType[]>(
-        initialBackfillValue || props.defaultValue !== undefined ? clone(initialValue.value) : undefined,
+        initialBackfillValue || (props.defaultValue !== undefined ? clone(initialValue.value) : undefined),
     );
     /** 远程获取的数据源 */
     const remoteOption = ref<Record<string, any>[]>([]);
