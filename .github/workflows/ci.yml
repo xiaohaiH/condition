@@ -43,7 +43,11 @@ jobs:
 
               # 对npm包进行打包
             - name: build3
-              run: pnpm run build
+              run: pnpm run build:core
+
+              # 对npm包进行打包
+            - name: build4
+              run: pnpm run build:plus
 
               # 要操作的文件
             - name: copy *.html
@@ -65,12 +69,12 @@ jobs:
                   target-folder: .
                   clean: false
 
-            - name: copy element-ui
-              uses: JamesIves/github-pages-deploy-action@v4
-              with:
-                  folder: ./package/element-ui/dist
-                  target-folder: ./element-ui
-                  clean: false
+            # - name: copy element-ui
+            #   uses: JamesIves/github-pages-deploy-action@v4
+            #   with:
+            #       folder: ./package/element-ui/dist
+            #       target-folder: ./element-ui
+            #       clean: false
 
             - name: copy element-plus
               uses: JamesIves/github-pages-deploy-action@v4

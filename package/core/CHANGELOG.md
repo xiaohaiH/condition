@@ -1,5 +1,13 @@
 # @xiaohaih/condition-core
 
+## 0.5.0
+
+### Minor Changes
+
+- core 1.优化 backfill 发生变动时处理的逻辑 2.增加自定义空值以及属于空值时返回指定值 3.支持字段改变时触发 fieldChange 事件 4.优化属性监听方法(单个属性监听, 防止字段一致却因返回值是个新数组导致重渲染) 5.优化依赖响应逻辑, 支持属性值监听(eg: a.b.0)
+
+  plus 1.增加 tree-select 组件 2.修复 element-plus 弃用属性警告
+
 ## 0.4.1
 
 ### Patch Changes
