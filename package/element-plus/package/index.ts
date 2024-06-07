@@ -3,6 +3,8 @@ export * from './wrapper/components';
 export * from './wrapper/props';
 export { default as HSelect } from './select/index.vue';
 export * from './select/props';
+export { default as HTreeSelect } from './tree-select/index.vue';
+export * from './tree-select/props';
 export { default as HInput } from './input/index.vue';
 export * from './input/props';
 export { default as HDatePicker } from './datepicker/index.vue';

@@ -1,5 +1,6 @@
 import { markRaw } from 'vue';
 import HSelect from '../select/index.vue';
+import HTreeSelect from '../tree-select/index.vue';
 import HInput from '../input/index.vue';
 import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
@@ -19,6 +20,7 @@ import HSelectV2 from '../select-v2/index.vue';
 // https://stackoverflow.com/questions/43900035/ts4023-exported-variable-x-has-or-is-using-name-y-from-external-module-but
 const compMap = {
     select: markRaw(HSelect) as typeof HSelect,
+    'tree-select': markRaw(HTreeSelect) as typeof HTreeSelect,
     input: markRaw(HInput) as typeof HInput,
     datepicker: markRaw(HDatepicker) as typeof HDatepicker,
     'date-picker': markRaw(HDatepicker) as typeof HDatepicker,

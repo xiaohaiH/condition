@@ -4,6 +4,7 @@ import {
     ElForm,
     ElFormItem,
     ElSelect,
+    ElTreeSelect,
     ElInput,
     ElDatePicker,
     ElCascader,
@@ -22,6 +23,7 @@ import {
 import {
     wrapperProps,
     selectProps,
+    treeSelectProps,
     inputProps,
     datepickerProps,
     radioProps,
@@ -51,6 +53,7 @@ export declare namespace HCondition {
     type Condition =
         | CoreCondition.DeepMaybeRef<InputProps>
         | CoreCondition.DeepMaybeRef<SelectProps>
+        | CoreCondition.DeepMaybeRef<TreeSelectProps>
         | CoreCondition.DeepMaybeRef<DatepickerProps>
         | CoreCondition.DeepMaybeRef<RadioProps>
         | CoreCondition.DeepMaybeRef<CheckboxProps>
@@ -78,6 +81,12 @@ export declare namespace HCondition {
             Omit<Props<InstanceType<typeof ElSelect>>, keyof typeof selectProps>,
             Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
         t: 'select';
+    }
+    interface TreeSelectProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof treeSelectProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElTreeSelect>>, keyof typeof treeSelectProps>,
+            Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
+        t: 'tree-select';
     }
     interface DatepickerProps
         extends Omit<ExtractPropTypes<OmitDefaultKey<typeof datepickerProps>>, BuiltInField>,
