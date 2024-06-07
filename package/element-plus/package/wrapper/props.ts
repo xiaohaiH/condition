@@ -36,4 +36,13 @@ export const wrapperEmits = {
     search: (query: Record<string, any>) => true,
     /** 重置事件 */
     reset: (query: Record<string, any>) => true,
+    /**
+     * 字段值发生改变时触发
+     * @param {object} option 提供的
+     * @param {string} option.field 实际改变的键
+     * @param {*} option.value
+     * @param {object} option.query
+     * @param {string} option.nativeField 原始健(不受 as, fields 等属性影响)
+     */
+    fieldChange: (option: { field: string; value: any; query: Record<string, any>; nativeField: string }) => true,
 };

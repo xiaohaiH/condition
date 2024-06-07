@@ -50,11 +50,13 @@ export default defineComponent({
     setup(props, context) {
         const rootProps = computed(() => pick(props, formPropKeys));
         const formRef = ref<InstanceType<typeof ElForm>>();
-        // @ts-expect-error bind重载错误
-        const search = context.emit.bind(context, 'search');
-        // @ts-expect-error bind重载错误
-        const reset = context.emit.bind(context, 'reset');
-        const wrapper = useWrapper(props, { search, reset });
+        const search = (context.emit as any).bind(context, 'search') as unknown as (typeof emits)['search'];
+        const reset = (context.emit as any).bind(context, 'reset') as unknown as (typeof emits)['reset'];
+        const fieldChange = (context.emit as any).bind(
+            context,
+            'fieldChange',
+        ) as unknown as (typeof emits)['fieldChange'];
+        const wrapper = useWrapper(props, { search, reset, fieldChange });
         function resetAndSearch() {
             wrapper.reset();
             wrapper.search();
