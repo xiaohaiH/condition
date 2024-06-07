@@ -10,7 +10,7 @@ import {
     toRaw,
     shallowRef,
 } from 'vue-demi';
-import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained } from '../../utils/index';
+import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained, get } from '../../utils/index';
 import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../constant';
 import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
 import { plainProps } from './props';
@@ -65,7 +65,7 @@ export function usePlain(props: PlainProps) {
         },
         updateWrapperQuery() {
             updateRealtimeFlag();
-            wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v));
+            wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v, props.field));
         },
         get validator() {
             return props.validator;
@@ -96,32 +96,34 @@ export function usePlain(props: PlainProps) {
     // 实时值发生变化时触发更新 - 共享同一个字段
     unwatchs.push(
         watch(
-            () =>
-                [
-                    props.fields || props.field,
+            [
+                () => props.fields || props.field,
+                () =>
                     props.fields ? props.fields.map((k) => props.query[k]).filter(Boolean) : props.query[props.field],
-                ] as const,
+            ],
             // [props.field, props.query[props.field]] as const,
             ([_field, val], [__field]) => {
                 // 仅在值发生变化时同步 忽视空值不一致的问题
                 if (!realtimeFlag.value) return;
                 const _val = props.backfillToValue(val, _field, props.query);
                 if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
-                updateCheckedValue(_val);
-                wrapper?.queryChangedInWrapper.value || wrapper?.insetSearch();
+                // 实时值改变仅更新值即可, 不做其它任何操作
+                checked.value !== _val && (checked.value = _val);
+                // updateCheckedValue(_val);
+                // wrapper?.queryChangedInWrapper.value || wrapper?.insetSearch();
             },
         ),
     );
     // // 回填值发生变化时触发更新
     // unwatchs.push(
     //     watch(
-    //         () =>
-    //             [
-    //                 props.fields || props.field,
+    //         [
+    //             () => props.fields || props.field,
+    //             () =>
     //                 props.fields
     //                     ? props.fields.map((k) => props.backfill?.[k]).filter(Boolean)
     //                     : props.backfill?.[props.field],
-    //             ] as const,
+    //         ],
     //         ([_field, val], [__field]) => {
     //             // 存在回填值时回填, 不存在时不做改动
     //             const _val = props.backfillToValue(val, _field, props.backfill);
@@ -131,24 +133,26 @@ export function usePlain(props: PlainProps) {
     //         },
     //     ),
     // );
+
     // 存在依赖项
     unwatchs.push(
         watch(
-            () =>
-                [
-                    props.depend,
-                    props.dependFields,
-                    props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => props.query?.[k]),
-                ] as const,
-            ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
+            [
+                () => props.depend,
+                () => props.dependFields,
+                () => props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => get(props.query, k)),
+            ],
+            ([_depend, _dependFields], [__depend, __dependFields]) => {
                 if (!realtimeFlag.value) return;
-                if (val === oldVal) return;
+                // 是否启用依赖, 相同时启用才走后续逻辑, 不同时直接走后续逻辑
+                if (_depend === __depend && !_depend) return;
                 getOption('depend');
-                // 更新依赖条件时不做改动
-                if (_depend !== __depend || !isEqualExcludeEmptyValue(_dependFields, __dependFields)) return;
+                // 类空值时, 不触发 change 事件
+                // 防止表单类监测值发生改变时触发校验
                 if (isEmptyValue(checked.value)) return;
-                updateCheckedValue(props.multiple ? [] : '');
+                change(props.multiple ? [] : '');
             },
+            props.dependWatchOption,
         ),
     );
     unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial'), { immediate: true }));

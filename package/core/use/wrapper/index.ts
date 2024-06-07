@@ -9,6 +9,8 @@ import {
     watch,
     toRefs,
     nextTick,
+    toRef,
+    computed,
 } from 'vue-demi';
 import { IS_COMPOSITION_VERSION, provideKey, ProvideValue, CommonMethod, defineProvideValue } from '../constant';
 import { wrapperProps } from './props';
@@ -21,12 +23,22 @@ export type WrapperOption = {
     search?: (params: Record<string, any>) => void;
     /** 触发重置事件 */
     reset?: (params: Record<string, any>) => void;
+    /**
+     * 字段值发生改变时触发
+     * @param {object} option 提供的
+     * @param {string} option.field 实际改变的键
+     * @param {*} option.value
+     * @param {object} option.query
+     * @param {string} option.nativeField 原始健(不受 as, fields 等属性影响)
+     */
+    fieldChange?: (option: { field: string; value: any; query: Record<string, any>; nativeField: string }) => void;
 };
 
 /** 封装 wrapper 组件必备的信息 */
 export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     const child: CommonMethod[] = [];
     onBeforeUnmount(() => child.splice(0));
+    const emptyValue = computed(() => props.emptyValue?.());
 
     /**
      * #fix 修复初始 backfill 存在值时
@@ -43,8 +55,8 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     let logFields: string[] = [];
     /** 提供给子条件组件的方法 */
     const wrapperInstance = defineProvideValue({
-        realtime: ref(props.realtime),
-        queryChangedInWrapper: ref(props.realtime),
+        realtime: toRef(props, 'realtime', false),
+        queryChangedInWrapper: ref(false),
         register(compOption) {
             child.push(compOption);
             const unregister = () => {
@@ -71,10 +83,12 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
             childInstance && onBeforeUnmount(unregister, IS_COMPOSITION_VERSION ? childInstance.proxy : childInstance);
             return unregister;
         },
-        updateQueryValue(field, value) {
+        updateQueryValue(field, value, nativeField) {
+            props.emptyValues.includes(value) && value !== emptyValue.value && (value = emptyValue.value);
             if (isLogField) logFields.push(field);
             set(query.value, field, value);
             changedQueryObj[field] = value;
+            option?.fieldChange?.({ field, value, query: query.value, nativeField });
         },
         insetSearch() {
             props.realtime && search();
@@ -96,12 +110,20 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
 
     /** 内部条件最新的值, 在没触发搜索按钮前, 不会同步到外部 */
     const query = ref<Record<string, string>>({ ...props.backfill });
-    const getQuery = () => ({ ...query.value, ...props.backfill, ...changedQueryObj });
+    // 由于 watch 主动处理了 backfill
+    // 所以覆盖就没有存在的必要了
+    // const getQuery = () => ({ ...query.value, ...props.backfill, ...changedQueryObj });
+    const getQuery = () => ({ ...query.value });
     watch(
         () => props.backfill,
         (val) => {
             wrapperInstance.queryChangedInWrapper.value = true;
-            query.value = { ...val };
+            // 手动处理 query 的值于 backfill 保持一致
+            // 防止 query.value 对象改变导致内部监听误触发
+            Object.keys(query.value).forEach((k) => {
+                val?.hasOwnProperty(k) || delete query.value[k];
+            });
+            val && Object.assign(query.value, val);
             nextTick(() => {
                 wrapperInstance.queryChangedInWrapper.value = false;
             });

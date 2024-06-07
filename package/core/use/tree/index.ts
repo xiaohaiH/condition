@@ -74,7 +74,7 @@ export function useTree(props: TreeProps) {
         },
         updateWrapperQuery() {
             updateRealtimeFlag();
-            wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v));
+            wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v, props.field));
         },
         getQuery,
     });
@@ -138,11 +138,10 @@ export function useTree(props: TreeProps) {
     // 实时值发生变化时触发更新 - 共享同一个字段
     unwatchs.push(
         watch(
-            () =>
-                [
-                    props.fields?.toString() || props.field,
-                    props.fields?.map((v) => props.query[v]).filter(Boolean) || props.query[props.field],
-                ] as const,
+            [
+                () => props.fields?.toString() || props.field,
+                () => props.fields?.map((v) => props.query[v]).filter(Boolean) || props.query[props.field],
+            ],
             ([_field, val], [__field, oldVal]) => {
                 // 仅在值发生变化时同步
                 if (!realtimeFlag.value) return;
@@ -175,19 +174,20 @@ export function useTree(props: TreeProps) {
     // 存在依赖项
     unwatchs.push(
         watch(
-            () =>
-                [
-                    props.depend,
-                    props.dependFields,
-                    props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => props.query?.[k]),
-                ] as const,
-            ([_depend, _dependFields, val], [__depend, __dependFields, oldVal]) => {
-                if (!backfillFlag.value) return;
-                if (isEqualExcludeEmptyValue(val, oldVal)) return;
+            [
+                () => props.depend,
+                () => props.dependFields,
+                () => props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => props.query?.[k]),
+            ],
+            ([_depend, _dependFields], [__depend, __dependFields]) => {
+                if (!realtimeFlag.value) return;
+                // 是否启用依赖, 相同时启用才走后续逻辑, 不同时直接走后续逻辑
+                if (_depend === __depend && !_depend) return;
                 getOption('depend');
-                // 更新依赖条件时不做改动
-                if (_depend !== __depend || _dependFields?.toString() !== __dependFields?.toString()) return;
-                updateCheckedValue(undefined);
+                // 类空值时, 不触发 change 事件
+                // 防止表单类监测值发生改变时触发校验
+                if (isEmptyValue(checked.value)) return;
+                change(undefined);
             },
         ),
     );

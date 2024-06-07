@@ -27,8 +27,9 @@ export interface ProvideValue {
      * 子组件通知父级更新 query 中的值 - 静默修改, 不触发搜索事件
      * @param {string} field 更新的字段
      * @param {*} value 更新的值
+     * @param {string} nativeField 原始提供的字段(不受 as, fields 等属性的影响)
      */
-    updateQueryValue(field: string, value: any): void;
+    updateQueryValue(field: string, value: any, nativeField: string): void;
     /**
      * 子组件内部值发生了变动, 由父级决定是否触发搜索事件(实时搜索时需要区分这两种方式)
      */

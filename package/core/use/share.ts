@@ -1,4 +1,4 @@
-import { type PropType } from 'vue-demi';
+import { type PropType, type WatchOptions } from 'vue-demi';
 import { type CommonMethod } from './constant';
 import { type emptyToValue as EmptyToValue } from '../utils/index';
 
@@ -75,6 +75,8 @@ export const commonProps = {
     depend: { type: Boolean as PropType<boolean> },
     /** 依赖字段 */
     dependFields: { type: [String, Array] as PropType<string | string[]> },
+    /** 依赖字段监听选项 */
+    dependWatchOption: { type: [Object] as PropType<WatchOptions> },
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: [Boolean] as PropType<boolean> },
     /** 空置时提交的值 - 默认置为 undefined */
