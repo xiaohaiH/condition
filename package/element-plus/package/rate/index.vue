@@ -29,7 +29,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { rateProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElRate.props);
+const { label, ...p } = ElRate.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 评分

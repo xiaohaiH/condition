@@ -29,7 +29,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { sliderProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElSlider.props);
+const { label, ...p } = ElSlider.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 滑块

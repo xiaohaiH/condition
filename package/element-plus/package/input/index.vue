@@ -47,7 +47,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { inputProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElInput.props);
+const { label, ...p } = ElInput.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 输入框

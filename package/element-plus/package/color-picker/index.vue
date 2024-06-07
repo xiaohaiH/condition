@@ -29,7 +29,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { colorPickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElColorPicker.props);
+const { label, ...p } = ElColorPicker.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 颜色选择器

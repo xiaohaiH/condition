@@ -3,8 +3,11 @@ import { ElInputNumber } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+const { label, ...inpProps } = ElInputNumber.props as {};
+
 export const inputNumberProps = {
-    ...(ElInputNumber.props as {}),
+    ...inpProps,
     // ...emits2Props(ElInputNumber.emits),
     ...plainProps,
     ...commonProps,

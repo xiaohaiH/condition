@@ -3,8 +3,11 @@ import { ElTimePicker } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+const { label, ...timeProps } = ElTimePicker.props as {};
+
 export const timepickerProps = {
-    ...(ElTimePicker.props as {}),
+    ...timeProps,
     // ...emits2Props(ElTimePicker.emits),
     ...plainProps,
     ...commonProps,

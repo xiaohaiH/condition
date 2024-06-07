@@ -39,7 +39,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { radioProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropKeys = Object.keys(ElRadioGroup.props);
+const { label, ...p } = ElRadioGroup.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 单选框
@@ -57,7 +58,7 @@ export default defineComponent({
     setup(props, context) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProp = computed(() => pick(props, contentPropKeys));
+        const contentProp = computed(() => pick(props, contentPropsKeys));
 
         const radioGroupRef = ref<InstanceType<typeof ElRadioGroup> | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));

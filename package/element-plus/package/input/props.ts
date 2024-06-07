@@ -12,8 +12,11 @@ type Query = {
     insideSearch(): void;
 };
 
+// @ts-expect-error UI.props报错
+const { label, ...inpProps } = ElInput.props as {};
+
 export const inputProps = {
-    ...(ElInput.props as {}),
+    ...inpProps,
     // ...emits2Props(ElInput.emits),
     ...plainProps,
     ...commonProps,

@@ -14,7 +14,7 @@
             @update:modelValue="(change as () => void)"
         >
             <template v-for="item of finalOption" :key="item[valueKey]">
-                <component :is="checkboxType" :label="item[valueKey]" :value="item[valueKey]">
+                <component :is="checkboxType" :aria-label="item[labelKey]" :value="item[valueKey]">
                     {{ item[labelKey] }}
                 </component>
             </template>
@@ -36,7 +36,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { checkboxProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElCheckbox.props);
+const { label, ...p } = ElCheckbox.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 复选框

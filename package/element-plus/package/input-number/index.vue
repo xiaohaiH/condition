@@ -41,7 +41,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { inputNumberProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElInputNumber.props);
+const { label, ...p } = ElInputNumber.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 数字输入框

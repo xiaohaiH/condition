@@ -29,7 +29,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { switchProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropsKeys = Object.keys(ElSwitch.props);
+const { label, ...p } = ElSwitch.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 开关

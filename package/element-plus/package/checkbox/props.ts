@@ -3,8 +3,11 @@ import { ElCheckbox } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+const { label, ...cheProps } = ElCheckbox.props as {};
+
 export const checkboxProps = {
-    ...(ElCheckbox.props as {}),
+    ...cheProps,
     // ...emits2Props(ElCheckbox.emits),
     ...plainProps,
     ...commonProps,

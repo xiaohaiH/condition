@@ -35,7 +35,8 @@ const reg = /range$/;
 function isRange(str: string | undefined) {
     return str ? reg.test(str) : false;
 }
-const contentPropsKeys = Object.keys(ElDatePicker.props);
+const { label, ...p } = ElDatePicker.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 日期选择

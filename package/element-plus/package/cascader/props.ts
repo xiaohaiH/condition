@@ -16,10 +16,6 @@ export const cascaderProps = {
     ...formItemProps,
     /** ui.cascader.props */
     props: { type: Object as PropType<Record<string, any>> },
-    /** 展示的字段 */
-    labelKey: { type: String as PropType<string>, default: 'label' },
-    /** 提交的字段 */
-    valueKey: { type: String as PropType<string>, default: 'value' },
     /** 是否可过滤 */
     filterable: { type: Boolean as PropType<boolean>, default: true },
     /** 是否可清除 */

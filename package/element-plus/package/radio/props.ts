@@ -3,8 +3,11 @@ import { ElRadio, ElRadioGroup } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
+// @ts-expect-error UI.props报错
+const { label, ...radProps } = ElRadioGroup.props as {};
+
 export const radioProps = {
-    ...(ElRadioGroup.props as {}),
+    ...radProps,
     // ...emits2Props(ElRadio.emits),
     ...plainProps,
     ...commonProps,

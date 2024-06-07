@@ -31,7 +31,8 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { timepickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropKeys = Object.keys(ElTimePicker.props);
+const { label, ...p } = ElTimePicker.props;
+const contentPropsKeys = Object.keys(p);
 
 /**
  * @file 时间选择器
@@ -59,7 +60,7 @@ export default defineComponent({
         );
         const plain = usePlain(reactive({ ..._props, multiple: isMultiple, fields: insetFields }));
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         return {
             ...plain,
