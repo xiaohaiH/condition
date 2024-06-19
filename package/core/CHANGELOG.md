@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.5.1
+
+### Patch Changes
+
+- 删除 realtimeFlag 内部已做值相同时忽略后续逻辑的处理
+
 ## 0.5.0
 
 ### Minor Changes
