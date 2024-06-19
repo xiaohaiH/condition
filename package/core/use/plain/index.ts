@@ -52,19 +52,19 @@ export function usePlain(props: PlainProps) {
             : { [props.field]: emptyToValue(_checked, props.emptyValue) };
     };
     // 防止触发搜索时, query 产生变化内部重复赋值
-    const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
+    // const { flag: realtimeFlag, updateFlag: updateRealtimeFlag } = useDisableInCurrentCycle();
     // 防止触发搜索时, backfill 产生变化内部重复赋值
-    const { flag: backfillFlag, updateFlag: updateBackfillFlag } = useDisableInCurrentCycle();
+    // const { flag: backfillFlag, updateFlag: updateBackfillFlag } = useDisableInCurrentCycle();
 
     const option = defineCommonMethod({
         reset() {
             const { multiple } = props;
-            updateRealtimeFlag();
-            updateBackfillFlag();
+            // updateRealtimeFlag();
+            // updateBackfillFlag();
             checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
         },
         updateWrapperQuery() {
-            updateRealtimeFlag();
+            // updateRealtimeFlag();
             wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v, props.field));
         },
         get validator() {
@@ -78,6 +78,9 @@ export function usePlain(props: PlainProps) {
     /** 不存在回填值且存在默认值时更新父级中的值 */
     if (!initialBackfillValue && props.defaultValue) {
         option.updateWrapperQuery();
+        // fix: 初始更新值且外部也设置值时
+        // 会导致内部无法同步到最新值
+        // realtimeFlag.value = true;
     }
 
     const unwatchs: (() => void)[] = [];
@@ -104,7 +107,7 @@ export function usePlain(props: PlainProps) {
             // [props.field, props.query[props.field]] as const,
             ([_field, val], [__field]) => {
                 // 仅在值发生变化时同步 忽视空值不一致的问题
-                if (!realtimeFlag.value) return;
+                // if (!realtimeFlag.value) return;
                 const _val = props.backfillToValue(val, _field, props.query);
                 if (_field.toString() !== __field.toString() || isEqualExcludeEmptyValue(_val, checked.value)) return;
                 // 实时值改变仅更新值即可, 不做其它任何操作
@@ -143,7 +146,7 @@ export function usePlain(props: PlainProps) {
                 () => props.dependFields && ([] as string[]).concat(props.dependFields).map((k) => get(props.query, k)),
             ],
             ([_depend, _dependFields], [__depend, __dependFields]) => {
-                if (!realtimeFlag.value) return;
+                // if (!realtimeFlag.value) return;
                 // 是否启用依赖, 相同时启用才走后续逻辑, 不同时直接走后续逻辑
                 if (_depend === __depend && !_depend) return;
                 getOption('depend');
