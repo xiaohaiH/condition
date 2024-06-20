@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.5.2
+
+### Patch Changes
+
+- 修复将数组设定为空值时引发的 bug
+
 ## 0.5.1
 
 ### Patch Changes
