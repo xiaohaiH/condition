@@ -6,7 +6,8 @@ import { markRaw, VNode } from 'vue-demi';
  * @param {*} defaultVal
  */
 export function emptyToValue<T extends unknown>(val: any, defaultVal: T) {
-    if (Array.isArray(val)) return val.filter(Boolean).length ? val : defaultVal;
+    // 数组不应该置为空值, 影响到组件内部逻辑
+    // if (Array.isArray(val)) return val.filter(Boolean).length ? val : defaultVal;
     return typeof val === 'number' ? val : val || defaultVal;
 }
 
