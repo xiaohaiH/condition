@@ -37,17 +37,22 @@ export interface TriggerOption {
      */
     trigger: string;
     /**
+     * 仅更改默认值
+     * @param {*} value 需改变的值
+     */
+    changeDefaultValue(value: any): this;
+    /**
      * 仅改变内部的值, 不触发搜索事件
      * @param {*} value 需改变的值
      * @param {boolean} [updateInitialValue] 是否将该值作为初始值(重置时使用)
      */
-    change(value: any, updateInitialValue?: boolean): void;
+    change(value: any, updateInitialValue?: boolean): this;
     /**
      * 触发搜索事件
      * @param {*} value 需改变的值
      * @param {boolean} [updateInitialValue] 是否将该值作为初始值(重置时使用)
      */
-    search(value: any, updateInitialValue?: boolean): void;
+    search(value: any, updateInitialValue?: boolean): this;
 }
 
 /** 自定义返回字段 */

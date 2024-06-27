@@ -143,14 +143,20 @@ export function usePlain(props: PlainProps) {
             props.query || {},
             {
                 trigger,
-                change: (value: any, isInitial?: boolean) => {
+                changeDefaultValue(value: any) {
+                    initialValue.value = value;
+                    return this;
+                },
+                change(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
                     change(value);
+                    return this;
                 },
-                search: (value: any, isInitial?: boolean) => {
+                search(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
                     updateCheckedValue(value);
                     wrapper?.search();
+                    return this;
                 },
             },
         );
