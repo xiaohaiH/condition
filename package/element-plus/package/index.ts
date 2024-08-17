@@ -33,4 +33,6 @@ export { default as HUpload } from './upload/index.vue';
 export * from './upload/props';
 export { default as HSelectV2 } from './select-v2/index.vue';
 export * from './select-v2/props';
+export { default as HMention } from './mention/index.vue';
+export * from './mention/props';
 export * from './share';

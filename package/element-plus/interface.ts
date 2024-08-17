@@ -19,6 +19,7 @@ import {
     ElTimeSelect,
     ElUpload,
     ElSelectV2,
+    ElMention,
 } from 'element-plus';
 import {
     wrapperProps,
@@ -38,6 +39,7 @@ import {
     timeSelectProps,
     uploadProps,
     selectV2Props,
+    mentionProps,
 } from './package/index';
 
 export declare namespace HCondition {
@@ -66,6 +68,7 @@ export declare namespace HCondition {
         | CoreCondition.DeepMaybeRef<TimePickerProps>
         | CoreCondition.DeepMaybeRef<TimeSelectProps>
         | CoreCondition.DeepMaybeRef<UploadProps>
+        | CoreCondition.DeepMaybeRef<MentionProps>
         | CoreCondition.DeepMaybeRef<SelectV2Props>;
 
     interface InputProps
@@ -165,6 +168,14 @@ export declare namespace HCondition {
             Omit<Props<InstanceType<typeof ElSelectV2>>, keyof typeof selectV2Props>,
             Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
         t: 'select-v2';
+    }
+    interface MentionProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof mentionProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElMention>>, keyof typeof mentionProps | 'inputStyle'>,
+            Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
+        t: 'mention';
+        // 需要重新声明, 否则 ts 会报层级过深
+        inputStyle?: string | string[] | Record<string, any>;
     }
 
     /** 获取 vue 组件的 props 值 */

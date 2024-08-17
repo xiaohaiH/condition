@@ -15,6 +15,7 @@ import HTimePicker from '../time-picker/index.vue';
 import HTimeSelect from '../time-select/index.vue';
 import HUpload from '../upload/index.vue';
 import HSelectV2 from '../select-v2/index.vue';
+import HMention from '../mention/index.vue';
 
 // 不重新 as 一下会发生👇下方的错误
 // https://stackoverflow.com/questions/43900035/ts4023-exported-variable-x-has-or-is-using-name-y-from-external-module-but
@@ -36,6 +37,7 @@ const compMap = {
     'time-select': markRaw(HTimeSelect) as typeof HTimeSelect,
     upload: markRaw(HUpload) as typeof HUpload,
     'select-v2': markRaw(HSelectV2) as typeof HSelectV2,
+    mention: markRaw(HMention) as typeof HMention,
 };
 const userCompMap: Record<string, any> = {};
 

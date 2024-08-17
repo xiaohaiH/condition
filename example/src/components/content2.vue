@@ -278,6 +278,21 @@ export default defineComponent({
                     }, 1000);
                 },
             },
+            aite: {
+                t: 'mention',
+                label: '@提及',
+                placeholder: '请输入@',
+                rules: [{ required: true, message: '必填项' }],
+                getOptions(cb) {
+                    setTimeout(() => {
+                        cb([
+                            { label: 'rad1', value: 'rad1' },
+                            { label: 'rad2', value: 'rad2' },
+                        ]);
+                    }, 1000);
+                },
+                clearable: true,
+            },
         });
         const keys = Object.keys(formCondition);
         let idx = 0;
