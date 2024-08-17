@@ -29,7 +29,7 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { timeSelectProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropKeys = Object.keys(ElTimeSelect.props);
+const contentPropsKeys = Object.keys(ElTimeSelect.props);
 
 /**
  * @file 时间选择
@@ -45,7 +45,7 @@ export default defineComponent({
     setup(props, ctx) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         return {
             ...plain,

@@ -17,7 +17,7 @@
         "----------------------------": "----------------------------",
         "---------------------------|": "----- --no-git-checks ------",
         "build:publish": "run-s -c build publishing",
-        "publishing": "pnpm publish:core && pnpm publish:el && pnpm publish:plus",
+        "publishing": "pnpm publish:core && pnpm publish:plus && pnpm publish:el",
         "publish:core": "pnpm --filter @xiaohaih/condition-core publish --access=public",
         "publish:el": "pnpm --filter @xiaohaih/condition-el publish --access=public",
         "publish:plus": "pnpm --filter @xiaohaih/condition-el-plus publish --access=public",

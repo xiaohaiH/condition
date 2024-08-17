@@ -31,7 +31,7 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { timepickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const { label, ...p } = ElTimePicker.props;
+const { label, defaultValue, ...p } = ElTimePicker.props;
 const contentPropsKeys = Object.keys(p);
 
 /**

@@ -54,7 +54,7 @@ import { selectProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
 // @ts-expect-error UI.props报错
-const contentPropKeys = Object.keys(ElSelect.props);
+const contentPropsKeys = Object.keys(ElSelect.props);
 
 /**
  * @file 下拉框
@@ -72,7 +72,7 @@ export default defineComponent({
     setup(props, ctx) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         const filterValue = ref('');
         const customFilterMethod = (val: string) => {

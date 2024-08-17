@@ -49,7 +49,7 @@ import { uploadProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
 // @ts-expect-error UI.props报错
-const contentPropKeys = Object.keys(ElUpload.props);
+const contentPropsKeys = Object.keys(ElUpload.props);
 
 /**
  * @file 上传组件
@@ -67,7 +67,7 @@ export default defineComponent({
         const _props = computed(() => ({ ...props, multiple: true }));
         const plain = usePlain(_props.value);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
         function customChange(fileList: UploadFile[]) {
             plain.change(fileList as any[]);
         }

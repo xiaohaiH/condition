@@ -31,7 +31,7 @@ import { usePlain, getNode } from '@xiaohaih/condition-core';
 import { treeSelectProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
-const contentPropKeys = Object.keys(ElTreeSelect.props);
+const contentPropsKeys = Object.keys(ElTreeSelect.props);
 
 /**
  * @file 树形下拉框
@@ -47,7 +47,7 @@ export default defineComponent({
     setup(props, ctx) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProps = computed(() => pick(props, contentPropKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         const filterValue = ref('');
         const customFilterMethod = (val: string) => {
