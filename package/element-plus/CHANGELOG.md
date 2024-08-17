@@ -1,5 +1,15 @@
 # @xiaohaih/condition-el-plus
 
+## 0.5.3
+
+### Patch Changes
+
+- 1. 触发 getOptions 函数时, 将整个条件的 options 全部传递出去
+  2. 支持指定条件的 options 发生变动时, 触发 getOptions 函数
+  3. 修复日期类组件的默认值与配置项本身的默认值字段冲突导致控制台出现警告
+- Updated dependencies
+  - @xiaohaih/condition-core@0.5.3
+
 ## 0.5.2
 
 ### Patch Changes
