@@ -435,6 +435,7 @@ export default defineComponent({
     align-items: flex-start;
 }
 .condition-item {
+    min-width: 200px;
     margin-right: 10px;
     margin-bottom: 10px;
     display: flex;
