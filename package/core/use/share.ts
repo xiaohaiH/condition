@@ -37,6 +37,11 @@ export interface TriggerOption {
      */
     trigger: string;
     /**
+     * 所有条件的数据源
+     * @enum {Record<string, Record<string, any>[]>}
+     */
+    options: Record<string, Record<string, any>[]>;
+    /**
      * 仅更改默认值
      * @param {*} value 需改变的值
      */
@@ -82,6 +87,10 @@ export const commonProps = {
     dependFields: { type: [String, Array] as PropType<string | string[]> },
     /** 依赖字段监听选项 */
     dependWatchOption: { type: [Object] as PropType<WatchOptions> },
+    /** 是否依赖其它字段的数据源 - 数据发生变动时触发 getOptions */
+    optionsDepend: { type: Boolean as PropType<boolean> },
+    /** 数据源依赖字段 - 不传取 dependFields */
+    optionsDependFields: { type: [String, Array] as PropType<string | string[]> },
     /** 重置时是否置为初始值 */
     resetToInitialValue: { type: [Boolean] as PropType<boolean> },
     /** 空置时提交的值 - 默认置为 undefined */

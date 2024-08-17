@@ -1,4 +1,4 @@
-import { computed, ExtractPropTypes, inject, onBeforeUnmount, PropType, ref, watch, nextTick } from 'vue-demi';
+import { computed, ExtractPropTypes, inject, onBeforeUnmount, PropType, ref, watch, nextTick, toRaw } from 'vue-demi';
 import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained } from '../../utils/index';
 import { defineCommonMethod, provideKey, ProvideValue } from '../constant';
 import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
@@ -203,14 +203,21 @@ export function useTree(props: TreeProps) {
             props.query || {},
             {
                 trigger,
-                change: (value: any, isInitial?: boolean) => {
+                options: toRaw(wrapper?.options) || {},
+                changeDefaultValue(value: any) {
+                    initialValue.value = value;
+                    return this;
+                },
+                change(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
                     change(value);
+                    return this;
                 },
-                search: (value: any, isInitial?: boolean) => {
+                search(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
                     updateCheckedValue(value);
                     wrapper?.search();
+                    return this;
                 },
             },
         );

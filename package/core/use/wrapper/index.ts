@@ -11,6 +11,7 @@ import {
     nextTick,
     toRef,
     computed,
+    reactive,
 } from 'vue-demi';
 import { IS_COMPOSITION_VERSION, provideKey, ProvideValue, CommonMethod, defineProvideValue } from '../constant';
 import { wrapperProps } from './props';
@@ -53,6 +54,8 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     /** 是否标记更新的字段, 防止卸载后的空字段占位 */
     let isLogField = false;
     let logFields: string[] = [];
+    /** 记录所有条件的 options */
+    const optionsObj = reactive<Record<string, any>>({});
     /** 提供给子条件组件的方法 */
     const wrapperInstance = defineProvideValue({
         realtime: toRef(props, 'realtime', false),
@@ -105,6 +108,7 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
                 delete changedQueryObj[field];
             }
         },
+        options: optionsObj,
     });
     provide<ProvideValue>(provideKey, wrapperInstance);
 

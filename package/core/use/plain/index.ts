@@ -9,6 +9,7 @@ import {
     watchEffect,
     toRaw,
     shallowRef,
+    nextTick,
 } from 'vue-demi';
 import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained, get } from '../../utils/index';
 import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../constant';
@@ -22,6 +23,7 @@ type ValueType = string | number | boolean | null | undefined | Record<string, a
 
 /** 封装扁平组件必备的信息 */
 export function usePlain(props: PlainProps) {
+    const unwatchs: (() => void)[] = [];
     /** 容器注入值 */
     const wrapper = inject<ProvideValue>(provideKey);
     /** 初始值(重置时回填的值) */
@@ -41,6 +43,9 @@ export function usePlain(props: PlainProps) {
     const remoteOption = ref<Record<string, any>[]>([]);
     /** 渲染的数据源(远程数据源 > 本地数据源) */
     const finalOption = computed(() => (remoteOption.value.length ? remoteOption.value : props.options));
+    unwatchs.push(
+        watch(finalOption, (value) => wrapper && (wrapper.options[props.field] = value), { immediate: true }),
+    );
     const getQuery = () => {
         if (props.customGetQuery) return props.customGetQuery(checked.value, emptyToValue, props);
         const _checked = clone(checked.value);
@@ -73,7 +78,6 @@ export function usePlain(props: PlainProps) {
         option.updateWrapperQuery();
     }
 
-    const unwatchs: (() => void)[] = [];
     onBeforeUnmount(() => unwatchs.forEach((v) => v()));
 
     // 提交字段发生改变时, 删除原有字段并更新最新值
@@ -128,7 +132,31 @@ export function usePlain(props: PlainProps) {
             props.dependWatchOption,
         ),
     );
-    unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial'), { immediate: true }));
+
+    // 存在依赖项
+    unwatchs.push(
+        watch(
+            [
+                () => props.optionsDepend,
+                () =>
+                    wrapper &&
+                    (props.optionsDependFields || props.dependFields) &&
+                    ([] as string[])
+                        .concat(props.optionsDependFields || props.dependFields!)
+                        .map((k) => wrapper!.options[k]),
+            ],
+            ([_depend], [__depend]) => {
+                // 是否启用依赖, 相同时启用才走后续逻辑, 不同时直接走后续逻辑
+                if (_depend === __depend && !_depend) return;
+                getOption('depend');
+            },
+            // 不需要 immediate, 因为 getOption 初始会执行一次
+        ),
+    );
+
+    // 监听 getOptions 选项
+    unwatchs.push(watch(() => props.getOptions, getOption.bind(null, 'initial')));
+    nextTick(getOption.bind(null, 'initial'));
 
     /** 获取数据源发生变化事件 */
     function getOption(trigger: 'initial' | 'depend') {
@@ -143,6 +171,7 @@ export function usePlain(props: PlainProps) {
             props.query || {},
             {
                 trigger,
+                options: toRaw(wrapper?.options) || {},
                 changeDefaultValue(value: any) {
                     initialValue.value = value;
                     return this;

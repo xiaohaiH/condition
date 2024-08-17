@@ -40,6 +40,8 @@ export interface ProvideValue {
     search(): Promise<string | void>;
     /** 删除内部无引用的字段 */
     removeUnreferencedField(field: string): void;
+    /** 所有条件的 options 数据 */
+    options: Record<string, any[]>;
 }
 export function defineProvideValue<T extends ProvideValue>(option: T) {
     return option;
