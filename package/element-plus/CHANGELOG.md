@@ -1,5 +1,12 @@
 # @xiaohaih/condition-el-plus
 
+## 0.5.4
+
+### Patch Changes
+
+- 增加提及框组件
+  - @xiaohaih/condition-core@0.5.4
+
 ## 0.5.3
 
 ### Patch Changes
