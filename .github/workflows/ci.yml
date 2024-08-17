@@ -33,11 +33,10 @@ jobs:
 
             - run: pnpm install
 
-            # 设置 vue 版本, 防止示例打包失败
-            - name: build
-              run: pnpm switch3
-
-              # 对示例包进行打包
+            # # 设置 vue 版本, 防止示例打包失败
+            # - name: build
+            #   run: pnpm switch3
+            # 对示例包进行打包
             - name: build2
               run: pnpm --filter="example" run build
 
