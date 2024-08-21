@@ -7,7 +7,9 @@
                     :is="getComponent(item.t)!"
                     v-bind="item"
                     :field="item.as || key"
-                    :resetToInitialValue="resetToInitialValue"
+                    :resetToInitialValue="
+                        typeof item.resetToInitialValue === undefined ? resetToInitialValue : item.resetToInitialValue
+                    "
                     :backfill="backfill"
                     :query="query"
                 />
