@@ -1,5 +1,12 @@
 # @xiaohaih/condition-el-plus
 
+## 0.5.5
+
+### Patch Changes
+
+- 修复单个条件项默认值无法重置
+  - @xiaohaih/condition-core@0.5.5
+
 ## 0.5.4
 
 ### Patch Changes

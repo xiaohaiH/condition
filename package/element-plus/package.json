@@ -1,6 +1,6 @@
 {
     "name": "@xiaohaih/condition-el-plus",
-    "version": "0.5.4",
+    "version": "0.5.5",
     "description": "基于element-plus实现, 通过JSON配置表单组件(条件间可相互依赖)",
     "main": "dist/index.cjs.js",
     "jsdelivr": "dist/index.umd.js",
