@@ -3,7 +3,7 @@ import { DatePicker as ElDatePicker } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
-function getProps(data: any): {} {
+function getProps(data: any): Record<string, any> {
     const r = { ...data.props };
     data.mixins?.forEach((o: any) => Object.assign(r, getProps(o)));
     return r;
