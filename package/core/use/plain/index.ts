@@ -112,6 +112,8 @@ export function usePlain(props: PlainProps) {
         ),
     );
 
+    /** 是否允许依赖变动时, 重置值(外部通过 search, change 主动改变值时, 内部应取消重置) */
+    const { flag: allowDependChangeValue, updateFlag: updateAllowDependChangeValue } = useDisableInCurrentCycle(true);
     // 存在依赖项
     unwatchs.push(
         watch(
@@ -126,14 +128,15 @@ export function usePlain(props: PlainProps) {
                 getOption('depend');
                 // 类空值时, 不触发 change 事件
                 // 防止表单类监测值发生改变时触发校验
-                if (isEmptyValue(checked.value)) return;
+                // 或内部不允许重置时直接返回
+                if (isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
                 change(props.multiple ? [] : '');
             },
             props.dependWatchOption,
         ),
     );
 
-    // 存在依赖项
+    // 存在选项变动依赖项时
     unwatchs.push(
         watch(
             [
@@ -178,11 +181,13 @@ export function usePlain(props: PlainProps) {
                 },
                 change(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
+                    updateAllowDependChangeValue();
                     change(value);
                     return this;
                 },
                 search(value: any, isInitial?: boolean) {
                     isInitial && (initialValue.value = value);
+                    updateAllowDependChangeValue();
                     updateCheckedValue(value);
                     wrapper?.search();
                     return this;
