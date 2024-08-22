@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.5.6
+
+### Patch Changes
+
+- 修复存在依赖项时, 在 getOptions 中无法主动改变值
+
 ## 0.5.3
 
 ### Patch Changes

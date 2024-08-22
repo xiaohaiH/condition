@@ -1,5 +1,13 @@
 # @xiaohaih/condition-el-plus
 
+## 0.5.6
+
+### Patch Changes
+
+- 修复存在依赖项时, 在 getOptions 中无法主动改变值
+- Updated dependencies
+  - @xiaohaih/condition-core@0.5.6
+
 ## 0.5.5
 
 ### Patch Changes
