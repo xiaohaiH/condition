@@ -51,9 +51,6 @@
             "vite": "^5.1.4",
             "vite-plugin-vue2": "2.0.0",
             "vue": "3.2.40"
-        },
-        "patchedDependencies": {
-            "vite@4.3.2": "patches/vite@4.3.2.patch"
         }
     }
 }
