@@ -62,6 +62,12 @@ export function usePlain(props: PlainProps) {
             const { multiple } = props;
             checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
         },
+        resetField(allowEmptyValue?: boolean) {
+            const r = initialValue.value?.slice();
+            const isEmpty = isEmptyValue(r);
+            allowEmptyValue ? (checked.value = r || props.multiple ? [] : '') : isEmpty || (checked.value = r);
+            return !!allowEmptyValue || !isEmpty;
+        },
         updateWrapperQuery() {
             wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v, props.field));
         },

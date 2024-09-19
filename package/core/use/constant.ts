@@ -51,6 +51,11 @@ export function defineProvideValue<T extends ProvideValue>(option: T) {
 export interface CommonMethod {
     /** 重置 */
     reset(): void;
+    /**
+     * 重置为默认值
+     * @param {boolean} [allowEmptyValue] 当默认值为空值时, 是否允许重置为空值
+     */
+    resetField(allowEmptyValue?: boolean): boolean;
     /** 更新父级中 query 的值 */
     updateWrapperQuery(): void;
     /** 校验方法 */

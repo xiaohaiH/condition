@@ -157,6 +157,16 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
         });
         option?.reset?.(getQuery());
     }
+    /**
+     * 重置为默认值
+     * @param {boolean} [allowEmptyValue] 当默认值为空值时, 是否允许重置为空值
+     */
+    function resetField(allowEmptyValue?: boolean) {
+        child.forEach((v) => {
+            v.resetField(allowEmptyValue) && v.updateWrapperQuery();
+        });
+        option?.search?.(getQuery());
+    }
     /** 自定义校验条件的值 */
     async function validate() {
         const r = await Promise.all(child.map((v) => v.validator?.(query.value)));
@@ -170,6 +180,7 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
         getQuery,
         search,
         reset,
+        resetField,
         validate,
     };
 }
