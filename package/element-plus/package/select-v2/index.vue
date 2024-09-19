@@ -5,14 +5,25 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElSelectV2
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
             :model-value="checked"
+            :options="filterSource"
             :filter-method="filterMethod && customFilterMethod"
+            :onUpdate:modelValue="change"
             class="condition-item__content"
-            @update:modelValue="change"
-        ></ElSelectV2>
+        >
+            <ElSelectV2
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="checked"
+                :options="filterSource"
+                :filter-method="filterMethod && customFilterMethod"
+                class="condition-item__content"
+                @update:modelValue="change"
+            ></ElSelectV2>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

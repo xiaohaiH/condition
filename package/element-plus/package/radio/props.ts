@@ -18,6 +18,10 @@ export const radioProps = {
     valueKey: { type: String as PropType<string>, default: 'value' },
     /** 按钮类型(radio|button), 默认 radio */
     type: { type: String as PropType<'radio' | 'button'> },
+    /** 是否带有边框 */
+    border: { type: Boolean as PropType<boolean>, default: undefined },
     /** 选中状态是否可以被取消 */
     cancelable: { type: Boolean as PropType<boolean>, default: undefined },
+    /** 选项禁用字段 */
+    disabledKey: { type: String as PropType<string>, default: 'disabled' },
 } as const;

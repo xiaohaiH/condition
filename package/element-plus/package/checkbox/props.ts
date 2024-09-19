@@ -1,10 +1,10 @@
 import { PropType } from 'vue';
 import { ElCheckbox } from 'element-plus';
+import { checkboxProps as elCheckboxProps } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
-// @ts-expect-error UI.props报错
-const { label, ...cheProps } = ElCheckbox.props as {};
+const { label, ...cheProps } = ElCheckbox.props as typeof elCheckboxProps;
 
 export const checkboxProps = {
     ...cheProps,
@@ -20,4 +20,6 @@ export const checkboxProps = {
     type: { type: String as PropType<'checkbox' | 'button'> },
     /** 是否多选 */
     multiple: { type: Boolean as PropType<boolean>, default: true },
+    /** 选项禁用字段 */
+    disabledKey: { type: String as PropType<string>, default: 'disabled' },
 } as const;

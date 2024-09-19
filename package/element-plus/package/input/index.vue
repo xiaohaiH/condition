@@ -5,31 +5,47 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElInput
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as string)"
+            :model-value="checked"
+            :onUpdate:model-value="debounceChange"
+            :onKeydown.enter="enterHandle"
+            :backfill="backfill"
+            :query="query"
+            :search="search"
+            :insideSearch="insideSearch"
             class="condition-item__content"
-            @update:model-value="debounceChange"
-            @keydown.enter="enterHandle"
         >
-            <template v-if="slotPrefix || $slots.prefix" #prefix>
-                <slot v-if="$slots.prefix" name="prefix"></slot>
-                <component v-else :is="getNode(slotPrefix!, { backfill, query, search, insideSearch })"></component>
-            </template>
-            <template v-if="slotSuffix || $slots.suffix" #suffix>
-                <slot v-if="$slots.suffix" name="suffix"></slot>
-                <component v-else :is="getNode(slotSuffix!, { backfill, query, search, insideSearch })"></component>
-            </template>
-            <template v-if="slotPrepend || $slots.prepend" #prepend>
-                <slot v-if="$slots.prepend" name="prepend"></slot>
-                <component v-else :is="getNode(slotPrepend!, { backfill, query, search, insideSearch })"></component>
-            </template>
-            <template v-if="slotAppend || $slots.append" #append>
-                <slot v-if="$slots.append" name="append"></slot>
-                <component v-else :is="getNode(slotAppend!, { backfill, query, search, insideSearch })"></component>
-            </template>
-        </ElInput>
+            <ElInput
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="(checked as string)"
+                class="condition-item__content"
+                @update:model-value="debounceChange"
+                @keydown.enter="enterHandle"
+            >
+                <template v-if="slotPrefix || $slots.prefix" #prefix>
+                    <slot v-if="$slots.prefix" name="prefix"></slot>
+                    <component v-else :is="getNode(slotPrefix!, { backfill, query, search, insideSearch })"></component>
+                </template>
+                <template v-if="slotSuffix || $slots.suffix" #suffix>
+                    <slot v-if="$slots.suffix" name="suffix"></slot>
+                    <component v-else :is="getNode(slotSuffix!, { backfill, query, search, insideSearch })"></component>
+                </template>
+                <template v-if="slotPrepend || $slots.prepend" #prepend>
+                    <slot v-if="$slots.prepend" name="prepend"></slot>
+                    <component
+                        v-else
+                        :is="getNode(slotPrepend!, { backfill, query, search, insideSearch })"
+                    ></component>
+                </template>
+                <template v-if="slotAppend || $slots.append" #append>
+                    <slot v-if="$slots.append" name="append"></slot>
+                    <component v-else :is="getNode(slotAppend!, { backfill, query, search, insideSearch })"></component>
+                </template>
+            </ElInput>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

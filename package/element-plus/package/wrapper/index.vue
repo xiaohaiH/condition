@@ -12,7 +12,11 @@
                     "
                     :backfill="backfill"
                     :query="query"
-                />
+                >
+                    <template v-if="$slots[item.as || key]" #default="scope">
+                        <slot :name="item.as || key" v-bind="scope"></slot>
+                    </template>
+                </component>
             </template>
             <slot></slot>
         </SortComponent>
@@ -28,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, PropType, ref, computed, onMounted, FunctionalComponent } from 'vue';
+import { defineComponent, markRaw, PropType, ref, computed, onMounted } from 'vue';
 import { ElForm, ElButton } from 'element-plus';
 import { useWrapper } from '@xiaohaih/condition-core';
 import { pick } from '../../utils';

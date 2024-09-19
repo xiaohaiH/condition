@@ -5,25 +5,36 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElRadioGroup
-            ref="radioGroupRef"
+        <slot
             v-bind="contentProp"
             :disabled="insetDisabled"
-            :model-value="(checked as any)"
+            :model-value="checked"
+            :onUpdate:modelValue="change"
+            :cancelableHandle="customChange"
             class="condition-item__content"
-            @update:modelValue="(change as () => void)"
         >
-            <template v-for="item of finalOption" :key="item[valueKey]">
-                <component
-                    :is="radioType"
-                    :label="item[valueKey]"
-                    :value="item[valueKey]"
-                    v-on:[eventName].prevent="customChange(item[valueKey], checked as string, change)"
-                >
-                    {{ item[labelKey] }}
-                </component>
-            </template>
-        </ElRadioGroup>
+            <ElRadioGroup
+                ref="radioGroupRef"
+                v-bind="contentProp"
+                :disabled="insetDisabled"
+                :model-value="(checked as any)"
+                class="condition-item__content"
+                @update:modelValue="(change as () => void)"
+            >
+                <template v-for="item of finalOption" :key="item[valueKey]">
+                    <component
+                        :is="radioType"
+                        :label="item[valueKey]"
+                        :value="item[valueKey]"
+                        :disabled="item[disabledKey]"
+                        :border="border"
+                        v-on:[eventName].prevent="customChange(item[valueKey], checked as string, change)"
+                    >
+                        {{ item[labelKey] }}
+                    </component>
+                </template>
+            </ElRadioGroup>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else><component :is="getNode(postfix, checked)"></component></template>

@@ -5,13 +5,21 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElRate
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as number)"
+            :model-value="checked"
+            :onChange="change"
             class="condition-item__content"
-            @change="change"
-        ></ElRate>
+        >
+            <ElRate
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="(checked as number)"
+                class="condition-item__content"
+                @change="change"
+            ></ElRate>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

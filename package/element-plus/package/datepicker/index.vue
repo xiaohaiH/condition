@@ -7,13 +7,21 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElDatePicker
-            v-bind="(contentProps as any)"
+        <slot
+            v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as string)"
+            :model-value="checked"
+            :onUpdate:modelValue="change"
             class="condition-item__content"
-            @update:modelValue="change"
-        ></ElDatePicker>
+        >
+            <ElDatePicker
+                v-bind="(contentProps as any)"
+                :disabled="insetDisabled"
+                :model-value="(checked as string)"
+                class="condition-item__content"
+                @update:modelValue="change"
+            ></ElDatePicker>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

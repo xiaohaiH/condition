@@ -5,27 +5,43 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElSelect
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as string[])"
+            :model-value="checked"
             :filter-method="filterMethod && customFilterMethod"
+            :onUpdate:modelValue="change"
+            :source="filterSource"
+            :labelKey="labelKey"
+            :valueKey="valueKey"
             class="condition-item__content"
-            @update:modelValue="change"
         >
-            <template v-for="item of filterSource" :key="item[valueKey]">
-                <template v-if="item.group && item.children">
-                    <ElOptionGroup :label="item[labelKey]">
-                        <template v-for="group of item.children" :key="group[valueKey]">
-                            <ElOption :label="group[labelKey]" :value="group[valueKey]"></ElOption>
-                        </template>
-                    </ElOptionGroup>
+            <ElSelect
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="(checked as string[])"
+                :filter-method="filterMethod && customFilterMethod"
+                class="condition-item__content"
+                @update:modelValue="change"
+            >
+                <template v-for="item of filterSource" :key="item[valueKey]">
+                    <template v-if="item.group && item.children">
+                        <ElOptionGroup :label="item[labelKey]" :disabled="item[disabledKey]">
+                            <template v-for="group of item.children" :key="group[valueKey]">
+                                <ElOption :label="group[labelKey]" :value="group[valueKey]"></ElOption>
+                            </template>
+                        </ElOptionGroup>
+                    </template>
+                    <template v-else>
+                        <ElOption
+                            :label="item[labelKey]"
+                            :value="item[valueKey]"
+                            :disabled="item[disabledKey]"
+                        ></ElOption>
+                    </template>
                 </template>
-                <template v-else>
-                    <ElOption :label="item[labelKey]" :value="item[valueKey]"></ElOption>
-                </template>
-            </template>
-        </ElSelect>
+            </ElSelect>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

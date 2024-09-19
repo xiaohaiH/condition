@@ -5,20 +5,40 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElCheckboxGroup
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as string[])"
-            ref="checkboxGroupRef"
+            :model-value="checked"
+            :onUpdate:modelValue="change"
+            :source="finalOption"
+            :checkboxType="checkboxType"
+            :valueKey="valueKey"
+            :labelKey="labelKey"
             class="condition-item__content"
-            @update:modelValue="(change as () => void)"
         >
-            <template v-for="item of finalOption" :key="item[valueKey]">
-                <component :is="checkboxType" :aria-label="item[labelKey]" :value="item[valueKey]">
-                    {{ item[labelKey] }}
-                </component>
-            </template>
-        </ElCheckboxGroup>
+            <ElCheckboxGroup
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="(checked as string[])"
+                ref="checkboxGroupRef"
+                class="condition-item__content"
+                @update:modelValue="(change as () => void)"
+            >
+                <template v-for="item of finalOption" :key="item[valueKey]">
+                    <component
+                        :is="checkboxType"
+                        :aria-label="item[labelKey]"
+                        :value="item[valueKey]"
+                        :true-value="trueValue"
+                        :false-value="falseValue"
+                        :border="border"
+                        :disabled="item[disabledKey]"
+                    >
+                        {{ item[labelKey] }}
+                    </component>
+                </template>
+            </ElCheckboxGroup>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

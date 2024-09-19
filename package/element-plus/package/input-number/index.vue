@@ -5,25 +5,35 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <!-- 不监听回车事件, 防止实际值与组件内部的值(会根据提供的精度等配置项而主动改变)不匹配 -->
-        <!-- @keydown.enter="enterHandle" -->
-        <!-- :model-value="((checked ? Number(checked) : null) as number)" -->
-        <ElInputNumber
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="checked === 0 ? 0 : (checked as number) || undefined"
+            :model-value="checked === 0 ? 0 : checked || undefined"
+            :onUpdate:model-value="debounceChange"
             class="condition-item__content"
-            @update:model-value="debounceChange"
+            :slotDecreaseIcon="slotDecreaseIcon"
+            :slotIncreaseIcon="slotIncreaseIcon"
         >
-            <template v-if="slotDecreaseIcon || $slots.decreaseIcon" #decrease-icon>
-                <slot v-if="$slots.decreaseIcon" name="decrease-icon"></slot>
-                <component v-else :is="slotDecreaseIcon!"></component>
-            </template>
-            <template v-if="slotIncreaseIcon || $slots.increaseIcon" #increase-icon>
-                <slot v-if="$slots.increaseIcon" name="increase-icon"></slot>
-                <component v-else :is="slotIncreaseIcon!"></component>
-            </template>
-        </ElInputNumber>
+            <!-- 不监听回车事件, 防止实际值与组件内部的值(会根据提供的精度等配置项而主动改变)不匹配 -->
+            <!-- @keydown.enter="enterHandle" -->
+            <!-- :model-value="((checked ? Number(checked) : null) as number)" -->
+            <ElInputNumber
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="checked === 0 ? 0 : (checked as number) || undefined"
+                class="condition-item__content"
+                @update:model-value="debounceChange"
+            >
+                <template v-if="slotDecreaseIcon || $slots.decreaseIcon" #decrease-icon>
+                    <slot v-if="$slots.decreaseIcon" name="decrease-icon"></slot>
+                    <component v-else :is="slotDecreaseIcon!"></component>
+                </template>
+                <template v-if="slotIncreaseIcon || $slots.increaseIcon" #increase-icon>
+                    <slot v-if="$slots.increaseIcon" name="increase-icon"></slot>
+                    <component v-else :is="slotIncreaseIcon!"></component>
+                </template>
+            </ElInputNumber>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

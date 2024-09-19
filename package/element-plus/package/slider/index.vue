@@ -5,13 +5,21 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElSlider
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
-            :model-value="(checked as number)"
+            :model-value="checked"
+            :onUpdate:model-value="change"
             class="condition-item__content"
-            @update:model-value="(change as () => void)"
-        ></ElSlider>
+        >
+            <ElSlider
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :model-value="(checked as number)"
+                class="condition-item__content"
+                @update:model-value="(change as () => void)"
+            ></ElSlider>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>

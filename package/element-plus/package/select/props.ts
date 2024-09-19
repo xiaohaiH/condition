@@ -19,4 +19,6 @@ export const selectProps = {
     clearable: { type: Boolean as PropType<boolean>, default: true },
     /** 过滤方法 */
     filterMethod: { type: Function as unknown as PropType<(val: string, option: unknown) => boolean> },
+    /** 选项禁用字段 */
+    disabledKey: { type: String as PropType<string>, default: 'disabled' },
 } as const;

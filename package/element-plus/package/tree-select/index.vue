@@ -5,15 +5,25 @@
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
     >
-        <ElTreeSelect
+        <slot
             v-bind="contentProps"
             :disabled="insetDisabled"
             :data="filterSource"
-            :model-value="(checked as string[])"
+            :model-value="checked"
             :filter-method="filterMethod && customFilterMethod"
+            :onUpdate:modelValue="change"
             class="condition-item__content"
-            @update:modelValue="change"
-        ></ElTreeSelect>
+        >
+            <ElTreeSelect
+                v-bind="contentProps"
+                :disabled="insetDisabled"
+                :data="filterSource"
+                :model-value="(checked as string[])"
+                :filter-method="filterMethod && customFilterMethod"
+                class="condition-item__content"
+                @update:modelValue="change"
+            ></ElTreeSelect>
+        </slot>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
