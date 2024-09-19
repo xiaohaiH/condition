@@ -109,6 +109,7 @@ export function usePlain(props: PlainProps) {
                 // 实时值改变仅更新值即可, 不做其它任何操作
                 checked.value !== _val && (checked.value = _val);
             },
+            { flush: 'sync' },
         ),
     );
 
@@ -132,7 +133,7 @@ export function usePlain(props: PlainProps) {
                 if (isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
                 change(props.multiple ? [] : '');
             },
-            props.dependWatchOption,
+            { flush: 'sync', ...props.dependWatchOption },
         ),
     );
 

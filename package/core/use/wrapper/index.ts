@@ -119,21 +119,31 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     // const getQuery = () => ({ ...query.value, ...props.backfill, ...changedQueryObj });
     const getQuery = () => ({ ...query.value });
     watch(
-        () => props.backfill,
-        (val) => {
+        () => ({ ...props.backfill }),
+        (val, oldVal) => {
             wrapperInstance.queryChangedInWrapper.value = true;
             // 手动处理 query 的值于 backfill 保持一致
             // 防止 query.value 对象改变导致内部监听误触发
             Object.keys(query.value).forEach((k) => {
                 val?.hasOwnProperty(k) || delete query.value[k];
             });
-            val && Object.assign(query.value, val);
-            nextTick(() => {
-                wrapperInstance.queryChangedInWrapper.value = false;
+            // #fix 只合并有变化的字段, 防止子级 watch 监听时误触发
+            const newQuery = {} as Record<string, any>;
+            let isChanged = false;
+            Object.keys(val).forEach((k) => {
+                if (val[k] !== oldVal[k]) {
+                    newQuery[k] = val[k];
+                    isChanged = true;
+                }
             });
+            isChanged && Object.assign(query.value, newQuery);
+            isChanged ? nextTick(restoreQueryChanged) : restoreQueryChanged();
         },
         { deep: true },
     );
+    function restoreQueryChanged() {
+        wrapperInstance.queryChangedInWrapper.value = false;
+    }
 
     async function search() {
         const msg = await validate();
