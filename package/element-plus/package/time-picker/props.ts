@@ -4,7 +4,7 @@ import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
 // @ts-expect-error UI.props报错
-const { label, ...timeProps } = ElTimePicker.props as {};
+const { label, ...timeProps } = ElTimePicker.props as Omit<typeof timePickerDefaultProps, 'defaultValue'>;
 
 export const timepickerProps = {
     ...timeProps,

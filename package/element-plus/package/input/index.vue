@@ -4,19 +4,16 @@
         :class="`condition-item condition-item--input condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
+        v-bind.prop="formDynamicFields?.({ query })"
     >
-        <slot
-            v-bind="contentProps"
-            :disabled="insetDisabled"
-            :model-value="checked"
-            :onUpdate:model-value="debounceChange"
-            :onKeydown.enter="enterHandle"
-            :backfill="backfill"
-            :query="query"
-            :search="search"
-            :insideSearch="insideSearch"
-            class="condition-item__content"
-        >
+        <template v-if="slotBefore || $slots.before">
+            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
+            <slot v-else name="before"></slot>
+        </template>
+        <template v-if="slotDefault">
+            <component :is="getNode(slotDefault, slotProps)" />
+        </template>
+        <slot v-else v-bind="slotProps">
             <ElInput
                 v-bind="contentProps"
                 :disabled="insetDisabled"
@@ -24,6 +21,7 @@
                 class="condition-item__content"
                 @update:model-value="debounceChange"
                 @keydown.enter="enterHandle"
+                v-bind.prop="dynamicFields?.({ query })"
             >
                 <template v-if="slotPrefix || $slots.prefix" #prefix>
                     <slot v-if="$slots.prefix" name="prefix"></slot>
@@ -46,6 +44,10 @@
                 </template>
             </ElInput>
         </slot>
+        <template v-if="slotAfter || $slots.after">
+            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
+            <slot v-else name="after"></slot>
+        </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -113,6 +115,19 @@ export default defineComponent({
         function insideSearch() {
             plain.wrapper?.insetSearch();
         }
+        const slotProps = computed(() => ({
+            ...contentProps.value,
+            disabled: plain.insetDisabled.value,
+            modelValue: plain.checked.value,
+            'onUpdate:modelValue': debounceChange,
+            'onKeydown.enter': enterHandle,
+            class: 'condition-item__content',
+            extraOption: {
+                query: props.query,
+                search: plain.wrapper!.search,
+                insetSearch: plain.wrapper!.insetSearch,
+            },
+        }));
 
         return {
             ...plain,
@@ -123,6 +138,7 @@ export default defineComponent({
             search,
             insideSearch,
             getNode,
+            slotProps,
         };
     },
 });

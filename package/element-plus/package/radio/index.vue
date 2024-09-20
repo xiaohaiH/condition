@@ -4,22 +4,24 @@
         :class="`condition-item condition-item--radio condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
+        v-bind.prop="formDynamicFields?.({ query })"
     >
-        <slot
-            v-bind="contentProp"
-            :disabled="insetDisabled"
-            :model-value="checked"
-            :onUpdate:modelValue="change"
-            :cancelableHandle="customChange"
-            class="condition-item__content"
-        >
+        <template v-if="slotBefore || $slots.before">
+            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
+            <slot v-else name="before"></slot>
+        </template>
+        <template v-if="slotDefault">
+            <component :is="getNode(slotDefault, slotProps)" />
+        </template>
+        <slot v-else v-bind="slotProps">
             <ElRadioGroup
                 ref="radioGroupRef"
-                v-bind="contentProp"
+                v-bind="contentProps"
                 :disabled="insetDisabled"
                 :model-value="(checked as any)"
                 class="condition-item__content"
                 @update:modelValue="(change as () => void)"
+                v-bind.prop="dynamicFields?.({ query })"
             >
                 <template v-for="item of finalOption" :key="item[valueKey]">
                     <component
@@ -35,6 +37,10 @@
                 </template>
             </ElRadioGroup>
         </slot>
+        <template v-if="slotAfter || $slots.after">
+            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
+            <slot v-else name="after"></slot>
+        </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else><component :is="getNode(postfix, checked)"></component></template>
@@ -69,7 +75,7 @@ export default defineComponent({
     setup(props, context) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const contentProp = computed(() => pick(props, contentPropsKeys));
+        const contentProps = computed(() => pick(props, contentPropsKeys));
 
         const radioGroupRef = ref<InstanceType<typeof ElRadioGroup> | undefined>();
         const radioType = computed(() => (props.type === 'button' ? 'ElRadioButton' : 'ElRadio'));
@@ -84,16 +90,31 @@ export default defineComponent({
         function customChange(newVal: string, currentVal: string, cb: (value: string | string[]) => void) {
             cb(newVal === currentVal ? '' : newVal);
         }
+        const slotProps = computed(() => ({
+            ...contentProps.value,
+            disabled: plain.insetDisabled.value,
+            modelValue: plain.checked.value,
+            source: plain.finalOption.value,
+            cancelableHandle: customChange,
+            'onUpdate:modelValue': plain.change,
+            class: 'condition-item__content',
+            extraOption: {
+                query: props.query,
+                search: plain.wrapper!.search,
+                insetSearch: plain.wrapper!.insetSearch,
+            },
+        }));
 
         return {
             ...plain,
             formItemProps,
-            contentProp,
+            contentProps,
             radioGroupRef,
             radioType,
             eventName,
             customChange,
             getNode,
+            slotProps,
         };
     },
 });

@@ -4,18 +4,16 @@
         :class="`condition-item condition-item--select condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
+        v-bind.prop="formDynamicFields?.({ query })"
     >
-        <slot
-            v-bind="contentProps"
-            :disabled="insetDisabled"
-            :model-value="checked"
-            :filter-method="filterMethod && customFilterMethod"
-            :onUpdate:modelValue="change"
-            :source="filterSource"
-            :labelKey="labelKey"
-            :valueKey="valueKey"
-            class="condition-item__content"
-        >
+        <template v-if="slotBefore || $slots.before">
+            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
+            <slot v-else name="before"></slot>
+        </template>
+        <template v-if="slotDefault">
+            <component :is="getNode(slotDefault, slotProps)" />
+        </template>
+        <slot v-else v-bind="slotProps">
             <ElSelect
                 v-bind="contentProps"
                 :disabled="insetDisabled"
@@ -23,6 +21,7 @@
                 :filter-method="filterMethod && customFilterMethod"
                 class="condition-item__content"
                 @update:modelValue="change"
+                v-bind.prop="dynamicFields?.({ query })"
             >
                 <template v-for="item of filterSource" :key="item[valueKey]">
                     <template v-if="item.group && item.children">
@@ -42,6 +41,10 @@
                 </template>
             </ElSelect>
         </slot>
+        <template v-if="slotAfter || $slots.after">
+            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
+            <slot v-else name="after"></slot>
+        </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -87,6 +90,22 @@ export default defineComponent({
             const val = filterValue.value;
             return val ? plain.finalOption.value.filter(props.filterMethod!.bind(null, val)) : plain.finalOption.value;
         });
+        const slotProps = computed(() => ({
+            ...contentProps.value,
+            disabled: plain.insetDisabled.value,
+            modelValue: plain.checked.value,
+            source: filterSource.value,
+            filterMethod: props.filterMethod && customFilterMethod,
+            labelKey: props.labelKey,
+            valueKey: props.valueKey,
+            'onUpdate:modelValue': plain.change,
+            class: 'condition-item__content',
+            extraOption: {
+                query: props.query,
+                search: plain.wrapper!.search,
+                insetSearch: plain.wrapper!.insetSearch,
+            },
+        }));
 
         return {
             ...plain,
@@ -96,6 +115,7 @@ export default defineComponent({
             filterValue,
             customFilterMethod,
             filterSource,
+            slotProps,
         };
     },
 });

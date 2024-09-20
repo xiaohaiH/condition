@@ -4,16 +4,16 @@
         :class="`condition-item condition-item--input-number condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
+        v-bind.prop="formDynamicFields?.({ query })"
     >
-        <slot
-            v-bind="contentProps"
-            :disabled="insetDisabled"
-            :model-value="checked === 0 ? 0 : checked || undefined"
-            :onUpdate:model-value="debounceChange"
-            class="condition-item__content"
-            :slotDecreaseIcon="slotDecreaseIcon"
-            :slotIncreaseIcon="slotIncreaseIcon"
-        >
+        <template v-if="slotBefore || $slots.before">
+            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
+            <slot v-else name="before"></slot>
+        </template>
+        <template v-if="slotDefault">
+            <component :is="getNode(slotDefault, slotProps)" />
+        </template>
+        <slot v-else v-bind="slotProps">
             <!-- 不监听回车事件, 防止实际值与组件内部的值(会根据提供的精度等配置项而主动改变)不匹配 -->
             <!-- @keydown.enter="enterHandle" -->
             <!-- :model-value="((checked ? Number(checked) : null) as number)" -->
@@ -23,6 +23,7 @@
                 :model-value="checked === 0 ? 0 : (checked as number) || undefined"
                 class="condition-item__content"
                 @update:model-value="debounceChange"
+                v-bind.prop="dynamicFields?.({ query })"
             >
                 <template v-if="slotDecreaseIcon || $slots.decreaseIcon" #decrease-icon>
                     <slot v-if="$slots.decreaseIcon" name="decrease-icon"></slot>
@@ -34,6 +35,10 @@
                 </template>
             </ElInputNumber>
         </slot>
+        <template v-if="slotAfter || $slots.after">
+            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
+            <slot v-else name="after"></slot>
+        </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -93,6 +98,18 @@ export default defineComponent({
             plain.option.updateWrapperQuery();
             plain.wrapper?.search();
         }
+        const slotProps = computed(() => ({
+            ...contentProps.value,
+            disabled: plain.insetDisabled.value,
+            modelValue: plain.checked.value === 0 ? 0 : (plain.checked.value as number) || undefined,
+            'onUpdate:modelValue': debounceChange,
+            class: 'condition-item__content',
+            extraOption: {
+                query: props.query,
+                search: plain.wrapper!.search,
+                insetSearch: plain.wrapper!.insetSearch,
+            },
+        }));
 
         return {
             ...plain,
@@ -101,6 +118,7 @@ export default defineComponent({
             debounceChange,
             enterHandle,
             getNode,
+            slotProps,
         };
     },
 });

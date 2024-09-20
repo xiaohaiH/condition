@@ -4,21 +4,24 @@
         :class="`condition-item condition-item--upload condition-item--${field} condition-item--${!!postfix}`"
         v-bind="formItemProps"
         :prop="formItemProps.prop || field"
+        v-bind.prop="formDynamicFields?.({ query })"
     >
-        <slot
-            v-bind="contentProps"
-            :disabled="insetDisabled"
-            :file-list="checked"
-            :onUpdate:file-list="customChange"
-            class="condition-item__content"
-        >
+        <template v-if="slotBefore || $slots.before">
+            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
+            <slot v-else name="before"></slot>
+        </template>
+        <template v-if="slotDefault">
+            <component :is="getNode(slotDefault, slotProps)" />
+        </template>
+        <slot v-else v-bind="slotProps">
             <ElUpload
                 ref="uploadRef"
                 v-bind="contentProps"
                 :disabled="insetDisabled"
-                class="condition-item__content"
                 :file-list="(checked as any[])"
+                class="condition-item__content"
                 @update:file-list="customChange"
+                v-bind.prop="dynamicFields?.({ query })"
             >
                 <template v-if="slotDefault || $slots.default" #default>
                     <slot v-if="$slots.default" name="default"></slot>
@@ -38,6 +41,10 @@
                 </template>
             </ElUpload>
         </slot>
+        <template v-if="slotAfter || $slots.after">
+            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
+            <slot v-else name="after"></slot>
+        </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
             <template v-else>
@@ -78,6 +85,18 @@ export default defineComponent({
             plain.change(fileList as any[]);
         }
         props.getUploadInstance && onMounted(() => uploadRef.value && props.getUploadInstance!(uploadRef.value));
+        const slotProps = computed(() => ({
+            ...contentProps.value,
+            disabled: plain.insetDisabled.value,
+            fileList: plain.checked.value,
+            'onUpdate:fileList': customChange,
+            class: 'condition-item__content',
+            extraOption: {
+                query: props.query,
+                search: plain.wrapper!.search,
+                insetSearch: plain.wrapper!.insetSearch,
+            },
+        }));
 
         return {
             uploadRef,
@@ -86,6 +105,7 @@ export default defineComponent({
             contentProps,
             getNode,
             customChange,
+            slotProps,
         };
     },
 });
