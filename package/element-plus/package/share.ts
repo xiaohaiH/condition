@@ -1,7 +1,7 @@
 import type { PropType, VNode } from 'vue';
 import { ElFormItem } from 'element-plus';
 
-interface SlotQuery {
+export interface SlotQuery {
     /** 是否禁用 */
     disabled: boolean;
     /** 绑定的值 */

@@ -69,6 +69,12 @@ export function useTree(props: TreeProps) {
             checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || [];
             return this;
         },
+        resetField(allowEmptyValue?: boolean) {
+            const r = initialValue.value?.slice();
+            const isEmpty = isEmptyValue(r);
+            allowEmptyValue ? (checked.value = r || []) : isEmpty || (checked.value = r);
+            return !!allowEmptyValue || !isEmpty;
+        },
         get validator() {
             return props.validator;
         },
