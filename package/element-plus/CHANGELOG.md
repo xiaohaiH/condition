@@ -1,5 +1,20 @@
 # @xiaohaih/condition-el-plus
 
+## 0.6.0
+
+### Minor Changes
+
+- 1. 修复字段存在依赖时, 为多个字段批量赋值时却显示空值
+  2. 为所有条件增加插槽(以传递字段为插槽名)
+  3. 将条件还原成默认值的方法暴露给上层
+  4. 增加配置项(依赖变化时可不重置值) - resetByDependValueChange
+  5. 增加配置项(表单项和组件属性可动态绑定) - dynamicFields, formDynamicFields
+
+### Patch Changes
+
+- Updated dependencies
+  - @xiaohaih/condition-core@0.6.0
+
 ## 0.5.6
 
 ### Patch Changes
