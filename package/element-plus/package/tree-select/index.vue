@@ -8,7 +8,7 @@
     >
         <template v-if="slotBefore || $slots.before">
             <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before"></slot>
+            <slot v-else name="before" v-bind="slotProps"></slot>
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -27,7 +27,7 @@
         </slot>
         <template v-if="slotAfter || $slots.after">
             <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after"></slot>
+            <slot v-else name="after" v-bind="slotProps"></slot>
         </template>
         <div v-if="postfix" class="condition-item__postfix">
             <template v-if="typeof postfix === 'string'">{{ postfix }}</template>

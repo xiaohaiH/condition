@@ -16,6 +16,12 @@
                     <template v-if="$slots[item.as || key]" #default="scope">
                         <slot :name="item.as || key" v-bind="scope"></slot>
                     </template>
+                    <template v-if="`${$slots[item.as || key]}Before`" #before="scope">
+                        <slot :name="`${item.as || key}Before`" v-bind="scope"></slot>
+                    </template>
+                    <template v-if="`${$slots[item.as || key]}After`" #after="scope">
+                        <slot :name="`${item.as || key}After`" v-bind="scope"></slot>
+                    </template>
                 </component>
             </template>
             <slot></slot>
