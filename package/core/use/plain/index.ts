@@ -136,7 +136,8 @@ export function usePlain(props: PlainProps) {
                 // 类空值时, 不触发 change 事件
                 // 防止表单类监测值发生改变时触发校验
                 // 或内部不允许重置时直接返回
-                if (isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
+                if (!props.resetByDependValueChange || isEmptyValue(checked.value) || !allowDependChangeValue.value)
+                    return;
                 change(props.multiple ? [] : '');
             },
             { flush: 'sync', ...props.dependWatchOption },

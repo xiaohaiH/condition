@@ -83,6 +83,8 @@ export const commonProps = {
     hide: { type: [Boolean, Function] as PropType<HideOption> },
     /** 是否依赖其它字段 */
     depend: { type: Boolean as PropType<boolean> },
+    /** 依赖字段发生变化后是否重置值 */
+    resetByDependValueChange: { type: Boolean as PropType<boolean>, default: true },
     /** 依赖字段 */
     dependFields: { type: [String, Array] as PropType<string | string[]> },
     /** 依赖字段监听选项 */
