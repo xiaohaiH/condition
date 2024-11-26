@@ -112,8 +112,11 @@ export function usePlain(props: PlainProps) {
                     isEqualExcludeEmptyValue(_val, checked.value)
                 )
                     return;
-                // 实时值改变仅更新值即可, 不做其它任何操作
-                checked.value !== _val && (checked.value = _val);
+                // 实时值改变先判断是否存在默认值
+                // 存在默认值且该值为空时, 需要用默认值替代, 且通知上层组件
+                // 否则直接更新值即可
+                checked.value !== _val &&
+                    (isEmptyValue(_val) && !isEmptyValue(props.defaultValue) ? change(_val) : (checked.value = _val));
             },
             { flush: 'sync' },
         ),
@@ -209,7 +212,8 @@ export function usePlain(props: PlainProps) {
      */
     function updateCheckedValue(value: ValueType | ValueType[]) {
         if (value === checked.value) return;
-        checked.value = value;
+        // #fix 修复存在默认值时, 清空值未使用默认值替代
+        checked.value = isEmptyValue(value) && !isEmptyValue(props.defaultValue) ? props.defaultValue : value;
         option.updateWrapperQuery();
     }
     /**

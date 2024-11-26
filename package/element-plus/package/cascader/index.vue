@@ -21,7 +21,7 @@
                 :options="finalOption"
                 :model-value="(checked as string[])"
                 class="condition-item__content"
-                @update:modelValue="(change as () => void)"
+                @update:modelValue="insetChange"
                 v-bind.prop="dynamicFields?.({ query })"
             ></ElCascader>
         </slot>
@@ -39,10 +39,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, toRefs } from 'vue';
+import { defineComponent, computed, reactive, toRefs, nextTick } from 'vue';
 import { ElFormItem, ElCascader } from 'element-plus';
 import { pick } from '../../utils';
-import { useTree, getNode, usePlain } from '@xiaohaih/condition-core';
+import { useTree, getNode, usePlain, isEmptyValue } from '@xiaohaih/condition-core';
 import { cascaderProps as props } from './props';
 import { formItemPropKeys } from '../share';
 
@@ -81,7 +81,7 @@ export default defineComponent({
             disabled: plain.insetDisabled.value,
             options: plain.finalOption.value,
             modelValue: plain.checked.value,
-            'onUpdate:modelValue': plain.change,
+            'onUpdate:modelValue': insetChange,
             class: 'condition-item__content',
             extraOption: {
                 query: props.query,
@@ -89,6 +89,19 @@ export default defineComponent({
                 insetSearch: plain.wrapper!.insetSearch,
             },
         }));
+        /**
+         * 重写 change 事件
+         * 防止存在默认值时, element-plus 组件清空值时
+         * 内部马上重写会导致值更新了, ui 未更新
+         */
+        function insetChange(val: any) {
+            if (!isEmptyValue(props.defaultValue) && isEmptyValue(val)) {
+                plain.checked.value = undefined;
+                nextTick(() => plain.change(props.defaultValue));
+            } else {
+                plain.change(val);
+            }
+        }
 
         return {
             ...plain,
@@ -97,6 +110,7 @@ export default defineComponent({
             customProps,
             getNode,
             slotProps,
+            insetChange,
         };
     },
 });
