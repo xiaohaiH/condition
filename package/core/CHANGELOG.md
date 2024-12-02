@@ -1,5 +1,12 @@
 # @xiaohaih/condition-core
 
+## 0.6.1
+
+### Patch Changes
+
+- 1. 修复存在默认值时, 清空值未使用默认值替代
+  2. 增加自定义渲染组件
+
 ## 0.6.0
 
 ### Minor Changes
