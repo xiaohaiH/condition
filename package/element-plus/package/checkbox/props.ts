@@ -1,9 +1,10 @@
 import { PropType } from 'vue';
+import type { checkboxProps as CheckboxProps } from 'element-plus';
 import { ElCheckbox } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 
-const { label, ...cheProps } = ElCheckbox.props as { label: any };
+const { label, ...cheProps } = ElCheckbox.props as typeof CheckboxProps;
 
 export const checkboxProps = {
     ...cheProps,

@@ -40,12 +40,13 @@ import {
     uploadProps,
     selectV2Props,
     mentionProps,
+    customRenderProps,
 } from './package/index';
 
 export declare namespace HCondition {
     type BuiltInField<T = ''> = CoreCondition.BuiltInField | 'customGetQuery' | 'backfillToValue' | T;
     type OmitDefaultKey<T> = CoreCondition.OmitDefaultKey<T>;
-    type FormItemBuiltInField = 'prop' | 'style' | 'class';
+    type FormItemBuiltInField = 'prop' | 'style' | 'class' | 'size';
 
     interface WrapperProps
         extends ExtractPropTypes<OmitDefaultKey<typeof wrapperProps>>,
@@ -69,6 +70,7 @@ export declare namespace HCondition {
         | CoreCondition.DeepMaybeRef<TimeSelectProps>
         | CoreCondition.DeepMaybeRef<UploadProps>
         | CoreCondition.DeepMaybeRef<MentionProps>
+        | CoreCondition.DeepMaybeRef<CustomRenderProps>
         | CoreCondition.DeepMaybeRef<SelectV2Props>;
 
     interface InputProps
@@ -176,6 +178,11 @@ export declare namespace HCondition {
         t: 'mention';
         // 需要重新声明, 否则 ts 会报层级过深
         inputStyle?: string | string[] | Record<string, any>;
+    }
+    interface CustomRenderProps
+        extends Omit<ExtractPropTypes<OmitDefaultKey<typeof customRenderProps>>, BuiltInField>,
+            Omit<Props<InstanceType<typeof ElFormItem>>, FormItemBuiltInField> {
+        t: 'custom-render';
     }
 
     /** 获取 vue 组件的 props 值 */

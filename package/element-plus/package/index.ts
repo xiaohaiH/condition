@@ -1,6 +1,7 @@
 export { default as HWrapper } from './wrapper/index.vue';
 export * from './wrapper/components';
 export * from './wrapper/props';
+export * from './share';
 export { default as HSelect } from './select/index.vue';
 export * from './select/props';
 export { default as HTreeSelect } from './tree-select/index.vue';
@@ -35,4 +36,5 @@ export { default as HSelectV2 } from './select-v2/index.vue';
 export * from './select-v2/props';
 export { default as HMention } from './mention/index.vue';
 export * from './mention/props';
-export * from './share';
+export { default as HCustomRender } from './custom-render/index.vue';
+export * from './custom-render/props';
