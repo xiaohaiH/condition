@@ -1,6 +1,7 @@
 import type { PropType, VNode } from 'vue';
 import { plainProps, usePlain } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
+import 'vue/jsx';
 
 export const customRenderProps = {
     ...plainProps,
