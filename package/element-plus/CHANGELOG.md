@@ -1,5 +1,12 @@
 # @xiaohaih/condition-el-plus
 
+## 0.6.2
+
+### Patch Changes
+
+- 完善上传组件
+  - @xiaohaih/condition-core@0.6.2
+
 ## 0.6.1
 
 ### Patch Changes
