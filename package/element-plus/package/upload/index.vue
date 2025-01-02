@@ -132,11 +132,11 @@ export default defineComponent({
                 props.fileMaxSizeToast(rawFile, props.fileMaxSize);
                 return false;
             }
-            const _checked = (plain.checked.value || []) as File[];
+            const _checked = (plain.checked.value || []) as UploadFile[];
             if (!_checked.length) return;
-            const r = _checked.find((v) => v.name === rawFile.name && v.type === rawFile.type);
+            const r = _checked.find((v) => v.name === rawFile.name && v.raw?.type === rawFile.type);
             if (r) {
-                props.fileRepeatToast(r);
+                props.fileRepeatToast(r.raw!);
                 return false;
             }
         }

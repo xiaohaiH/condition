@@ -36,7 +36,7 @@ export function usePlain(props: PlainProps) {
               props.fields.map((key) => props.query[key]).filter(Boolean)
             : props.query[props.field]);
     /** 当前选中值 */
-    const checked = shallowRef<ValueType | ValueType[]>(
+    const checked = ref<ValueType | ValueType[]>(
         initialBackfillValue || (props.defaultValue !== undefined ? clone(initialValue.value) : undefined),
     );
     /** 远程获取的数据源 */
@@ -211,9 +211,12 @@ export function usePlain(props: PlainProps) {
      * @param {*} value 待更改的值
      */
     function updateCheckedValue(value: ValueType | ValueType[]) {
-        if (value === checked.value) return;
-        // #fix 修复存在默认值时, 清空值未使用默认值替代
-        checked.value = isEmptyValue(value) && !isEmptyValue(props.defaultValue) ? props.defaultValue : value;
+        // updateWrapperQuery 必须要执行, 防止在 custom-render 中改变了
+        // checked.value 深层次内的值, 由于引用相同导致父级未更新的情况
+        if (value !== checked.value) {
+            // #fix 修复存在默认值时, 清空值未使用默认值替代
+            checked.value = isEmptyValue(value) && !isEmptyValue(props.defaultValue) ? props.defaultValue : value;
+        }
         option.updateWrapperQuery();
     }
     /**
