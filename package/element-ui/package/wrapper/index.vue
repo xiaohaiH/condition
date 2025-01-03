@@ -9,7 +9,7 @@
                     v-bind="item"
                     :field="item.as || key"
                     :resetToInitialValue="
-                        typeof item.resetToInitialValue === undefined ? resetToInitialValue : item.resetToInitialValue
+                        item.resetToInitialValue === undefined ? resetToInitialValue : item.resetToInitialValue
                     "
                     :backfill="backfill"
                     :query="query"
