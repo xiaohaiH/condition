@@ -60,10 +60,10 @@ export function usePlain(props: PlainProps) {
     const option = defineCommonMethod({
         reset(this: void) {
             const { multiple } = props;
-            checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
+            checked.value = (props.resetToInitialValue && clone(initialValue.value)) || (multiple ? [] : '');
         },
         resetField(this: void, allowEmptyValue?: boolean) {
-            const r = initialValue.value?.slice();
+            const r = clone(initialValue.value);
             const isEmpty = isEmptyValue(r);
             allowEmptyValue ? (checked.value = r || props.multiple ? [] : '') : isEmpty || (checked.value = r);
             return !!allowEmptyValue || !isEmpty;
@@ -143,7 +143,7 @@ export function usePlain(props: PlainProps) {
                 // 防止表单类监测值发生改变时触发校验
                 // 或内部不允许重置时直接返回
                 if (!props.resetByDependValueChange || isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
-                change(props.multiple ? [] : '');
+                change(isEmptyValue(initialValue.value) ? (props.multiple ? [] : '') : clone(initialValue.value));
             },
             { flush: 'sync', ...props.dependWatchOption },
         ),
@@ -221,7 +221,7 @@ export function usePlain(props: PlainProps) {
             // 否则直接更新值即可
             checked.value
                 = isEmptyValue(value) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
-                    ? initialValue.value
+                    ? clone(initialValue.value)
                     : value;
         }
         option.updateWrapperQuery();
