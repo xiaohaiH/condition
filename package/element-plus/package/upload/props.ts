@@ -1,18 +1,17 @@
-import { PropType, VNode } from 'vue';
-import { ElMessage, ElUpload } from 'element-plus';
-import type { UploadFile, UploadRequestOptions, UploadHooks } from 'element-plus';
-import type { ElUpload as ElUploadType } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElMessage, ElUpload } from 'element-plus';
+import type { ElUpload as ElUploadType, UploadFile, UploadHooks, UploadRequestOptions } from 'element-plus';
+import type { PropType, VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 // ElUploadType 不重命名导入, 打包的时候报推断类型过深
 type UploadInstance = InstanceType<typeof ElUploadType>;
 
-type Query = {
+interface Query {
     backfill: Record<string, any>;
     query: Record<string, any>;
     uploadRef?: UploadInstance;
-};
+}
 
 export const uploadProps = {
     ...(ElUpload.props as {}),

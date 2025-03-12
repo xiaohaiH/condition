@@ -1,16 +1,16 @@
-import { PropType, VNode } from 'vue';
-import { ElInput } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElInput } from 'element-plus';
+import type { PropType, VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
-type Query = {
+interface Query {
     backfill: Record<string, any>;
     query: Record<string, any>;
     /** 触发外部搜索事件 */
-    search(): void;
+    search: () => void;
     /** 触发内部搜索事件 */
-    insideSearch(): void;
-};
+    insideSearch: () => void;
+}
 
 // @ts-expect-error UI.props报错
 const { label, ...inpProps } = ElInput.props as {};

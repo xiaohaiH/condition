@@ -1,13 +1,13 @@
-import { PropType, VNode } from 'vue';
-import { Upload as ElUpload } from 'element-ui';
-import { ElUploadInternalFileDetail } from 'element-ui/types/upload.d';
 import { plainProps } from '@xiaohaih/condition-core';
+import { Upload as ElUpload } from 'element-ui';
+import type { ElUploadInternalFileDetail } from 'element-ui/types/upload.d';
+import type { PropType, VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
-type Query = {
+interface Query {
     backfill: Record<string, any>;
     query: Record<string, any>;
-};
+}
 
 export const uploadProps = {
     // @ts-expect-error UI.props报错

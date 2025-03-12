@@ -1,8 +1,10 @@
-import { computed, ExtractPropTypes, inject, onBeforeUnmount, PropType, ref, watch, nextTick, toRaw } from 'vue-demi';
-import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained } from '../../utils/index';
-import { defineCommonMethod, provideKey, ProvideValue } from '../constant';
-import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
-import { treeProps } from './props';
+import type { ExtractPropTypes } from 'vue-demi';
+import { computed, inject, nextTick, onBeforeUnmount, PropType, ref, toRaw, watch } from 'vue-demi';
+import { clone, emptyToValue, getChained, isEmptyValue, isEqualExcludeEmptyValue } from '../../utils/index';
+import { useDisableInCurrentCycle, useDisplay, useInitialValue } from '../assist';
+import type { ProvideValue } from '../constant';
+import { defineCommonMethod, provideKey } from '../constant';
+import type { treeProps } from './props';
 
 /** 选中值类型 */
 type ValueType = string | number | boolean | Record<string, any>;
@@ -28,6 +30,7 @@ export function useTree(props: TreeProps) {
     /** 字段集合 */
     const fieldObj = computed(() =>
         props.fields
+            // eslint-disable-next-line no-sequences
             ? props.fields.reduce((p, v) => ((p[v] = props.emptyValue), p), {} as Record<string, any>)
             : { [props.field]: props.emptyValue },
     );
@@ -48,10 +51,11 @@ export function useTree(props: TreeProps) {
         if (Array.isArray(_checked)) {
             props.fields
                 ? _checked.forEach((o, i) => {
-                      result[props.fields![i]] = emptyToValue(o, props.emptyValue);
-                  })
+                        result[props.fields![i]] = emptyToValue(o, props.emptyValue);
+                    })
                 : (result[props.field] = _checked);
-        } else {
+        }
+        else {
             result[props.fields?.[0] || props.field] = emptyToValue(_checked, props.emptyValue);
         }
         return result;
@@ -63,13 +67,13 @@ export function useTree(props: TreeProps) {
 
     /** 需暴露给父级操作 */
     const option = defineCommonMethod({
-        reset() {
+        reset(this: void) {
             updateRealtimeFlag();
             updateBackfillFlag();
             checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || [];
             return this;
         },
-        resetField(allowEmptyValue?: boolean) {
+        resetField(this: void, allowEmptyValue?: boolean) {
             const r = initialValue.value?.slice();
             const isEmpty = isEmptyValue(r);
             allowEmptyValue ? (checked.value = r || []) : isEmpty || (checked.value = r);
@@ -109,7 +113,8 @@ export function useTree(props: TreeProps) {
                     option.updateWrapperQuery();
                     return;
                 }
-            } else if (BACKFILL[FIELD]) {
+            }
+            else if (BACKFILL[FIELD]) {
                 checked.value = insideGetChained(BACKFILL[FIELD]);
                 option.updateWrapperQuery();
                 return;
@@ -120,8 +125,8 @@ export function useTree(props: TreeProps) {
         if (initialValue.value?.length) {
             // TODO 需考虑 emitPath 和多选的情况
             // 此种情况比较多 可封装成一个函数处理
-            checked.value =
-                typeof initialValue.value === 'string'
+            checked.value
+                = typeof initialValue.value === 'string'
                     ? insideGetChained(initialValue.value)
                     : initialValue.value.slice();
             typeof initialValue.value === 'string' && (initialValue.value = clone(checked.value));
@@ -134,9 +139,9 @@ export function useTree(props: TreeProps) {
         watch(
             () => props.fields || [props.field],
             (val, oldVal) => {
-                val.toString() !== oldVal.toString() &&
-                    wrapper &&
-                    oldVal.forEach((o) => val.includes(o) || wrapper.removeUnreferencedField(o));
+                val.toString() !== oldVal.toString()
+                && wrapper
+                && oldVal.forEach((o) => val.includes(o) || wrapper.removeUnreferencedField(o));
                 option.updateWrapperQuery();
             },
         ),
@@ -163,9 +168,9 @@ export function useTree(props: TreeProps) {
             () =>
                 props.fields?.length
                     ? props.fields.reduce((p, k) => {
-                          props.backfill?.[k] && p.push(props.backfill[k]);
-                          return p;
-                      }, [] as string[])
+                            props.backfill?.[k] && p.push(props.backfill[k]);
+                            return p;
+                        }, [] as string[])
                     : props.backfill?.[props.field],
             (value: ValueType | ValueType[], oldVal: ValueType | ValueType[]) => {
                 if (!sourceIsInit.value) return;

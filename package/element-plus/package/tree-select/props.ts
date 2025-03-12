@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElTreeSelect } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElTreeSelect } from 'element-plus';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const treeSelectProps = {

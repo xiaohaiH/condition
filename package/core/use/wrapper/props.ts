@@ -1,4 +1,4 @@
-import { PropType } from 'vue-demi';
+import type { PropType } from 'vue-demi';
 
 /** 条件容器 props */
 export const wrapperProps = {

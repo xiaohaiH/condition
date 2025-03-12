@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElRate } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElRate } from 'element-plus';
+import { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 // @ts-expect-error UI.props报错

@@ -11,23 +11,25 @@
             :value="checked"
             class="condition-item__content"
             @input="change"
-        ></ElSlider>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs, reactive } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { FormItem as ElFormItem, Slider as ElSlider } from 'element-ui';
+import { computed, defineComponent, reactive, ref, toRefs } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { sliderProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { sliderProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElSlider.props);
@@ -36,12 +38,12 @@ const contentPropsKeys = Object.keys(ElSlider.props);
  * @file 滑块
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HSlider',
     components: {
         ElFormItem,
         ElSlider,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const { range, defaultValue, ...args } = toRefs(props);

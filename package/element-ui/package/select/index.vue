@@ -7,11 +7,11 @@
     >
         <ElSelect
             v-bind="contentProps"
-            v-on="$listeners"
             :disabled="insetDisabled"
             :filter-method="filterMethod && customFilterMethod"
             :value="checked"
             class="condition-item__content"
+            v-on="$listeners"
             @input="change"
             @blur="customFilterMethod('')"
             @change="customFilterMethod('')"
@@ -24,34 +24,38 @@
                                 :key="group[valueKey]"
                                 :label="group[labelKey]"
                                 :value="group[valueKey]"
-                            ></ElOption>
+                            />
                         </template>
                     </ElOptionGroup>
                 </template>
                 <template v-else>
-                    <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]"></ElOption>
+                    <ElOption :key="item[valueKey]" :label="item[labelKey]" :value="item[valueKey]" />
                 </template>
             </template>
         </ElSelect>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)" />
+            </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import {
     FormItem as ElFormItem,
-    Select as ElSelect,
-    OptionGroup as ElOptionGroup,
     Option as ElOption,
+    OptionGroup as ElOptionGroup,
+    Select as ElSelect,
 } from 'element-ui';
+import { computed, defineComponent, ref } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { selectProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { selectProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElSelect.props);
@@ -60,7 +64,6 @@ const contentPropsKeys = Object.keys(ElSelect.props);
  * @file 下拉框
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HSelect',
     components: {
         ElFormItem,
@@ -68,6 +71,7 @@ export default defineComponent({
         ElOptionGroup,
         ElOption,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);

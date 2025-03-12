@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { Rate as ElRate } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { Rate as ElRate } from 'element-ui';
+import { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const rateProps = {

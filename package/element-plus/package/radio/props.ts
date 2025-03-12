@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElRadio, ElRadioGroup } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElRadio, ElRadioGroup } from 'element-plus';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 // @ts-expect-error UI.props报错

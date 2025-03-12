@@ -2,27 +2,9 @@
     "name": "@xiaohaih/condition-el",
     "version": "0.5.6",
     "description": "基于element-ui实现, 通过JSON配置表单组件(条件间可相互依赖)",
-    "main": "dist/index.cjs.js",
-    "jsdelivr": "dist/index.umd.js",
-    "unpkg": "dist/index.umd.js",
-    "module": "index.ts",
-    "types": "index.ts",
-    "exports": {
-        ".": {
-            "require": "./dist/index.cjs.js",
-            "import": "./index.ts",
-            "browser": "./dist/index.esm.js",
-            "types": "./index.ts"
-        },
-        "./*": "./*"
-    },
-    "scripts": {
-        "vue2": "vue-demi-switch 2",
-        "vue2.7": "vue-demi-switch 2.7",
-        "vue3": "vue-demi-switch 3",
-        "build": "vite build --config vite.config.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    "author": "xiaohai",
+    "license": "MIT",
+    "homepage": "https://xiaohaih.github.io/condition/index.html",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/xiaohaiH/condition/tree/master/package/element-ui"
@@ -33,17 +15,26 @@
         "condition",
         "JSON Form"
     ],
-    "author": "xiaohai",
-    "license": "MIT",
-    "homepage": "https://xiaohaih.github.io/condition/index.html",
-    "dependencies": {
-        "@xiaohaih/condition-core": "workspace:*",
-        "vue-demi": "0.14.5"
+    "exports": {
+        ".": {
+            "types": "./index.ts",
+            "import": "./index.ts",
+            "require": "./dist/index.cjs.js",
+            "browser": "./dist/index.esm.js"
+        },
+        "./*": "./*"
     },
-    "devDependencies": {
-        "element-ui": "^2.15.13",
-        "vite-plugin-dts": "^3.6.3",
-        "vue": "2.7.0"
+    "main": "dist/index.cjs.js",
+    "module": "index.ts",
+    "unpkg": "dist/index.umd.js",
+    "jsdelivr": "dist/index.umd.js",
+    "types": "index.ts",
+    "scripts": {
+        "vue2": "vue-demi-switch 2",
+        "vue2.7": "vue-demi-switch 2.7",
+        "vue3": "vue-demi-switch 3",
+        "build": "vite build --config vite.config.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "peerDependencies": {
         "@vue/composition-api": "^1.0.0-rc.1",
@@ -54,6 +45,15 @@
         "@vue/composition-api": {
             "optional": true
         }
+    },
+    "dependencies": {
+        "@xiaohaih/condition-core": "workspace:*",
+        "vue-demi": "0.14.5"
+    },
+    "devDependencies": {
+        "element-ui": "^2.15.13",
+        "vite-plugin-dts": "^3.6.3",
+        "vue": "2.7.0"
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/",

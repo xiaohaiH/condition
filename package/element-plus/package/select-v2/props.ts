@@ -1,7 +1,7 @@
-import { PropType } from 'vue';
+import { plainProps } from '@xiaohaih/condition-core';
 import { ElSelectV2 } from 'element-plus';
 import { SelectProps } from 'element-plus/es/components/select-v2/src/defaults';
-import { plainProps } from '@xiaohaih/condition-core';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const selectV2Props = {

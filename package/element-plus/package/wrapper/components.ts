@@ -1,44 +1,44 @@
 import { markRaw } from 'vue';
-import HSelect from '../select/index.vue';
-import HTreeSelect from '../tree-select/index.vue';
-import HInput from '../input/index.vue';
-import HDatepicker from '../datepicker/index.vue';
 import HCascader from '../cascader/index.vue';
-import HRadio from '../radio/index.vue';
 import HCheckbox from '../checkbox/index.vue';
 import HColorPicker from '../color-picker/index.vue';
+import HCustomRender from '../custom-render/index.vue';
+import HDatepicker from '../datepicker/index.vue';
 import HInputNumber from '../input-number/index.vue';
+import HInput from '../input/index.vue';
+import HMention from '../mention/index.vue';
+import HRadio from '../radio/index.vue';
 import HRate from '../rate/index.vue';
+import HSelectV2 from '../select-v2/index.vue';
+import HSelect from '../select/index.vue';
 import HSlider from '../slider/index.vue';
 import HSwitch from '../switch/index.vue';
 import HTimePicker from '../time-picker/index.vue';
 import HTimeSelect from '../time-select/index.vue';
+import HTreeSelect from '../tree-select/index.vue';
 import HUpload from '../upload/index.vue';
-import HSelectV2 from '../select-v2/index.vue';
-import HMention from '../mention/index.vue';
-import HCustomRender from '../custom-render/index.vue';
 
 // 不重新 as 一下会发生👇下方的错误
 // https://stackoverflow.com/questions/43900035/ts4023-exported-variable-x-has-or-is-using-name-y-from-external-module-but
 const compMap = {
-    select: markRaw(HSelect) as typeof HSelect,
+    'select': markRaw(HSelect) as typeof HSelect,
     'tree-select': markRaw(HTreeSelect) as typeof HTreeSelect,
-    input: markRaw(HInput) as typeof HInput,
-    datepicker: markRaw(HDatepicker) as typeof HDatepicker,
+    'input': markRaw(HInput) as typeof HInput,
+    'datepicker': markRaw(HDatepicker) as typeof HDatepicker,
     'date-picker': markRaw(HDatepicker) as typeof HDatepicker,
-    cascader: markRaw(HCascader) as typeof HCascader,
-    radio: markRaw(HRadio) as typeof HRadio,
-    checkbox: markRaw(HCheckbox) as typeof HCheckbox,
+    'cascader': markRaw(HCascader) as typeof HCascader,
+    'radio': markRaw(HRadio) as typeof HRadio,
+    'checkbox': markRaw(HCheckbox) as typeof HCheckbox,
     'color-picker': markRaw(HColorPicker) as typeof HColorPicker,
     'input-number': markRaw(HInputNumber) as typeof HInputNumber,
-    rate: markRaw(HRate) as typeof HRate,
-    slider: markRaw(HSlider) as typeof HSlider,
-    switch: markRaw(HSwitch) as typeof HSwitch,
+    'rate': markRaw(HRate) as typeof HRate,
+    'slider': markRaw(HSlider) as typeof HSlider,
+    'switch': markRaw(HSwitch) as typeof HSwitch,
     'time-picker': markRaw(HTimePicker) as typeof HTimePicker,
     'time-select': markRaw(HTimeSelect) as typeof HTimeSelect,
-    upload: markRaw(HUpload) as typeof HUpload,
+    'upload': markRaw(HUpload) as typeof HUpload,
     'select-v2': markRaw(HSelectV2) as typeof HSelectV2,
-    mention: markRaw(HMention) as typeof HMention,
+    'mention': markRaw(HMention) as typeof HMention,
     'custom-render': markRaw(HCustomRender) as typeof HCustomRender,
 };
 const userCompMap: Record<string, any> = {};
@@ -65,10 +65,10 @@ export function unregisterComponent(name: string) {
 
 /**
  * 获取指定组件
- * @param {string} name? 组件类型
+ * @param {string} [name] 组件类型
  */
-export function getComponent(): Record<string, ComponentType>;
 export function getComponent(name: string): ComponentType | undefined;
+export function getComponent(): Record<string, ComponentType>;
 export function getComponent(name?: string) {
     return name ? userCompMap[name] || compMap[name as keyof typeof compMap] : { ...compMap, ...userCompMap };
 }

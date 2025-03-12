@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 
 /**
@@ -27,7 +27,7 @@ export default defineConfig({
     esbuild: {
         jsxFactory: 'h',
         jsxFragment: 'Fragment',
-        jsxInject: "import { h } from 'vue';",
+        jsxInject: 'import { h } from \'vue\';',
     },
     preview: {
         open: '/example/static/index.html',
@@ -61,7 +61,7 @@ export default defineConfig({
 /** 抹平 vue2.*, vue2.7.*, vue3的差异 */
 function myPlugin() {
     const virtualModuleId = `virtual:package`;
-    const resolvedVirtualModuleId = '\0' + virtualModuleId;
+    const resolvedVirtualModuleId = `\0${virtualModuleId}`;
 
     const template = {
         Vue: [

@@ -1,5 +1,17 @@
 # @xiaohaih/condition-core
 
+## 0.6.4
+
+### Patch Changes
+
+- 修复初始值深拷贝失败导致报错; 依赖重置时应优先读取默认值
+
+## 0.6.3
+
+### Patch Changes
+
+- 临时修复bug
+
 ## 0.6.1
 
 ### Patch Changes

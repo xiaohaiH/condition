@@ -7,28 +7,30 @@
     >
         <ElColorPicker
             v-bind="contentProps"
-            v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
             class="condition-item__content"
+            v-on="$listeners"
             @change="change"
-        ></ElColorPicker>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
+import { getNode, usePlain } from '@xiaohaih/condition-core';
+import { ColorPicker as ElColorPicker, FormItem as ElFormItem } from 'element-ui';
 import { computed, defineComponent, ref } from 'vue-demi';
-import { FormItem as ElFormItem, ColorPicker as ElColorPicker } from 'element-ui';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { colorPickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { colorPickerProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElColorPicker.props);
@@ -37,12 +39,12 @@ const contentPropsKeys = Object.keys(ElColorPicker.props);
  * @file 颜色选择器
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HColorPicker',
     components: {
         ElFormItem,
         ElColorPicker,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);

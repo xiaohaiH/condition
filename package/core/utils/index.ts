@@ -1,11 +1,12 @@
-import { markRaw, VNode } from 'vue-demi';
+import type { VNode } from 'vue-demi';
+import { markRaw } from 'vue-demi';
 
 /**
  * 空值转为提供的默认值
  * @param {*} val 值为空时转为默认值
  * @param {*} defaultVal
  */
-export function emptyToValue<T extends unknown>(val: any, defaultVal: T) {
+export function emptyToValue<T>(val: any, defaultVal: T) {
     // 数组不应该置为空值, 影响到组件内部逻辑
     // if (Array.isArray(val)) return val.filter(Boolean).length ? val : defaultVal;
     return typeof val === 'number' ? val : val || defaultVal;
@@ -72,7 +73,8 @@ export function getChained<T extends Record<string, any>>(
     for (const item of data) {
         if (cb(item)) {
             return [item];
-        } else if (item[childrenKey]?.length) {
+        }
+        else if (item[childrenKey]?.length) {
             const r = getChained(item[childrenKey], cb);
             if (r.length) {
                 r.unshift(item);
@@ -85,7 +87,7 @@ export function getChained<T extends Record<string, any>>(
 
 /**
  * 获取渲染节点
- * @param {string | Object | Function} node 需渲染元素
+ * @param {string | object | Function} node 需渲染元素
  */
 export function getNode(node: string | ((...args: any[]) => VNode) | VNode | undefined | null, ...args: any[]) {
     // 直接抛出 null, template 中会报错
@@ -98,7 +100,7 @@ export function getNode(node: string | ((...args: any[]) => VNode) | VNode | und
  * @example get(person, 'friends[0].name')
  */
 export function get<TDefault = unknown>(value: any, path: string, defaultValue?: TDefault): TDefault {
-    const segments = path.split(/[\.\[\]]/g);
+    const segments = path.split(/[.[\]]/);
     let current: any = value;
     for (const key of segments) {
         if (current === null) return defaultValue as TDefault;
@@ -109,4 +111,13 @@ export function get<TDefault = unknown>(value: any, path: string, defaultValue?:
     }
     if (current === undefined) return defaultValue as TDefault;
     return current;
+}
+
+/**
+ * 判断对象是否存在指定属性
+ * @example hasOwn({}, 'a')
+ */
+export function hasOwn<T extends Record<string, any>, K extends keyof T = keyof T>(obj: T, key: K) {
+    // eslint-disable-next-line no-prototype-builtins
+    return Object.hasOwn ? Object.hasOwn(obj, key) : obj.hasOwnProperty(key);
 }

@@ -1,9 +1,10 @@
-import type { SetupContext, VNode, VNodeNormalizedChildren, VNodeChild, FunctionalComponent } from 'vue';
+import { hasOwn } from '@xiaohaih/condition-core';
+import type { FunctionalComponent, SetupContext, VNode, VNodeChild, VNodeNormalizedChildren } from 'vue';
 
-type SortComponentProps = {
+interface SortComponentProps {
     /** 禁用排序 */
     disabled?: boolean;
-};
+}
 
 /** VNode 排序组件 */
 function SortComponent(props: SortComponentProps, context: Omit<SetupContext<{}>, 'expose'>) {
@@ -13,8 +14,8 @@ function SortComponent(props: SortComponentProps, context: Omit<SetupContext<{}>
         if (!o.children) return;
         Array.isArray(o.children)
             ? o.children.forEach((v) => {
-                  vNodes.push(v);
-              })
+                    vNodes.push(v);
+                })
             : vNodes.push(o.children);
     });
     return vNodes.sort((a, b) => getSortValue(a) - getSortValue(b));
@@ -24,7 +25,7 @@ function SortComponent(props: SortComponentProps, context: Omit<SetupContext<{}>
 function getSortValue(vnode: any) {
     if (!vnode?.props) return 0;
     return (
-        (vnode.props.hasOwnProperty('conditionSortIndex')
+        (hasOwn(vnode.props, 'conditionSortIndex')
             ? Number(vnode.props.conditionSortIndex)
             : Number(vnode.props['condition-sort-index'])) || 0
     );

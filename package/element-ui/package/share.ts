@@ -1,5 +1,5 @@
-import type { PropType, VNode } from 'vue-demi';
 import { FormItem as ElFormItem } from 'element-ui';
+import type { PropType, VNode } from 'vue-demi';
 
 /** 公共属性 */
 export const commonProps = {

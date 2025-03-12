@@ -1,6 +1,6 @@
-import { PropType, VNode } from 'vue';
-import { ElInputNumber } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElInputNumber } from 'element-plus';
+import type { PropType, VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 // @ts-expect-error UI.props报错

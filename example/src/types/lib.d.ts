@@ -1,6 +1,6 @@
-import * as Vue from 'vue';
-import * as Condition from '@xiaohaih/condition-el-plus';
-import { ElMessage } from 'element-plus';
+import type * as Condition from '@xiaohaih/condition-el-plus';
+import type { ElMessage } from 'element-plus';
+import type * as Vue from 'vue';
 
 declare module 'virtual:package';
 

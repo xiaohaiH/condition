@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElCascader } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElCascader } from 'element-plus';
+import type { PropType } from 'vue';
 // import { treeProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 

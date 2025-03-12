@@ -1,13 +1,13 @@
-import { resolve } from 'path';
-import { defineConfig } from 'vite';
+import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { terser } from 'rollup-plugin-terser';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import pkgJson from './package.json';
 
 const external = ['vue', 'element-plus'];
-const globals = { vue: 'Vue', 'element-plus': 'ElementPlus' };
+const globals = { 'vue': 'Vue', 'element-plus': 'ElementPlus' };
 // @ts-ignore
 const pkg = pkgJson.publishConfig || pkgJson;
 
@@ -74,7 +74,7 @@ export default defineConfig({
                     entryFileNames: retainMinSuffix(pkg.unpkg, true),
                     format: 'umd',
                     name: 'HCondition',
-                    globals: globals,
+                    globals,
                     plugins: [terser({ format: { comments: false } })],
                 },
             ],

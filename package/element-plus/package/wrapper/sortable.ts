@@ -1,10 +1,11 @@
+import { hasOwn } from '@xiaohaih/condition-core';
 import { Fragment } from 'vue';
 import type { SetupContext, VNode } from 'vue';
 
-type SortComponentProps = {
+interface SortComponentProps {
     /** 禁用排序 */
     disabled?: boolean;
-};
+}
 
 /** VNode 排序组件 */
 function SortComponent(props: SortComponentProps, context: Omit<SetupContext<{}>, 'expose'>) {
@@ -18,7 +19,8 @@ function getRealNode(nodes: VNode[], arr: VNode[]) {
     nodes.forEach((o) => {
         if (o.type === Fragment) {
             o.children && getRealNode(o.children as any, arr);
-        } else {
+        }
+        else {
             arr.push(o);
         }
     });
@@ -27,7 +29,7 @@ function getRealNode(nodes: VNode[], arr: VNode[]) {
 function getSortValue(vnode: any) {
     if (!vnode?.props) return 0;
     return (
-        (vnode.props.hasOwnProperty('conditionSortIndex')
+        (hasOwn(vnode.props, 'conditionSortIndex')
             ? Number(vnode.props.conditionSortIndex)
             : Number(vnode.props['condition-sort-index'])) || 0
     );

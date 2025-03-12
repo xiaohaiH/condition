@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -20,14 +20,19 @@
                 :model-value="(checked as string[])"
                 :filter-method="filterMethod && customFilterMethod"
                 class="condition-item__content"
-                @update:modelValue="change"
                 v-bind.prop="dynamicFields?.({ query })"
+                @update:model-value="change"
             >
                 <template v-for="item of filterSource" :key="item[valueKey]">
                     <template v-if="item.group && item.children">
                         <ElOptionGroup :label="item[labelKey]" :disabled="item[disabledKey]">
                             <template v-for="group of item.children" :key="group[valueKey]">
-                                <ElOption :label="group[labelKey]" :value="group[valueKey]"></ElOption>
+                                <ElOption :label="group[labelKey]" :value="group[valueKey]">
+                                    <template v-if="optionSlot || $slots.optionSlot">
+                                        <component :is="getNode(optionSlot!, { item: group, parent: item })" v-if="optionSlot" />
+                                        <slot v-else name="optionSlot" :item="group" :parent="item" />
+                                    </template>
+                                </ElOption>
                             </template>
                         </ElOptionGroup>
                     </template>
@@ -36,31 +41,38 @@
                             :label="item[labelKey]"
                             :value="item[valueKey]"
                             :disabled="item[disabledKey]"
-                        ></ElOption>
+                        >
+                            <template v-if="optionSlot || $slots.optionSlot">
+                                <component :is="getNode(optionSlot!, { item })" v-if="optionSlot" />
+                                <slot v-else name="optionSlot" :item="item" />
+                            </template>
+                        </ElOption>
                     </template>
                 </template>
             </ElSelect>
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
+import { getNode, usePlain } from '@xiaohaih/condition-core';
+import { ElFormItem, ElOption, ElOptionGroup, ElSelect } from 'element-plus';
 import { computed, customRef, defineComponent, ref } from 'vue';
-import { ElFormItem, ElSelect, ElOptionGroup, ElOption } from 'element-plus';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { selectProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { selectProps as props } from './props';
 
 const contentPropsKeys = Object.keys(ElSelect.props);
 
@@ -68,7 +80,6 @@ const contentPropsKeys = Object.keys(ElSelect.props);
  * @file 下拉框
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HSelect',
     components: {
         ElFormItem,
@@ -76,6 +87,7 @@ export default defineComponent({
         ElOptionGroup,
         ElOption,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);
@@ -92,15 +104,15 @@ export default defineComponent({
         });
         const slotProps = computed(() => ({
             ...contentProps.value,
-            disabled: plain.insetDisabled.value,
-            modelValue: plain.checked.value,
-            source: filterSource.value,
-            filterMethod: props.filterMethod && customFilterMethod,
-            labelKey: props.labelKey,
-            valueKey: props.valueKey,
+            'disabled': plain.insetDisabled.value,
+            'modelValue': plain.checked.value,
+            'source': filterSource.value,
+            'filterMethod': props.filterMethod && customFilterMethod,
+            'labelKey': props.labelKey,
+            'valueKey': props.valueKey,
             'onUpdate:modelValue': plain.change,
-            class: 'condition-item__content',
-            extraOption: {
+            'class': 'condition-item__content',
+            'extraOption': {
                 query: props.query,
                 search: plain.wrapper!.search,
                 insetSearch: plain.wrapper!.insetSearch,

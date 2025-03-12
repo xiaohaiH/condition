@@ -1,18 +1,18 @@
-import { type PropType, type WatchOptions } from 'vue-demi';
-import { type CommonMethod } from './constant';
-import { type emptyToValue as EmptyToValue } from '../utils/index';
+import type { PropType, WatchOptions } from 'vue-demi';
+import type { emptyToValue as EmptyToValue } from '../utils/index';
+import type { CommonMethod } from './constant';
 
 /** 隐藏元素 */
 export type HideOption =
     | boolean
     | ((query: {
-          /** 实时 query */
-          query: Record<string, any>;
-          /** 回填值 query */
-          backfill?: Record<string, any>;
-          /** 当前组件暴露给父级的选项 */
-          option: CommonMethod;
-      }) => any);
+        /** 实时 query */
+        query: Record<string, any>;
+        /** 回填值 query */
+        backfill?: Record<string, any>;
+        /** 当前组件暴露给父级的选项 */
+        option: CommonMethod;
+    }) => any);
 
 /** 获取远程数据源 */
 export interface GetOptions {
@@ -27,7 +27,7 @@ export interface GetOptions {
 }
 
 /** 条件值可能的类型 */
-export type ValueType = number | string | string[];
+export type ValueType = number | string | boolean | any[] | Record<string, any>;
 
 /** 改变当前条件值触发方式 */
 export interface TriggerOption {
@@ -45,19 +45,19 @@ export interface TriggerOption {
      * 仅更改默认值
      * @param {*} value 需改变的值
      */
-    changeDefaultValue(value: any): this;
+    changeDefaultValue: (value: any) => this;
     /**
      * 仅改变内部的值, 不触发搜索事件
      * @param {*} value 需改变的值
      * @param {boolean} [updateInitialValue] 是否将该值作为初始值(重置时使用)
      */
-    change(value: any, updateInitialValue?: boolean): this;
+    change: (value: any, updateInitialValue?: boolean) => this;
     /**
      * 触发搜索事件
      * @param {*} value 需改变的值
      * @param {boolean} [updateInitialValue] 是否将该值作为初始值(重置时使用)
      */
-    search(value: any, updateInitialValue?: boolean): this;
+    search: (value: any, updateInitialValue?: boolean) => this;
 }
 
 /** 自定义返回字段 */
@@ -110,8 +110,9 @@ export const commonProps = {
     customGetQuery: { type: Function as PropType<GetQuery> },
     /** 设置默认值 */
     defaultValue: {
-        type: [String, Number, Array, Function] as PropType<
+        type: [String, Number, Boolean, Function, Array, Object] as PropType<
             ValueType | ((query: Record<string, any>, backfill?: Record<string, any>) => ValueType)
         >,
+        default: undefined,
     },
 } as const;

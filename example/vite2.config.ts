@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
-import { createVuePlugin } from 'vite-plugin-vue2';
 import { createHtmlPlugin } from 'vite-plugin-html';
+import { createVuePlugin } from 'vite-plugin-vue2';
 import Vue from 'vue';
 
 /**
@@ -57,7 +57,7 @@ export default defineConfig({
 /** 抹平 vue2.*, vue2.7.*, vue3的差异 */
 function myPlugin() {
     const virtualModuleId = 'virtual:package';
-    const resolvedVirtualModuleId = '\0' + virtualModuleId;
+    const resolvedVirtualModuleId = `\0${virtualModuleId}`;
 
     const vueVersion = (Vue as any).version as string;
 

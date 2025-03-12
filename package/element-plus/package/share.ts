@@ -1,5 +1,5 @@
-import type { PropType, VNode } from 'vue';
 import { ElFormItem } from 'element-plus';
+import type { PropType, VNode } from 'vue';
 
 export interface SlotQuery {
     /** 是否禁用 */
@@ -13,9 +13,9 @@ export interface SlotQuery {
         /** 表单信息值 */
         query: Record<string, any>;
         /** 触发外部搜索事件 */
-        search(): void;
+        search: () => void;
         /** 触发内部搜索事件 */
-        insideSearch(): void;
+        insideSearch: () => void;
     };
     [index: string]: string | number | boolean | ((...args: any[]) => any) | Record<string, any> | any[];
 }

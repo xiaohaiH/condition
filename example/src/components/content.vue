@@ -1,24 +1,23 @@
 <script lang="ts">
-import './buffer';
-import { conditionFactory } from './config';
-import traverse, { type Node } from '@babel/traverse';
 import generator from '@babel/generator';
+import traverse from '@babel/traverse';
+import type { Node } from '@babel/traverse';
 import { VueMonacoEditor } from '@xiaohaih/vue-monaco-editor';
 import { typescript as monacoPluginTypescript } from '@xiaohaih/vue-monaco-editor/src/typescript';
 import { languages } from 'monaco-editor';
-
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 // import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
 // import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
 // import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+import { conditionFactory } from './config';
 
 const { defineComponent, nextTick, onMounted, ref, set, version } = window.Vue;
 const { HWrapper } = window.HCondition;
 const { toast } = window.Ui;
 
-const unspecialKeyReg = /^[a-z_][a-z_0-9]*$/i;
-const isAttrFunctionReg = /^(function\s|((\(.*\)|[_a-z0-9]+)\s?=>))/i;
+const unspecialKeyReg = /^[a-z_]\w*$/i;
+const isAttrFunctionReg = /^(function\s|((\(.*\)|\w+)\s?=>))/i;
 function toStr(value: any, level = 1) {
     const startSign = ''.padStart(level * 4, ' ');
     const endSign = ''.padStart((level - 1) * 4, ' ');
@@ -97,51 +96,12 @@ function initLanguages() {
 
 /** @file 显示的条件 */
 export default defineComponent({
-    template: `
-        <ElCard class="box">
-            <div>
-                <ElAlert type="success" :closable="false">
-                    <span>当前条件:　</span>
-                    <span>{{ conditions.query }}</span>
-                </ElAlert>
-                <div style="margin: 10px 0; display: flex; flex-flow: row wrap">
-                    <ElButton @click="clear" type="danger" size="small">清空所有条件并重置</ElButton>
-                    <ElButton
-                        v-if="!!conditions.setQuery"
-                        @click="conditions.setQuery(conditions)"
-                        type="primary"
-                        size="small"
-                    >
-                        手动设置query
-                    </ElButton>
-                    <ElButton style="margin-left: auto" @click="setValue" size="small" type="success">
-                        同步编辑器中的条件
-                    </ElButton>
-                </div>
-                <HWrapper
-                    :backfill="conditions.query"
-                    :datum="conditions.condition"
-                    v-bind="conditions.wrapperOption"
-                    :key="conditions.wrapperOption.key"
-                    @ready="querySearch($event, 'ready')"
-                    @search="querySearch($event, 'search')"
-                ></HWrapper>
-                <!-- @reset="reset($event)" -->
-            </div>
-            <VueMonacoEditor
-                class="vue-monaco-editor"
-                ref="editorRef"
-                :value="parseToEditorValue(conditions)"
-                language="typescript"
-            ></VueMonacoEditor>
-        </ElCard>
-    `,
     components: {
         HWrapper,
         VueMonacoEditor,
     },
     setup() {
-        onMounted(initLanguages);
+        // onMounted(initLanguages);
 
         const conditions = ref(conditionFactory());
         /** 搜索 */
@@ -220,10 +180,10 @@ export default defineComponent({
                         modName === mod
                             ? `index.d.ts`
                             : modName === './element-ui'
-                            ? `element-ui.d.ts`
-                            : absolutePath.slice(0, 'element-ui/types/'.length) === 'element-ui/types/'
-                            ? `${absolutePath.slice('element-ui/types/'.length)}.d.ts`
-                            : `${absolutePath.slice('element-ui/'.length)}.d.ts`
+                                ? `element-ui.d.ts`
+                                : absolutePath.slice(0, 'element-ui/types/'.length) === 'element-ui/types/'
+                                    ? `${absolutePath.slice('element-ui/types/'.length)}.d.ts`
+                                    : `${absolutePath.slice('element-ui/'.length)}.d.ts`
                     }`,
             ],
             // element-plus 文件夹都省略了路径, 又存在大量重名(同关键字既可以是目录又可以是文件)
@@ -235,10 +195,10 @@ export default defineComponent({
                         modName === mod
                             ? `index.d.ts`
                             : modName === './element-ui'
-                            ? `element-ui.d.ts`
-                            : absolutePath.slice(0, 'element-ui/types/'.length) === 'element-ui/types/'
-                            ? `${absolutePath.slice('element-ui/types/'.length)}.d.ts`
-                            : `${absolutePath.slice('element-plus/'.length)}.d.ts`
+                                ? `element-ui.d.ts`
+                                : absolutePath.slice(0, 'element-ui/types/'.length) === 'element-ui/types/'
+                                    ? `${absolutePath.slice('element-ui/types/'.length)}.d.ts`
+                                    : `${absolutePath.slice('element-plus/'.length)}.d.ts`
                     }`,
             ],
             [
@@ -253,27 +213,27 @@ export default defineComponent({
             ],
             version.charAt(0) === '3'
                 ? ([
-                      'vue',
-                      (modName: string, absolutePath: string, mod: string) =>
-                          `https://fastly.jsdelivr.net/npm/vue@3.4.0-beta.4/dist/${
-                              modName === mod
-                                  ? `vue.d.ts`
-                                  : absolutePath.slice(0, 'vue/types/'.length) === 'vue/types/'
-                                  ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
-                                  : `${absolutePath.slice('vue/'.length)}.d.ts`
-                          }`,
-                  ] as const)
+                        'vue',
+                        (modName: string, absolutePath: string, mod: string) =>
+                            `https://fastly.jsdelivr.net/npm/vue@3.4.0-beta.4/dist/${
+                                modName === mod
+                                    ? `vue.d.ts`
+                                    : absolutePath.slice(0, 'vue/types/'.length) === 'vue/types/'
+                                        ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
+                                        : `${absolutePath.slice('vue/'.length)}.d.ts`
+                            }`,
+                    ] as const)
                 : ([
-                      'vue',
-                      (modName: string, absolutePath: string, mod: string) =>
-                          `https://fastly.jsdelivr.net/npm/vue@2.6.0/types/${
-                              modName === mod
-                                  ? `index.d.ts`
-                                  : absolutePath.slice(0, 'vue/types/'.length) === 'vue/types/'
-                                  ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
-                                  : `${absolutePath.slice('vue/'.length)}.d.ts`
-                          }`,
-                  ] as const),
+                        'vue',
+                        (modName: string, absolutePath: string, mod: string) =>
+                            `https://fastly.jsdelivr.net/npm/vue@2.6.0/types/${
+                                modName === mod
+                                    ? `index.d.ts`
+                                    : absolutePath.slice(0, 'vue/types/'.length) === 'vue/types/'
+                                        ? `${absolutePath.slice('vue/types/'.length)}.d.ts`
+                                        : `${absolutePath.slice('vue/'.length)}.d.ts`
+                            }`,
+                    ] as const),
             [
                 '@vue/compiler-dom',
                 (modName: string, absolutePath: string, mod: string) =>
@@ -324,9 +284,10 @@ export default defineComponent({
             });
         }
         onMounted(() => {
+            if (!editorRef.value) return;
             editorRef.value.editorInfo.addPlugin(monacoPluginTypescript({ loadMod: loadModule }));
         });
-        const editorRef = ref<InstanceType<typeof VueMonacoEditor>>([]);
+        const editorRef = ref<InstanceType<typeof VueMonacoEditor>>();
         async function setValue() {
             try {
                 await editorRef.value?.editorInfo.validate();
@@ -361,9 +322,8 @@ export default defineComponent({
                             const { code } = generator(path.node.init?.arguments[0], { jsescOption: { wrap: false } });
                             let aaa = {};
                             eval(
-                                `aaa=${code.replace(/(\(\{)\n\s*((.|\n|\s)*?)\n*\s*(\}\))/gi, (val) =>
-                                    val.replace(/\/\/.*/g, '').replace(/(\n|\s)+/g, ' '),
-                                )}`,
+                                `aaa=${code.replace(/(\(\{)\n\s*(([\s\S])*?)\s*(\}\))/g, (val) =>
+                                    val.replace(/\/\/.*/g, '').replace(/(\s)+/g, ' '))}`,
                             );
                             // @ts-ignore
                             Object.keys(aaa).forEach((key) => {
@@ -373,7 +333,8 @@ export default defineComponent({
                         }
                     },
                 });
-            } catch (error) {
+            }
+            catch (error) {
                 toast.warning('同步报错, 打开控制台看报错明细');
                 console.error(error);
             }
@@ -397,6 +358,45 @@ export default defineComponent({
             log: console.log,
         };
     },
+    template: `
+        <ElCard class="box">
+            <div>
+                <ElAlert type="success" :closable="false">
+                    <span>当前条件:　</span>
+                    <span>{{ conditions.query }}</span>
+                </ElAlert>
+                <div style="margin: 10px 0; display: flex; flex-flow: row wrap">
+                    <ElButton @click="clear" type="danger" size="small">清空所有条件并重置</ElButton>
+                    <ElButton
+                        v-if="!!conditions.setQuery"
+                        @click="conditions.setQuery(conditions)"
+                        type="primary"
+                        size="small"
+                    >
+                        手动设置query
+                    </ElButton>
+                    <ElButton style="margin-left: auto" @click="setValue" size="small" type="success">
+                        同步编辑器中的条件
+                    </ElButton>
+                </div>
+                <HWrapper
+                    :backfill="conditions.query"
+                    :datum="conditions.condition"
+                    v-bind="conditions.wrapperOption"
+                    :key="conditions.wrapperOption.key"
+                    @ready="querySearch($event, 'ready')"
+                    @search="querySearch($event, 'search')"
+                ></HWrapper>
+                <!-- @reset="reset($event)" -->
+            </div>
+            <!-- <VueMonacoEditor
+                class="vue-monaco-editor"
+                ref="editorRef"
+                :value="parseToEditorValue(conditions)"
+                language="typescript"
+            ></VueMonacoEditor> -->
+        </ElCard>
+    `,
 });
 </script>
 

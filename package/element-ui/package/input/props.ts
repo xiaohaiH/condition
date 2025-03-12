@@ -1,16 +1,16 @@
-import type { PropType, VNode } from 'vue-demi';
-import { Input as ElInput } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { Input as ElInput } from 'element-ui';
+import type { PropType, VNode } from 'vue-demi';
 import { commonProps, formItemProps } from '../share';
 
-type Query = {
+interface Query {
     backfill: Record<string, any>;
     query: Record<string, any>;
     /** 触发外部搜索事件 */
-    search(): void;
+    search: () => void;
     /** 触发内部搜索事件 */
-    insideSearch(): void;
-};
+    insideSearch: () => void;
+}
 
 /** el-input 未列出的字段 */
 export const elInputInsetField = {

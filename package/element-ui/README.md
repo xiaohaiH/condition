@@ -1,13 +1,13 @@
 ## 基于 `element-ui` 实现的条件搜索, 校验组件(条件之间相互依赖)
 
--   通过 `JSON` 配置
--   目前支持以下几种类型, 通过字段 `t` 来区分
-    -   <a href="#api-input">`input` (文本输入框)</a>
-    -   <a href="#api-select">`select` (下拉框)</a>
-    -   <a href="#api-date-picker">`datepicker` (日期选择)</a>
-    -   <a href="#api-cascader">`cascader` (级联组件)</a>
-    -   <a href="#api-radio">`radio` (单选框)</a>
-    -   <a href="#api-checkbox">`checkbox` (多选框)</a>
+- 通过 `JSON` 配置
+- 目前支持以下几种类型, 通过字段 `t` 来区分
+    - <a href="#api-input">`input` (文本输入框)</a>
+    - <a href="#api-select">`select` (下拉框)</a>
+    - <a href="#api-date-picker">`datepicker` (日期选择)</a>
+    - <a href="#api-cascader">`cascader` (级联组件)</a>
+    - <a href="#api-radio">`radio` (单选框)</a>
+    - <a href="#api-checkbox">`checkbox` (多选框)</a>
 
 > **[在线`demo`](https://xiaohaih.github.io/condition/index.html)**
 
@@ -63,23 +63,32 @@ export default {
             :render-btn="false"
             :realtime="true"
             @search="query = $event"
-        ></HWrapper>
-        <div style="min-height: 50px; line-height: 50px">{{ query }}</div>
-        <ElButton @click="validate">校验</ElButton>
-        <ElButton @click="validateField">逐个校验</ElButton>
-        <ElButton @click="clearValidate">清空校验</ElButton>
+        />
+        <div style="min-height: 50px; line-height: 50px">
+            {{ query }}
+        </div>
+        <ElButton @click="validate">
+            校验
+        </ElButton>
+        <ElButton @click="validateField">
+            逐个校验
+        </ElButton>
+        <ElButton @click="clearValidate">
+            清空校验
+        </ElButton>
     </div>
 </template>
 
 <script lang="ts">
+import { defineCondition, HWrapper } from '@xiaohaih/condition-ui';
 import { ref } from 'vue';
-import { HWrapper, defineCondition } from '@xiaohaih/condition-ui';
 
-const conditions = () =>
-    defineCondition({
+function conditions() {
+    return defineCondition({
         name: { t: 'input', placeholder: '名称搜索' },
         address: { t: 'input', placeholder: '地址搜索' },
     });
+}
 
 export default {
     components: {
@@ -306,9 +315,9 @@ export default {
 
 </details>
 
-> -   TODO
->     -   文件上传
->     -   虚拟列表下拉框
+> - TODO
+>     - 文件上传
+>     - 虚拟列表下拉框
 
 <details>
 <summary><strong><a id="wrapper-attrs" href="#wrapper-attrs">容器Props</a></strong></summary>

@@ -1,20 +1,21 @@
+import type { ExtractPropTypes } from 'vue-demi';
 import {
-    ExtractPropTypes,
     computed,
     inject,
+    nextTick,
     onBeforeUnmount,
     PropType,
     ref,
+    shallowRef,
+    toRaw,
     watch,
     watchEffect,
-    toRaw,
-    shallowRef,
-    nextTick,
 } from 'vue-demi';
-import { clone, emptyToValue, isEqualExcludeEmptyValue, isEmptyValue, getChained, get } from '../../utils/index';
-import { CommonMethod, defineCommonMethod, provideKey, ProvideValue } from '../constant';
-import { useDisplay, useDisableInCurrentCycle, useInitialValue } from '../assist';
-import { plainProps } from './props';
+import { clone, emptyToValue, get, getChained, isEmptyValue, isEqualExcludeEmptyValue } from '../../utils/index';
+import { useDisableInCurrentCycle, useDisplay, useInitialValue } from '../assist';
+import type { ProvideValue } from '../constant';
+import { CommonMethod, defineCommonMethod, provideKey } from '../constant';
+import type { plainProps } from './props';
 
 /** 外部需传递的 props */
 export type PlainProps = ExtractPropTypes<typeof plainProps>;
@@ -29,12 +30,10 @@ export function usePlain(props: PlainProps) {
     /** 初始值(重置时回填的值) */
     const initialValue = useInitialValue(props);
     /** 初始是否存在回填值 */
-    const initialBackfillValue =
-        props.query &&
-        (props.fields?.length
-            ? // 防止回填值不存在时产生一个空数组(undefined[])
-              props.fields.map((key) => props.query[key]).filter(Boolean)
-            : props.query[props.field]);
+    const initialBackfillValue = props.fields?.length
+        // 防止回填值不存在时产生一个空数组(undefined[])
+        ? props.fields.map((key) => props.query[key]).filter(Boolean) as ValueType[]
+        : props.query[props.field] as ValueType;
     /** 当前选中值 */
     const checked = ref<ValueType | ValueType[]>(
         initialBackfillValue || (props.defaultValue !== undefined ? clone(initialValue.value) : undefined),
@@ -51,24 +50,25 @@ export function usePlain(props: PlainProps) {
         const _checked = clone(checked.value);
         return props.multiple && props.fields
             ? props.fields.reduce(
-                  (p, k, i) => ((p[k] = emptyToValue((_checked as ValueType[])?.[i], props.emptyValue)), p),
-                  {} as Record<string, any>,
-              )
+                    // eslint-disable-next-line no-sequences
+                    (p, k, i) => ((p[k] = emptyToValue((_checked as ValueType[])?.[i], props.emptyValue)), p),
+                    {} as Record<string, any>,
+                )
             : { [props.field]: emptyToValue(_checked, props.emptyValue) };
     };
 
     const option = defineCommonMethod({
-        reset() {
+        reset(this: void) {
             const { multiple } = props;
             checked.value = (props.resetToInitialValue && initialValue.value?.slice()) || (multiple ? [] : '');
         },
-        resetField(allowEmptyValue?: boolean) {
+        resetField(this: void, allowEmptyValue?: boolean) {
             const r = initialValue.value?.slice();
             const isEmpty = isEmptyValue(r);
             allowEmptyValue ? (checked.value = r || props.multiple ? [] : '') : isEmpty || (checked.value = r);
             return !!allowEmptyValue || !isEmpty;
         },
-        updateWrapperQuery() {
+        updateWrapperQuery(this: void) {
             wrapper && Object.entries(getQuery()).forEach(([k, v]) => wrapper.updateQueryValue(k, v, props.field));
         },
         get validator() {
@@ -80,7 +80,7 @@ export function usePlain(props: PlainProps) {
     wrapper?.register(option);
     const { insetDisabled, insetHide } = useDisplay(props, option);
     /** 不存在回填值且存在默认值时更新父级中的值 */
-    if (!initialBackfillValue && props.defaultValue) {
+    if (initialBackfillValue === undefined && props.defaultValue !== undefined) {
         option.updateWrapperQuery();
     }
 
@@ -107,18 +107,19 @@ export function usePlain(props: PlainProps) {
             ([_field, val], [__field]) => {
                 const _val = props.backfillToValue(val, _field, props.query);
                 if (
-                    checked.value === _val ||
-                    _field.toString() !== __field.toString() ||
-                    isEqualExcludeEmptyValue(_val, checked.value)
-                )
+                    checked.value === _val
+                    || _field.toString() !== __field.toString()
+                    || isEqualExcludeEmptyValue(_val, checked.value)
+                ) {
                     return;
+                }
                 // 实时值改变先判断值是否为空
                 // 为空时, 存在初始值且允许重置为初始值时, 用初始值替代, 且通知上层组件
                 // 否则直接更新值即可
-                checked.value !== _val &&
-                    (isEmptyValue(_val) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
-                        ? change(_val)
-                        : (checked.value = _val));
+                checked.value !== _val
+                && (isEmptyValue(_val) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
+                    ? change(_val)
+                    : (checked.value = _val));
             },
             { flush: 'sync' },
         ),
@@ -141,8 +142,7 @@ export function usePlain(props: PlainProps) {
                 // 类空值时, 不触发 change 事件
                 // 防止表单类监测值发生改变时触发校验
                 // 或内部不允许重置时直接返回
-                if (!props.resetByDependValueChange || isEmptyValue(checked.value) || !allowDependChangeValue.value)
-                    return;
+                if (!props.resetByDependValueChange || isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
                 change(props.multiple ? [] : '');
             },
             { flush: 'sync', ...props.dependWatchOption },
@@ -155,11 +155,11 @@ export function usePlain(props: PlainProps) {
             [
                 () => props.optionsDepend,
                 () =>
-                    wrapper &&
-                    (props.optionsDependFields || props.dependFields) &&
-                    ([] as string[])
+                    wrapper
+                    && (props.optionsDependFields || props.dependFields)
+                    && ([] as string[])
                         .concat(props.optionsDependFields || props.dependFields!)
-                        .map((k) => wrapper!.options[k]),
+                        .map((k) => wrapper.options[k]),
             ],
             ([_depend], [__depend]) => {
                 // 是否启用依赖, 相同时启用才走后续逻辑, 不同时直接走后续逻辑
@@ -219,8 +219,8 @@ export function usePlain(props: PlainProps) {
             // #fix 先判断值是否为空
             // 为空时, 存在初始值且允许重置为初始值时, 用初始值替代, 且通知上层组件
             // 否则直接更新值即可
-            checked.value =
-                isEmptyValue(value) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
+            checked.value
+                = isEmptyValue(value) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
                     ? initialValue.value
                     : value;
         }

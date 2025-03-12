@@ -1,25 +1,27 @@
+import type { ExtractPropTypes } from 'vue-demi';
 import {
+    computed,
     del,
     getCurrentInstance,
+    nextTick,
     onBeforeUnmount,
     provide,
-    ExtractPropTypes,
+    reactive,
     ref,
     set,
-    watch,
-    toRefs,
-    nextTick,
     toRef,
-    computed,
-    reactive,
+    toRefs,
+    watch,
 } from 'vue-demi';
-import { IS_COMPOSITION_VERSION, provideKey, ProvideValue, CommonMethod, defineProvideValue } from '../constant';
-import { wrapperProps } from './props';
+import { hasOwn } from '../../utils/index';
+import type { CommonMethod, ProvideValue } from '../constant';
+import { defineProvideValue, IS_COMPOSITION_VERSION, provideKey } from '../constant';
+import type { wrapperProps } from './props';
 
 /** 外部需传递的 props */
 export type WrapperProps = ExtractPropTypes<typeof wrapperProps>;
 /** 外部传递的方法 */
-export type WrapperOption = {
+export interface WrapperOption {
     /** 触发搜索事件 */
     search?: (params: Record<string, any>) => void;
     /** 触发重置事件 */
@@ -33,7 +35,7 @@ export type WrapperOption = {
      * @param {string} option.nativeField 原始健(不受 as, fields 等属性影响)
      */
     fieldChange?: (option: { field: string; value: any; query: Record<string, any>; nativeField: string }) => void;
-};
+}
 
 /** 封装 wrapper 组件必备的信息 */
 export function useWrapper(props: WrapperProps, option?: WrapperOption) {
@@ -100,7 +102,7 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
         removeUnreferencedField(field: string) {
             let sameFieldCount = 0;
             child.some((v) => {
-                v.getQuery().hasOwnProperty(field) && (sameFieldCount += 1);
+                hasOwn(v.getQuery(), field) && (sameFieldCount += 1);
                 return sameFieldCount;
             });
             if (!sameFieldCount) {
@@ -125,7 +127,7 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
             // 手动处理 query 的值于 backfill 保持一致
             // 防止 query.value 对象改变导致内部监听误触发
             Object.keys(query.value).forEach((k) => {
-                val?.hasOwnProperty(k) || delete query.value[k];
+                (val && hasOwn(val, k)) || delete query.value[k];
             });
             // #fix 只合并有变化的字段, 防止子级 watch 监听时误触发
             const newQuery = {} as Record<string, any>;

@@ -13,23 +13,25 @@
             :value="checked"
             class="condition-item__content"
             @input="change"
-        ></ElTimePicker>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { FormItem as ElFormItem, TimePicker as ElTimePicker } from 'element-ui';
+import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { timepickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { timepickerProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElTimePicker.props);
@@ -38,12 +40,12 @@ const contentPropsKeys = Object.keys(ElTimePicker.props);
  * @file 时间选择器
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HTimePicker',
     components: {
         ElFormItem,
         ElTimePicker,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const { multiple, fields, ..._props } = toRefs(props);
@@ -53,8 +55,8 @@ export default defineComponent({
         );
         const insetFields = computed(
             () =>
-                props.fields ||
-                (isMultiple.value && props.beginField && props.endField
+                props.fields
+                || (isMultiple.value && props.beginField && props.endField
                     ? [props.beginField, props.endField]
                     : undefined),
         );

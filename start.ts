@@ -1,15 +1,17 @@
-import {
+import type {
     ChildProcess,
+} from 'node:child_process';
+import {
     exec,
     ExecOptions,
     ExecOptionsWithStringEncoding,
     execSync,
     spawn,
     spawnSync,
-} from 'child_process';
-import { readFile, writeFile } from 'fs/promises';
-import { resolve } from 'path';
-import { chdir, cwd } from 'process';
+} from 'node:child_process';
+import { readFile, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import process, { chdir, cwd } from 'node:process';
 import pkg from './package.json';
 
 const args = process.argv.splice(2);
@@ -63,14 +65,14 @@ async function main() {
             pkg.pnpm.overrides.vue = version;
             // 处理 vue2 相关的依赖 - start
             version[0] === '2'
-                ? // @ts-ignore
-                  (pkg.pnpm.overrides['vue-template-compiler'] = version)
-                : // @ts-ignore
-                  delete pkg.pnpm.overrides['vue-template-compiler'];
+                // @ts-expect-error 新增字段
+                ? (pkg.pnpm.overrides['vue-template-compiler'] = version)
+                // @ts-expect-error 新增字段
+                : delete pkg.pnpm.overrides['vue-template-compiler'];
             // 处理 vue2 相关的依赖 - end
             commandSuffix = getVersionSuffix(version);
             // 更新包依赖, 并重新安装
-            writeFile(resolve(__dirname, './package.json'), JSON.stringify(pkg, null, 4) + '\n');
+            writeFile(resolve(__dirname, './package.json'), `${JSON.stringify(pkg, null, 4)}\n`);
             await execPromise('pnpm', ['i']).promise;
             // await execPromise('pnpm', [`switch${commandSuffix}`]).promise;
             // try {
@@ -85,7 +87,7 @@ async function main() {
 }
 /**
  * @description: 将执行函数转为异步
- * @param {String} command: 命令
+ * @param {string} command 命令
  */
 function execPromise(command: string, args: string[]) {
     const result = { command: null, promise: null } as unknown as { command: ChildProcess; promise: Promise<void> };

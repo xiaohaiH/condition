@@ -1,7 +1,7 @@
 <template>
-    <ElForm v-bind="rootProps" v-on="$listeners" ref="formRef" :model="query">
+    <ElForm v-bind="rootProps" ref="formRef" :model="query" v-on="$listeners">
         <SortComponent :disabled="!sortable">
-            <slot name="prepend"></slot>
+            <slot name="prepend" />
             <template v-for="(item, key) of datum">
                 <component
                     :is="getComponent(item.t)"
@@ -15,11 +15,13 @@
                     :query="query"
                 />
             </template>
-            <slot></slot>
+            <slot />
         </SortComponent>
         <slot name="btn" :search="search" :reset="reset" :resetAndSearch="resetAndSearch">
             <template v-if="renderBtn">
-                <ElButton :size="size" @click="search">{{ searchText }}</ElButton>
+                <ElButton :size="size" @click="search">
+                    {{ searchText }}
+                </ElButton>
                 <ElButton :size="size" @click="resetTriggerSearch ? resetAndSearch() : reset()">
                     {{ resetText }}
                 </ElButton>
@@ -29,12 +31,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, markRaw, onMounted, PropType, ref } from 'vue-demi';
-import { Form as ElForm, Button as ElButton } from 'element-ui';
 import { useWrapper } from '@xiaohaih/condition-core';
+import { Button as ElButton, Form as ElForm } from 'element-ui';
+import { computed, defineComponent, markRaw, onMounted, PropType, ref } from 'vue-demi';
 import { pick } from '../../utils';
-import { wrapperProps as props, wrapperEmits as emits, formPropKeys } from './props';
 import { getComponent } from './components';
+import { wrapperEmits as emits, formPropKeys, wrapperProps as props } from './props';
 import { SortComponent } from './sortable';
 
 /**
@@ -42,12 +44,12 @@ import { SortComponent } from './sortable';
  */
 export default defineComponent({
     name: 'HWrapper',
-    inheritAttrs: false,
     components: {
         SortComponent,
         ElForm,
         ElButton,
     },
+    inheritAttrs: false,
     props,
     emits,
     setup(props, context) {

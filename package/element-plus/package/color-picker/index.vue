@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -19,30 +19,32 @@
                 :disabled="insetDisabled"
                 :model-value="(checked as string)"
                 class="condition-item__content"
-                @change="(change as () => void)"
                 v-bind.prop="dynamicFields?.({ query })"
-            ></ElColorPicker>
+                @change="(change as () => void)"
+            />
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
+import { getNode, usePlain } from '@xiaohaih/condition-core';
+import { ElColorPicker, ElFormItem } from 'element-plus';
 import { computed, defineComponent, ref } from 'vue';
-import { ElFormItem, ElColorPicker } from 'element-plus';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { colorPickerProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { colorPickerProps as props } from './props';
 
 const { label, ...p } = ElColorPicker.props;
 const contentPropsKeys = Object.keys(p);
@@ -51,12 +53,12 @@ const contentPropsKeys = Object.keys(p);
  * @file 颜色选择器
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HColorPicker',
     components: {
         ElFormItem,
         ElColorPicker,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);

@@ -1,6 +1,6 @@
-import type { PropType } from 'vue-demi';
-import { DatePicker as ElDatePicker } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { DatePicker as ElDatePicker } from 'element-ui';
+import type { PropType } from 'vue-demi';
 import { commonProps, formItemProps } from '../share';
 
 function getProps(data: any): Record<string, any> {

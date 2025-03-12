@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ColorPicker as ElColorPicker } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ColorPicker as ElColorPicker } from 'element-ui';
+import { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const colorPickerProps = {

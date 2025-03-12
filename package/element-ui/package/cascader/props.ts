@@ -1,6 +1,6 @@
-import type { PropType } from 'vue-demi';
-import { Cascader as ElCascader } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { Cascader as ElCascader } from 'element-ui';
+import type { PropType } from 'vue-demi';
 // import { treeProps } from '@xiaohaih/condition-core';
 import { commonProps, formItemProps } from '../share';
 

@@ -1,7 +1,7 @@
 <template>
     <ElForm v-bind="rootProps" ref="formRef" :model="query">
         <SortComponent :disabled="!sortable">
-            <slot name="prepend"></slot>
+            <slot name="prepend" />
             <template v-for="(item, key) of datum" :key="key">
                 <component
                     :is="getComponent(item.t)!"
@@ -14,21 +14,23 @@
                     :query="query"
                 >
                     <template v-if="$slots[item.as || key]" #default="scope">
-                        <slot :name="item.as || key" v-bind="scope"></slot>
+                        <slot :name="item.as || key" v-bind="scope" />
                     </template>
                     <template v-if="`${$slots[item.as || key]}Before`" #before="scope">
-                        <slot :name="`${item.as || key}Before`" v-bind="scope"></slot>
+                        <slot :name="`${item.as || key}Before`" v-bind="scope" />
                     </template>
                     <template v-if="`${$slots[item.as || key]}After`" #after="scope">
-                        <slot :name="`${item.as || key}After`" v-bind="scope"></slot>
+                        <slot :name="`${item.as || key}After`" v-bind="scope" />
                     </template>
                 </component>
             </template>
-            <slot></slot>
+            <slot />
         </SortComponent>
         <slot name="btn" :search="search" :reset="reset" :resetAndSearch="resetAndSearch">
             <template v-if="renderBtn">
-                <ElButton :size="size" @click="search">{{ searchText }}</ElButton>
+                <ElButton :size="size" @click="search">
+                    {{ searchText }}
+                </ElButton>
                 <ElButton :size="size" @click="resetTriggerSearch ? resetAndSearch() : reset()">
                     {{ resetText }}
                 </ElButton>
@@ -38,25 +40,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, PropType, ref, computed, onMounted } from 'vue';
-import { ElForm, ElButton } from 'element-plus';
 import { useWrapper } from '@xiaohaih/condition-core';
+import { ElButton, ElForm } from 'element-plus';
+import { computed, defineComponent, markRaw, onMounted, PropType, provide, ref } from 'vue';
 import { pick } from '../../utils';
-import { wrapperProps as props, wrapperEmits as emits, formPropKeys } from './props';
 import { getComponent } from './components';
+import { wrapperEmits as emits, formPropKeys, wrapperProps as props } from './props';
 import { SortComponent } from './sortable';
+import { wrapperProvideKey } from './config';
 
 /**
  * @file 条件容器
  */
 export default defineComponent({
     name: 'HWrapper',
-    inheritAttrs: false,
     components: {
         SortComponent,
         ElForm,
         ElButton,
     },
+    inheritAttrs: false,
     props,
     emits,
     setup(props, context) {
@@ -79,13 +82,15 @@ export default defineComponent({
             props.immediateSearch && search(wrapper.getQuery());
         });
 
-        return {
+        const result = {
             ...wrapper,
             rootProps,
             formRef,
             getComponent,
             resetAndSearch,
         };
+        provide(wrapperProvideKey, result);
+        return result;
     },
 });
 </script>

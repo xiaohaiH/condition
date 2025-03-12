@@ -7,24 +7,6 @@ const { HWrapper, defineCondition } = window.HCondition;
  */
 export default defineComponent({
     name: '',
-    template: `
-        <div>
-            <HWrapper
-                style="display: flex; flex-wrap: wrap"
-                ref="formRef"
-                :datum="formCondition"
-                :rules="rules"
-                :backfill="query"
-                :render-btn="false"
-                :realtime="true"
-                @search="query = $event"
-            ></HWrapper>
-            <div style="min-height: 50px; line-height: 50px">{{ query }}</div>
-            <ElButton @click="validate">校验</ElButton>
-            <ElButton @click="validateField">逐个校验</ElButton>
-            <ElButton @click="clearValidate">清空校验</ElButton>
-        </div>
-    `,
     components: { HWrapper },
     // props: {},
     setup(props, context) {
@@ -335,6 +317,24 @@ export default defineComponent({
             clearValidate,
         };
     },
+    template: `
+        <div>
+            <HWrapper
+                style="display: flex; flex-wrap: wrap"
+                ref="formRef"
+                :datum="formCondition"
+                :rules="rules"
+                :backfill="query"
+                :render-btn="false"
+                :realtime="true"
+                @search="query = $event"
+            ></HWrapper>
+            <div style="min-height: 50px; line-height: 50px">{{ query }}</div>
+            <ElButton @click="validate">校验</ElButton>
+            <ElButton @click="validateField">逐个校验</ElButton>
+            <ElButton @click="clearValidate">清空校验</ElButton>
+        </div>
+    `,
 });
 </script>
 

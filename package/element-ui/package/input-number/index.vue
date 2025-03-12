@@ -13,23 +13,25 @@
             :value="checked === 0 ? 0 : checked || undefined"
             class="condition-item__content"
             @input="debounceChange"
-        ></ElInputNumber>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { FormItem as ElFormItem, InputNumber as ElInputNumber } from 'element-ui';
+import { computed, defineComponent, ref } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { inputNumberProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { inputNumberProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElInputNumber.props);
@@ -38,12 +40,12 @@ const contentPropsKeys = Object.keys(ElInputNumber.props);
  * @file 数字输入框
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HInputNumber',
     components: {
         ElFormItem,
         ElInputNumber,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);
@@ -60,7 +62,8 @@ export default defineComponent({
             timer && clearTimeout(timer);
             if (realtime) {
                 plain.change(value);
-            } else {
+            }
+            else {
                 plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;

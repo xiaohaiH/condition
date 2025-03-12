@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { Slider as ElSlider } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { Slider as ElSlider } from 'element-ui';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const sliderProps = {

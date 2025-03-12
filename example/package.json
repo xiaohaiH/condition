@@ -1,8 +1,8 @@
 {
     "name": "example",
-    "private": true,
-    "version": "0.0.1",
     "type": "module",
+    "version": "0.0.1",
+    "private": true,
     "author": "xiaohaih",
     "scripts": {
         "dev": "vite --host",
@@ -21,7 +21,7 @@
         "@xiaohaih/condition-el": "workspace:*",
         "@xiaohaih/condition-el-plus": "workspace:^",
         "@xiaohaih/vue-monaco-editor": "^0.0.6",
-        "element-plus": "^2.8.0",
+        "element-plus": "^2.9.5",
         "element-ui": "2.15.10",
         "monaco-editor": "^0.44.0",
         "split.js": "^1.6.5",

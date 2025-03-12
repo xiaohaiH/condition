@@ -1,21 +1,24 @@
 {
     "name": "@xiaohaih/condition-core",
-    "version": "0.6.1",
+    "version": "0.6.3",
     "description": "",
-    "main": "dist/index.cjs.js",
-    "jsdelivr": "dist/index.umd.js",
-    "unpkg": "dist/index.umd.js",
-    "module": "index.ts",
-    "types": "index.ts",
+    "author": "xiaohaih",
+    "license": "ISC",
+    "keywords": [],
     "exports": {
         ".": {
-            "require": "./dist/index.cjs.js",
+            "types": "./index.ts",
             "import": "./index.ts",
-            "browser": "./dist/index.esm.js",
-            "types": "./index.ts"
+            "require": "./dist/index.cjs.js",
+            "browser": "./dist/index.esm.js"
         },
         "./*": "./*"
     },
+    "main": "dist/index.cjs.js",
+    "module": "index.ts",
+    "unpkg": "dist/index.umd.js",
+    "jsdelivr": "dist/index.umd.js",
+    "types": "index.ts",
     "scripts": {
         "vue2": "vue-demi-switch 2",
         "vue2.7": "vue-demi-switch 2.7",
@@ -24,9 +27,15 @@
         "build:dts": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [],
-    "author": "xiaohaih",
-    "license": "ISC",
+    "peerDependencies": {
+        "@vue/composition-api": "^1.0.0-rc.1",
+        "vue": "^2.0.0 || >=3.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@vue/composition-api": {
+            "optional": true
+        }
+    },
     "dependencies": {
         "vue-demi": "0.14.5"
     },
@@ -41,15 +50,6 @@
         "rollup-plugin-terser": "^7.0.2",
         "rollup-plugin-typescript2": "^0.34.1",
         "vue": "2.7.0"
-    },
-    "peerDependencies": {
-        "@vue/composition-api": "^1.0.0-rc.1",
-        "vue": "^2.0.0 || >=3.0.0"
-    },
-    "peerDependenciesMeta": {
-        "@vue/composition-api": {
-            "optional": true
-        }
     },
     "publishConfig": {
         "registry": "https://registry.npmjs.org/",

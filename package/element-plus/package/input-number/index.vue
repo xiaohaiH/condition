@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -22,39 +22,41 @@
                 :disabled="insetDisabled"
                 :model-value="checked === 0 ? 0 : (checked as number) || undefined"
                 class="condition-item__content"
-                @update:model-value="debounceChange"
                 v-bind.prop="dynamicFields?.({ query })"
+                @update:model-value="debounceChange"
             >
                 <template v-if="slotDecreaseIcon || $slots.decreaseIcon" #decrease-icon>
-                    <slot v-if="$slots.decreaseIcon" name="decrease-icon"></slot>
-                    <component v-else :is="slotDecreaseIcon!"></component>
+                    <slot v-if="$slots.decreaseIcon" name="decrease-icon" />
+                    <component :is="slotDecreaseIcon!" v-else />
                 </template>
                 <template v-if="slotIncreaseIcon || $slots.increaseIcon" #increase-icon>
-                    <slot v-if="$slots.increaseIcon" name="increase-icon"></slot>
-                    <component v-else :is="slotIncreaseIcon!"></component>
+                    <slot v-if="$slots.increaseIcon" name="increase-icon" />
+                    <component :is="slotIncreaseIcon!" v-else />
                 </template>
             </ElInputNumber>
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { ElFormItem, ElInputNumber } from 'element-plus';
+import { computed, defineComponent, ref } from 'vue';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { inputNumberProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { inputNumberProps as props } from './props';
 
 const { label, ...p } = ElInputNumber.props;
 const contentPropsKeys = Object.keys(p);
@@ -63,12 +65,12 @@ const contentPropsKeys = Object.keys(p);
  * @file 数字输入框
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HInputNumber',
     components: {
         ElFormItem,
         ElInputNumber,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);
@@ -85,7 +87,8 @@ export default defineComponent({
             timer && clearTimeout(timer);
             if (realtime) {
                 plain.change(value);
-            } else {
+            }
+            else {
                 plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
@@ -100,11 +103,11 @@ export default defineComponent({
         }
         const slotProps = computed(() => ({
             ...contentProps.value,
-            disabled: plain.insetDisabled.value,
-            modelValue: plain.checked.value === 0 ? 0 : (plain.checked.value as number) || undefined,
+            'disabled': plain.insetDisabled.value,
+            'modelValue': plain.checked.value === 0 ? 0 : (plain.checked.value as number) || undefined,
             'onUpdate:modelValue': debounceChange,
-            class: 'condition-item__content',
-            extraOption: {
+            'class': 'condition-item__content',
+            'extraOption': {
                 query: props.query,
                 search: plain.wrapper!.search,
                 insetSearch: plain.wrapper!.insetSearch,

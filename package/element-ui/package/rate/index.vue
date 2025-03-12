@@ -11,23 +11,25 @@
             :value="checked"
             class="condition-item__content"
             @change="change"
-        ></ElRate>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { FormItem as ElFormItem, Rate as ElRate } from 'element-ui';
+import { computed, defineComponent, ref } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { rateProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { rateProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElRate.props);
@@ -36,12 +38,12 @@ const contentPropsKeys = Object.keys(ElRate.props);
  * @file 评分
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HRate',
     components: {
         ElFormItem,
         ElRate,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);

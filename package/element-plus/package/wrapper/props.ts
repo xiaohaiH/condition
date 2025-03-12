@@ -1,6 +1,7 @@
-import { PropType } from 'vue';
-import { ElForm, componentSizes } from 'element-plus';
 import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core';
+import type { componentSizes } from 'element-plus';
+import { ElForm } from 'element-plus';
+import type { PropType } from 'vue';
 
 export const formPropKeys = Object.keys(ElForm.props).concat('class', 'style');
 

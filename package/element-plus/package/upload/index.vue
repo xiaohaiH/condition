@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -20,57 +20,59 @@
                 :disabled="insetDisabled"
                 :file-list="(checked as any[])"
                 class="condition-item__content"
-                @update:file-list="change"
                 :before-upload="finalBeforeUpload"
                 :httpRequest="(finalHttpRequest as any)"
                 :onExceed="handleExceed"
                 v-bind.prop="dynamicFields?.({ query })"
+                @update:file-list="change"
             >
                 <template #default>
-                    <slot v-if="$slots.default" name="default"></slot>
+                    <slot v-if="$slots.default" name="default" />
                     <component
-                        v-else-if="slotDefault"
                         :is="getNode(slotDefault, { backfill, query, uploadRef })"
-                    ></component>
+                        v-else-if="slotDefault"
+                    />
                     <template v-else>
                         <ElButton>{{ buttonText }}</ElButton>
                     </template>
                 </template>
                 <template v-if="slotTrigger || $slots.trigger" #trigger>
-                    <slot v-if="$slots.trigger" name="trigger"></slot>
-                    <component v-else :is="getNode(slotTrigger, { backfill, query, uploadRef })"></component>
+                    <slot v-if="$slots.trigger" name="trigger" />
+                    <component :is="getNode(slotTrigger, { backfill, query, uploadRef })" v-else />
                 </template>
                 <template v-if="slotTip || $slots.tip" #tip>
-                    <slot v-if="$slots.tip" name="tip"></slot>
-                    <component v-else :is="getNode(slotTip, { backfill, query, uploadRef })"></component>
+                    <slot v-if="$slots.tip" name="tip" />
+                    <component :is="getNode(slotTip, { backfill, query, uploadRef })" v-else />
                 </template>
                 <template v-if="slotFile || $slots.file" #file="{ file }">
-                    <slot v-if="$slots.file" name="file"></slot>
-                    <component v-else :is="getNode(slotFile, { backfill, query, uploadRef, file })"></component>
+                    <slot v-if="$slots.file" name="file" />
+                    <component :is="getNode(slotFile, { backfill, query, uploadRef, file })" v-else />
                 </template>
             </ElUpload>
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted } from 'vue';
-import { ElFormItem, ElUpload, ElButton, genFileId } from 'element-plus';
-import type { UploadFile, UploadUserFile, UploadRawFile, UploadRequestOptions } from 'element-plus';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
+import { ElButton, ElFormItem, ElUpload, genFileId } from 'element-plus';
+import type { UploadFile, UploadRawFile, UploadRequestOptions, UploadUserFile } from 'element-plus';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { uploadProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { uploadProps as props } from './props';
 
 const { httpRequest, onExceed, ...args } = ElUpload.props;
 const contentPropsKeys = Object.keys(args);
@@ -79,12 +81,12 @@ const contentPropsKeys = Object.keys(args);
  * @file 上传组件
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HUpload',
     components: {
         ElFormItem,
         ElUpload,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const uploadRef = ref<InstanceType<typeof ElUpload>>();
@@ -116,8 +118,7 @@ export default defineComponent({
             // @ts-expect-error 忽视参数未声明的报错
             if (props.limit !== 1) return props.onExceed?.(files, uploadFiles);
             const file = files[0] as UploadRawFile;
-            if (props.fileMaxSize && file.size > props.fileMaxSize)
-                return props.fileMaxSizeToast(file, props.fileMaxSize);
+            if (props.fileMaxSize && file.size > props.fileMaxSize) { return props.fileMaxSizeToast(file, props.fileMaxSize); }
             const r = uploadFiles.find((v) => v.raw && v.raw.name === file.name && v.raw.type === file.type);
             if (r) return props.fileRepeatToast(r.raw!);
             uploadRef.value!.clearFiles();
@@ -143,11 +144,11 @@ export default defineComponent({
 
         const slotProps = computed(() => ({
             ...contentProps.value,
-            disabled: plain.insetDisabled.value,
-            fileList: plain.checked.value,
+            'disabled': plain.insetDisabled.value,
+            'fileList': plain.checked.value,
             'onUpdate:fileList': plain.change,
-            class: 'condition-item__content',
-            extraOption: {
+            'class': 'condition-item__content',
+            'extraOption': {
                 query: props.query,
                 search: plain.wrapper!.search,
                 insetSearch: plain.wrapper!.insetSearch,

@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -19,30 +19,32 @@
                 :disabled="insetDisabled"
                 :model-value="(checked as number)"
                 class="condition-item__content"
-                @update:model-value="(change as () => void)"
                 v-bind.prop="dynamicFields?.({ query })"
-            ></ElSlider>
+                @update:model-value="(change as () => void)"
+            />
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs, reactive } from 'vue';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { ElFormItem, ElSlider } from 'element-plus';
+import { computed, defineComponent, reactive, ref, toRefs } from 'vue';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { sliderProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { sliderProps as props } from './props';
 
 const { label, ...p } = ElSlider.props;
 const contentPropsKeys = Object.keys(p);
@@ -51,12 +53,12 @@ const contentPropsKeys = Object.keys(p);
  * @file 滑块
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HSlider',
     components: {
         ElFormItem,
         ElSlider,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const { range, defaultValue, ...args } = toRefs(props);
@@ -68,11 +70,11 @@ export default defineComponent({
         const contentProps = computed(() => pick(props, contentPropsKeys));
         const slotProps = computed(() => ({
             ...contentProps.value,
-            disabled: plain.insetDisabled.value,
-            modelValue: plain.checked.value,
+            'disabled': plain.insetDisabled.value,
+            'modelValue': plain.checked.value,
             'onUpdate:modelValue': plain.change,
-            class: 'condition-item__content',
-            extraOption: {
+            'class': 'condition-item__content',
+            'extraOption': {
                 query: props.query,
                 search: plain.wrapper!.search,
                 insetSearch: plain.wrapper!.insetSearch,

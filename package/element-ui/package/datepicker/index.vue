@@ -9,26 +9,30 @@
     >
         <ElDatePicker
             v-bind="contentProps"
-            v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
             class="condition-item__content"
+            v-on="$listeners"
             @input="change"
-        ></ElDatePicker>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)" />
+            </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
+import { getNode, usePlain } from '@xiaohaih/condition-core';
+import { DatePicker as ElDatePicker, FormItem as ElFormItem } from 'element-ui';
 import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
-import { FormItem as ElFormItem, DatePicker as ElDatePicker } from 'element-ui';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { datepickerProps as props, elDatepickerProps } from './props';
 import { formItemPropKeys } from '../share';
+import { elDatepickerProps, datepickerProps as props } from './props';
 
 const reg = /range$/;
 function isRange(str: string | undefined) {
@@ -41,12 +45,12 @@ const contentPropsKeys = Object.keys(surplusProps);
  * @file 日期选择
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HDatepicker',
     components: {
         ElFormItem,
         ElDatePicker,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const { multiple, fields, ..._props } = toRefs(props);
@@ -56,8 +60,8 @@ export default defineComponent({
         );
         const insetFields = computed(
             () =>
-                props.fields ||
-                (isMultiple.value && props.beginField && props.endField
+                props.fields
+                || (isMultiple.value && props.beginField && props.endField
                     ? [props.beginField, props.endField]
                     : undefined),
         );

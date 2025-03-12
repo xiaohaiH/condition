@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { TimePicker as ElTimePicker } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { TimePicker as ElTimePicker } from 'element-ui';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const timepickerProps = {

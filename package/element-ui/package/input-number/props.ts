@@ -1,6 +1,7 @@
-import { PropType, VNode } from 'vue';
-import { InputNumber as ElInputNumber } from 'element-ui';
 import { plainProps } from '@xiaohaih/condition-core';
+import { InputNumber as ElInputNumber } from 'element-ui';
+import type { PropType } from 'vue';
+import { VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const inputNumberProps = {

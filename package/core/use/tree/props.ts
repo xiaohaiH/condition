@@ -1,4 +1,4 @@
-import { PropType } from 'vue-demi';
+import type { PropType } from 'vue-demi';
 import { commonProps, type GetOptions } from '../share';
 
 /** 树形条件类 props */

@@ -1,6 +1,7 @@
-import { ref, watch, onBeforeUnmount, ExtractPropTypes, nextTick, computed } from 'vue-demi';
-import { CommonMethod } from './constant';
-import { commonProps } from './share';
+import type { ExtractPropTypes } from 'vue-demi';
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue-demi';
+import type { CommonMethod } from './constant';
+import type { commonProps } from './share';
 
 /** 获取条件的初始值 */
 export function useInitialValue<T extends ExtractPropTypes<Readonly<typeof commonProps>>>(props: T) {
@@ -36,7 +37,8 @@ export function useDisplay<T extends ExtractPropTypes<Readonly<typeof commonProp
             if (currentValue !== newValue) {
                 insetHide.value = props.hide(getOption());
             }
-        } else if (typeof props.disabled === 'function') {
+        }
+        else if (typeof props.disabled === 'function') {
             const currentValue = insetDisabled.value;
             const newValue = props.disabled(getOption());
             if (currentValue !== newValue) {
@@ -63,6 +65,7 @@ export function useDisplay<T extends ExtractPropTypes<Readonly<typeof commonProp
             },
         ),
     ];
+    // eslint-disable-next-line no-sequences
     onBeforeUnmount(() => (listeners.forEach((o) => o()), (listeners = [])));
     return { insetDisabled, insetHide };
 }

@@ -1,6 +1,7 @@
-import { PropType } from 'vue-demi';
-import { Form as ElForm, ComponentSize } from 'element-ui';
 import { wrapperProps as CoreWrapperProps } from '@xiaohaih/condition-core';
+import type { ComponentSize } from 'element-ui';
+import { Form as ElForm } from 'element-ui';
+import type { PropType } from 'vue-demi';
 
 // @ts-expect-error Form.props 报错
 export const formPropKeys = Object.keys(ElForm.props);

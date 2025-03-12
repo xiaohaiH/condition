@@ -7,8 +7,8 @@
         v-bind.prop="formDynamicFields?.({ query })"
     >
         <template v-if="slotBefore || $slots.before">
-            <component v-if="slotBefore" :is="getNode(slotBefore!, slotProps)"></component>
-            <slot v-else name="before" v-bind="slotProps"></slot>
+            <component :is="getNode(slotBefore!, slotProps)" v-if="slotBefore" />
+            <slot v-else name="before" v-bind="slotProps" />
         </template>
         <template v-if="slotDefault">
             <component :is="getNode(slotDefault, slotProps)" />
@@ -19,30 +19,32 @@
                 :disabled="insetDisabled"
                 :model-value="(checked as number)"
                 class="condition-item__content"
-                @change="change"
                 v-bind.prop="dynamicFields?.({ query })"
-            ></ElRate>
+                @change="change"
+            />
         </slot>
         <template v-if="slotAfter || $slots.after">
-            <component v-if="slotAfter" :is="getNode(slotAfter!, slotProps)"></component>
-            <slot v-else name="after" v-bind="slotProps"></slot>
+            <component :is="getNode(slotAfter!, slotProps)" v-if="slotAfter" />
+            <slot v-else name="after" v-bind="slotProps" />
         </template>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
             <template v-else>
-                <component :is="getNode(postfix, checked)"></component>
+                <component :is="getNode(postfix, checked)" />
             </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { ElFormItem, ElRate } from 'element-plus';
+import { computed, defineComponent, ref } from 'vue';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { rateProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { rateProps as props } from './props';
 
 const { label, ...p } = ElRate.props;
 const contentPropsKeys = Object.keys(p);
@@ -51,12 +53,12 @@ const contentPropsKeys = Object.keys(p);
  * @file 评分
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HRate',
     components: {
         ElFormItem,
         ElRate,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);

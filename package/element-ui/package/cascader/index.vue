@@ -7,28 +7,32 @@
     >
         <ElCascader
             v-bind="contentProps"
-            v-on="$listeners"
             :props="customProps"
             :disabled="insetDisabled"
             :options="finalOption"
             :value="checked"
             class="condition-item__content"
+            v-on="$listeners"
             @change="change"
-        ></ElCascader>
+        />
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)" />
+            </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, reactive, toRefs } from 'vue-demi';
-import { FormItem as ElFormItem, Cascader as ElCascader } from 'element-ui';
+import { getNode, usePlain, useTree } from '@xiaohaih/condition-core';
+import { Cascader as ElCascader, FormItem as ElFormItem } from 'element-ui';
+import { computed, defineComponent, reactive, toRefs } from 'vue-demi';
 import { pick } from '../../utils';
-import { useTree, getNode, usePlain } from '@xiaohaih/condition-core';
-import { cascaderProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { cascaderProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElCascader.props);
@@ -37,12 +41,12 @@ const contentPropsKeys = Object.keys(ElCascader.props);
  * @file 级联选择
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HCascader',
     components: {
         ElFormItem,
         ElCascader,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const { multiple: a, ...args } = toRefs(props);

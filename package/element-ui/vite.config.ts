@@ -1,13 +1,12 @@
-import { resolve } from 'path';
-import { defineConfig } from 'vite';
-import { createVuePlugin } from 'vite-plugin-vue2';
+import { resolve } from 'node:path';
 import { terser } from 'rollup-plugin-terser';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import { createVuePlugin } from 'vite-plugin-vue2';
 import pkgJson from './package.json';
 
 const external = ['vue', 'vue-demi', 'element-ui'];
-const globals = { vue: 'Vue', 'vue-demi': 'VueDemi', 'element-ui': 'ELEMENT' };
-// @ts-ignore
+const globals = { 'vue': 'Vue', 'vue-demi': 'VueDemi', 'element-ui': 'ELEMENT' };
 const pkg = pkgJson.publishConfig || pkgJson;
 
 /**
@@ -71,7 +70,7 @@ export default defineConfig({
                     entryFileNames: retainMinSuffix(pkg.unpkg, true),
                     format: 'umd',
                     name: 'HCondition',
-                    globals: globals,
+                    globals,
                     plugins: [terser({ format: { comments: false } })],
                 },
             ],

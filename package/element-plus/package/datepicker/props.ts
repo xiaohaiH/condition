@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElDatePicker } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElDatePicker } from 'element-plus';
+import type { PropType } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 // @ts-expect-error UI.props报错

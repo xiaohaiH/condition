@@ -8,10 +8,10 @@
         <ElRadioGroup
             ref="radioGroupRef"
             v-bind="contentProps"
-            v-on="$listeners"
             :disabled="insetDisabled"
             :value="checked"
             class="condition-item__content"
+            v-on="$listeners"
             @input="change"
         >
             <template v-for="item of finalOption">
@@ -19,31 +19,35 @@
                     :is="radioType"
                     :key="item[valueKey]"
                     :label="item[valueKey]"
-                    v-on:[eventName].native.prevent="customChange(item[valueKey], checked, change)"
+                    @[eventName].native.prevent="customChange(item[valueKey], checked, change)"
                 >
                     {{ item[labelKey] }}
                 </component>
             </template>
         </ElRadioGroup>
         <div v-if="postfix" class="condition-item__postfix">
-            <template v-if="typeof postfix === 'string'">{{ postfix }}</template>
-            <template v-else><component :is="getNode(postfix, checked)"></component></template>
+            <template v-if="typeof postfix === 'string'">
+                {{ postfix }}
+            </template>
+            <template v-else>
+                <component :is="getNode(postfix, checked)" />
+            </template>
         </div>
     </ElFormItem>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue-demi';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import {
     FormItem as ElFormItem,
-    RadioGroup as ElRadioGroup,
-    RadioButton as ElRadioButton,
     Radio as ElRadio,
+    RadioButton as ElRadioButton,
+    RadioGroup as ElRadioGroup,
 } from 'element-ui';
+import { computed, defineComponent, ref } from 'vue-demi';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { radioProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { radioProps as props } from './props';
 
 // @ts-expect-error UI.props报错
 const contentPropsKeys = Object.keys(ElRadioGroup.props);
@@ -52,7 +56,6 @@ const contentPropsKeys = Object.keys(ElRadioGroup.props);
  * @file 单选框
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HRadio',
     components: {
         ElFormItem,
@@ -60,6 +63,7 @@ export default defineComponent({
         ElRadioButton,
         ElRadio,
     },
+    inheritAttrs: false,
     props,
     setup(props, context) {
         const plain = usePlain(props);

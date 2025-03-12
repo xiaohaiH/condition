@@ -1,5 +1,20 @@
 # @xiaohaih/condition-el-plus
 
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies
+  - @xiaohaih/condition-core@0.6.4
+
+## 0.6.3
+
+### Patch Changes
+
+- 临时修复bug
+- Updated dependencies
+  - @xiaohaih/condition-core@0.6.3
+
 ## 0.6.2
 
 ### Patch Changes

@@ -1,19 +1,19 @@
-import fs from 'fs';
+import fs from 'node:fs';
+import { DEFAULT_EXTENSIONS } from '@babel/core';
+import babel from '@rollup/plugin-babel';
+import buble from '@rollup/plugin-buble';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import type { OutputOptions, Plugin, RollupOptions } from 'rollup';
+import dts from 'rollup-plugin-dts';
+import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-typescript2';
 import vuePlugin from 'rollup-plugin-vue';
-import { terser } from 'rollup-plugin-terser';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import buble from '@rollup/plugin-buble';
-import babel from '@rollup/plugin-babel';
-import dts from 'rollup-plugin-dts';
-import { DEFAULT_EXTENSIONS } from '@babel/core';
-import type { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import { createVuePlugin as vue } from 'vite-plugin-vue2';
 
 const external = ['vue', 'vue-demi', 'element-ui', 'core-condition'];
 const globals = {
-    vue: 'Vue',
+    'vue': 'Vue',
     // 'vue-composition-api': 'VueCompositionAPI',
     'vue-demi': 'VueDemi',
     'core-condition': 'CoreCondition',

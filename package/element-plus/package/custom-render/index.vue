@@ -22,27 +22,27 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { getNode, usePlain } from '@xiaohaih/condition-core';
 import { ElFormItem } from 'element-plus';
+import { computed, defineComponent, ref } from 'vue';
 import { pick } from '../../utils';
-import { usePlain, getNode } from '@xiaohaih/condition-core';
-import { customRenderProps as props } from './props';
 import { formItemPropKeys } from '../share';
+import { customRenderProps as props } from './props';
 
 /**
  * @file 自定义渲染
  */
 export default defineComponent({
-    inheritAttrs: false,
     name: 'HCustomRender',
     components: {
         ElFormItem,
     },
+    inheritAttrs: false,
     props,
     setup(props, ctx) {
         const plain = usePlain(props);
         const formItemProps = computed(() => pick(props, formItemPropKeys));
-        const customRender = props.render(plain);
+        const customRender = props.render({ ...plain, props });
 
         return {
             ...plain,

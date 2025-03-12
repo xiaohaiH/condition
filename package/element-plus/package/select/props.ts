@@ -1,6 +1,6 @@
-import { PropType } from 'vue';
-import { ElSelect } from 'element-plus';
 import { plainProps } from '@xiaohaih/condition-core';
+import { ElSelect } from 'element-plus';
+import type { PropType, VNode } from 'vue';
 import { commonProps, formItemProps } from '../share';
 
 export const selectProps = {
@@ -21,4 +21,6 @@ export const selectProps = {
     filterMethod: { type: Function as unknown as PropType<(val: string, option: unknown) => boolean> },
     /** 选项禁用字段 */
     disabledKey: { type: String as PropType<string>, default: 'disabled' },
+    /** 默认插槽 */
+    optionSlot: { type: [Object, Function] as PropType<VNode | ((option: { item: Record<string, any>; parent?: Record<string, any> }) => VNode)> },
 } as const;
