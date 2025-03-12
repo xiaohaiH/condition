@@ -36,6 +36,5 @@ export * from './tree-select/props';
 export { default as HUpload } from './upload/index.vue';
 export * from './upload/props';
 export * from './wrapper/components';
-export * from './wrapper/config';
 export { default as HWrapper } from './wrapper/index.vue';
 export * from './wrapper/props';

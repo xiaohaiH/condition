@@ -47,7 +47,6 @@ import { pick } from '../../utils';
 import { getComponent } from './components';
 import { wrapperEmits as emits, formPropKeys, wrapperProps as props } from './props';
 import { SortComponent } from './sortable';
-import { wrapperProvideKey } from './config';
 
 /**
  * @file 条件容器
@@ -82,15 +81,13 @@ export default defineComponent({
             props.immediateSearch && search(wrapper.getQuery());
         });
 
-        const result = {
+        return {
             ...wrapper,
             rootProps,
             formRef,
             getComponent,
             resetAndSearch,
         };
-        provide(wrapperProvideKey, result);
-        return result;
     },
 });
 </script>
