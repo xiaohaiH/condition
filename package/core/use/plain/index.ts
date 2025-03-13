@@ -75,6 +75,7 @@ export function usePlain(props: PlainProps) {
             return props.validator;
         },
         getQuery,
+        onChangeByBackfill: () => isSyncedQueryValue = false,
     });
 
     wrapper?.register(option);
@@ -96,6 +97,11 @@ export function usePlain(props: PlainProps) {
             },
         ),
     );
+    /**
+     * checked.value 是否同步了 query 的值
+     * 在 wrapper.backfill 中批量更新值时, 禁止依赖做处理
+     */
+    let isSyncedQueryValue = false;
     // 实时值发生变化时触发更新 - 共享同一个字段
     unwatchs.push(
         watch(
@@ -116,10 +122,12 @@ export function usePlain(props: PlainProps) {
                 // 实时值改变先判断值是否为空
                 // 为空时, 存在初始值且允许重置为初始值时, 用初始值替代, 且通知上层组件
                 // 否则直接更新值即可
-                checked.value !== _val
-                && (isEmptyValue(_val) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
-                    ? change(_val)
-                    : (checked.value = _val));
+                if (checked.value !== _val) {
+                    isSyncedQueryValue = true;
+                    isEmptyValue(_val) && props.resetToInitialValue && !isEmptyValue(initialValue.value)
+                        ? change(_val)
+                        : (checked.value = _val);
+                }
             },
             { flush: 'sync' },
         ),
@@ -142,7 +150,8 @@ export function usePlain(props: PlainProps) {
                 // 类空值时, 不触发 change 事件
                 // 防止表单类监测值发生改变时触发校验
                 // 或内部不允许重置时直接返回
-                if (!props.resetByDependValueChange || isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
+                const isNeedReset = typeof props.resetByDependValueChange === 'boolean' ? props.resetByDependValueChange : props.resetByDependValueChange(props.query);
+                if (isSyncedQueryValue || !isNeedReset || isEmptyValue(checked.value) || !allowDependChangeValue.value) return;
                 change(isEmptyValue(initialValue.value) ? (props.multiple ? [] : '') : clone(initialValue.value));
             },
             { flush: 'sync', ...props.dependWatchOption },

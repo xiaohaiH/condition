@@ -10,11 +10,11 @@
             "types": "./index.ts",
             "import": "./index.ts",
             "require": "./dist/index.cjs.js",
-            "browser": "./dist/index.esm.js"
+            "browser": "./index.ts"
         },
         "./*": "./*"
     },
-    "main": "dist/index.cjs.js",
+    "main": "index.ts",
     "module": "index.ts",
     "unpkg": "dist/index.umd.js",
     "jsdelivr": "dist/index.umd.js",
@@ -61,7 +61,7 @@
             ".": {
                 "require": "./dist/index.cjs.js",
                 "import": "./index.ts",
-                "browser": "./dist/index.esm.js",
+                "browser": "./index.ts",
                 "types": "./index.ts"
             },
             "./*": "./*"

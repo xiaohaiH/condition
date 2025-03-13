@@ -13,10 +13,6 @@ export interface ProvideValue {
      */
     realtime: Ref<boolean | undefined>;
     /**
-     * 当 query 变化是, 是否在 wrapper 处触发的
-     */
-    queryChangedInWrapper: Ref<boolean | undefined>;
-    /**
      * 子组件需主动注册组件, 否则不会生效
      * @param {CommonMethod} config 提供父组件校验, 重置等方法
      *
@@ -62,6 +58,8 @@ export interface CommonMethod {
     validator?: (query: Record<string, string>) => Promise<any> | any;
     /** 获取该组件拼接的参数 */
     getQuery: () => Record<string, any>;
+    /** 在 watch 中 backfill 改变后, 需要执行回调 */
+    onChangeByBackfill?: () => void;
 }
 export function defineCommonMethod<T extends CommonMethod>(option: T): T {
     return option;

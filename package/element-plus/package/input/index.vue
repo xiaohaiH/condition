@@ -17,7 +17,7 @@
             <ElInput
                 v-bind="contentProps"
                 :disabled="insetDisabled"
-                :model-value="(checked as string)"
+                :model-value="checked as string"
                 class="condition-item__content"
                 v-bind.prop="dynamicFields?.({ query })"
                 @update:model-value="debounceChange"
@@ -33,10 +33,7 @@
                 </template>
                 <template v-if="slotPrepend || $slots.prepend" #prepend>
                     <slot v-if="$slots.prepend" name="prepend" />
-                    <component
-                        :is="getNode(slotPrepend!, { backfill, query, search, insideSearch })"
-                        v-else
-                    />
+                    <component :is="getNode(slotPrepend!, { backfill, query, search, insideSearch })" v-else />
                 </template>
                 <template v-if="slotAppend || $slots.append" #append>
                     <slot v-if="$slots.append" name="append" />
@@ -96,8 +93,7 @@ export default defineComponent({
             timer && clearTimeout(timer);
             if (realtime) {
                 plain.change(value);
-            }
-            else {
+            } else {
                 plain.updateCheckedValue(value);
                 if (!plain.wrapper) return;
                 timer = setTimeout(plain.wrapper.insetSearch, waitTime) as unknown as number;
@@ -120,12 +116,12 @@ export default defineComponent({
         }
         const slotProps = computed(() => ({
             ...contentProps.value,
-            'disabled': plain.insetDisabled.value,
-            'modelValue': plain.checked.value,
+            disabled: plain.insetDisabled.value,
+            modelValue: plain.checked.value,
             'onUpdate:modelValue': debounceChange,
             'onKeydown.enter': enterHandle,
-            'class': 'condition-item__content',
-            'extraOption': {
+            class: 'condition-item__content',
+            extraOption: {
                 query: props.query,
                 search: plain.wrapper!.search,
                 insetSearch: plain.wrapper!.insetSearch,

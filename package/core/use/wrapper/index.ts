@@ -61,7 +61,6 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     /** 提供给子条件组件的方法 */
     const wrapperInstance = defineProvideValue({
         realtime: toRef(props, 'realtime', false),
-        queryChangedInWrapper: ref(false),
         register(compOption) {
             child.push(compOption);
             const unregister = () => {
@@ -123,7 +122,6 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
     watch(
         () => ({ ...props.backfill }),
         (val, oldVal) => {
-            wrapperInstance.queryChangedInWrapper.value = true;
             // 手动处理 query 的值于 backfill 保持一致
             // 防止 query.value 对象改变导致内部监听误触发
             Object.keys(query.value).forEach((k) => {
@@ -139,13 +137,10 @@ export function useWrapper(props: WrapperProps, option?: WrapperOption) {
                 }
             });
             isChanged && Object.assign(query.value, newQuery);
-            isChanged ? nextTick(restoreQueryChanged) : restoreQueryChanged();
+            child.forEach((o) => o.onChangeByBackfill?.());
         },
         { deep: true },
     );
-    function restoreQueryChanged() {
-        wrapperInstance.queryChangedInWrapper.value = false;
-    }
 
     async function search() {
         const msg = await validate();
