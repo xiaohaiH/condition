@@ -1,5 +1,11 @@
 # @xiaohaih/condition-core
 
+## 0.6.5
+
+### Patch Changes
+
+- 修复更新 query 时, 存在依赖项时会触发依赖导致值被重置
+
 ## 0.6.4
 
 ### Patch Changes
